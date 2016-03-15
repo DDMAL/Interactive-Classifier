@@ -4,14 +4,14 @@ from neumeeditor.serializers.image import ImageSerializer
 from rest_framework import generics
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.renderers import JSONRenderer, JSONPRenderer
+from rest_framework.renderers import JSONRenderer
 
 
 class ImageList(generics.ListCreateAPIView):
     model = Image
     serializer_class = ImageSerializer
     queryset = Image.objects.all()
-    renderer_classes = (JSONRenderer, JSONPRenderer)
+    renderer_classes = (JSONRenderer,)
     authentication_classes = (ExpiringTokenAuthentication,
                               SessionAuthentication)
     permission_classes = (IsAuthenticated,)
@@ -21,7 +21,7 @@ class ImageDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Image
     serializer_class = ImageSerializer
     queryset = Image.objects.all()
-    renderer_classes = (JSONRenderer, JSONPRenderer)
+    renderer_classes = (JSONRenderer,)
     authentication_classes = (ExpiringTokenAuthentication,
                               SessionAuthentication)
     permission_classes = (IsAuthenticated,)

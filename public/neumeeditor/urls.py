@@ -1,4 +1,5 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, include, url
+from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from neumeeditor.views.authentication import ObtainExpiringAuthToken
@@ -11,7 +12,6 @@ from neumeeditor.views.name_nomenclature_membership import \
 from neumeeditor.views.nomenclature import NomenclatureDetail, NomenclatureList, \
     NomenclatureNames
 from neumeeditor.views.style import StyleList, StyleDetail
-from neumeeditor.views.user import UserList, UserDetail
 from rest_framework.urlpatterns import format_suffix_patterns
 from neumeeditor.views.glyph import GlyphDetail, GlyphList, GlyphImages, \
     GlyphNames
@@ -20,7 +20,7 @@ from neumeeditor.views.glyph import GlyphDetail, GlyphList, GlyphImages, \
 urlpatterns = []
 
 urlpatterns += format_suffix_patterns(
-    patterns('cantusdata.views.main',
+    patterns('views.main',
         url(r'^$', neumeeditor_home),
         url(r'^browse/$', neumeeditor_api_root),
 
@@ -74,8 +74,6 @@ urlpatterns += format_suffix_patterns(
         url(r'^upload/mei/$',
             MEIUploadView.as_view(),
             name="mei-upload")
-
-
              ),
 )
 

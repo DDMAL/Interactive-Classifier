@@ -1,4 +1,4 @@
-from cantusdata.settings import MEDIA_ROOT, MEDIA_URL
+from settings import MEDIA_ROOT, MEDIA_URL
 
 
 def media_url_to_system_path(media_path):

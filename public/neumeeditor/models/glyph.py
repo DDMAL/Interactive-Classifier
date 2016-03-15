@@ -53,5 +53,5 @@ def get_or_create_glyph(short_code):
     processed_short_code = sanitize_short_code(short_code)
     glyph, created = Glyph.objects.get_or_create(short_code=processed_short_code)
     if (glyph.short_code != processed_short_code):
-        print short_code, processed_short_code, glyph.short_code
+        print(short_code, processed_short_code, glyph.short_code)
     return glyph, created

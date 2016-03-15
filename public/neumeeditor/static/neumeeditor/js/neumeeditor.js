@@ -5,8 +5,8 @@
     Global Variables
      */
 
-    var SITE_URL = "/neumeeditor/";
-    var SITE_SUBFOLDER = "neumeeditor/";
+    var SITE_URL = "/";
+    var SITE_SUBFOLDER = "/";
     var STATIC_URL = "/neumeeditor/media/";
 
     /*

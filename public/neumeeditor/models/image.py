@@ -1,7 +1,7 @@
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import os
 import hashlib
-from StringIO import StringIO
+from io import StringIO
 from PIL import Image as ImageModule
 from django.db import models
 from django.db.models.signals import post_save, pre_save

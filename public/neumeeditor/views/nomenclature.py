@@ -1,5 +1,5 @@
 from neumeeditor.helpers.authentication import ExpiringTokenAuthentication
-from neumeeditor.models import Name
+from neumeeditor.models.name import Name
 from neumeeditor.serializers.name import NameSerializer
 from neumeeditor.models.nomenclature import Nomenclature
 from neumeeditor.serializers.nomenclature import NomenclatureSerializer
@@ -7,14 +7,14 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.renderers import JSONRenderer, JSONPRenderer, TemplateHTMLRenderer
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
 
 class NomenclatureList(generics.ListCreateAPIView):
     model = Nomenclature
     serializer_class = NomenclatureSerializer
     template_name = "neumeeditor/index.html"
-    renderer_classes = (JSONRenderer, JSONPRenderer,
+    renderer_classes = (JSONRenderer,
                         TemplateHTMLRenderer)
     queryset = Nomenclature.objects.all()
     # authentication_classes = (ExpiringTokenAuthentication,
@@ -26,7 +26,7 @@ class NomenclatureDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Nomenclature
     serializer_class = NomenclatureSerializer
     template_name = "neumeeditor/index.html"
-    renderer_classes = (JSONRenderer, JSONPRenderer,
+    renderer_classes = (JSONRenderer,
                         TemplateHTMLRenderer)
     queryset = Nomenclature.objects.all()
     # authentication_classes = (SessionAuthentication,)
@@ -35,7 +35,7 @@ class NomenclatureDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class NomenclatureNames(generics.ListAPIView):
     serializer_class = NameSerializer
-    renderer_classes = (JSONRenderer, JSONPRenderer)
+    renderer_classes = (JSONRenderer,)
 
     def get_queryset(self, nomenclature_id):
         return Name.objects.filter(nomenclatures=nomenclature_id)

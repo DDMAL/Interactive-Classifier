@@ -1,5 +1,5 @@
 from django.test import TestCase
-from cantusdata.settings import MEDIA_ROOT, MEDIA_URL
+from settings import MEDIA_ROOT, MEDIA_URL
 from neumeeditor.helpers.file_system_utils import media_url_to_system_path, \
     remove_media_url
 

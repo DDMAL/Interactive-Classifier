@@ -1,10 +1,12 @@
 from datetime import timedelta
-from cantusdata import settings
+
+import pytz as pytz
+
+import settings
 from django.contrib.auth import tokens
 from django.utils.datetime_safe import datetime
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import exceptions
-import pytz
 
 
 class ExpiringTokenAuthentication(TokenAuthentication):

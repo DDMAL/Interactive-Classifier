@@ -1,4 +1,4 @@
-from neumeeditor.models import Glyph
+from neumeeditor.models.glyph import Glyph
 from neumeeditor.models.name import Name
 from rest_framework import serializers
 

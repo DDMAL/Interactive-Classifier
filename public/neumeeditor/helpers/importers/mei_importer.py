@@ -1,6 +1,6 @@
 from neumeeditor.helpers.importers.abstract_importer import AbstractImporter
-from neumeeditor.helpers.mei import MEI, get_image, get_st_gallen_390_image_url
-from neumeeditor.models import Name
+from neumeeditor.helpers.mei import MEI, get_st_gallen_390_image_url
+from neumeeditor.models.name import Name
 from neumeeditor.models.glyph import get_or_create_glyph
 from neumeeditor.models.image import Image
 
@@ -14,7 +14,7 @@ class MeiImporter(AbstractImporter):
         # Create the glyphs
         for neume in neumes:
             if neume.name is None:
-                print "NONE ERROR"
+                print("NONE ERROR")
                 continue
             # Check if the name already exists
             name, name_created = Name.objects.get_or_create(string=neume.name)

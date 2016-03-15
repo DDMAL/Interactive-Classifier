@@ -4,14 +4,14 @@ from neumeeditor.models.name_nomenclature_membership import NameNomenclatureMemb
 from rest_framework import generics
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.renderers import JSONRenderer, JSONPRenderer
+from rest_framework.renderers import JSONRenderer
 from neumeeditor.serializers.name_nomenclature_membership import NameNomenclatureMembershipSerializer
 
 
 class NameNomenclatureMembershipList(generics.ListCreateAPIView):
     model = NameNomenclatureMembership
     serializer_class = NameNomenclatureMembershipSerializer
-    renderer_classes = (JSONRenderer, JSONPRenderer)
+    renderer_classes = (JSONRenderer,)
     queryset = NameNomenclatureMembership.objects.all()
     # authentication_classes = (ExpiringTokenAuthentication,
     #                           SessionAuthentication)
@@ -21,7 +21,7 @@ class NameNomenclatureMembershipList(generics.ListCreateAPIView):
 class NameNomenclatureMembershipDetail(generics.RetrieveUpdateDestroyAPIView):
     model = NameNomenclatureMembership
     serializer_class = NameNomenclatureMembershipSerializer
-    renderer_classes = (JSONRenderer, JSONPRenderer)
+    renderer_classes = (JSONRenderer,)
     queryset = NameNomenclatureMembership.objects.all()
     # authentication_classes = (SessionAuthentication,)
     # permission_classes = (IsAuthenticated,)
@@ -29,7 +29,7 @@ class NameNomenclatureMembershipDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class NameNomenclatureMembershipListForGlyph(generics.ListAPIView):
     serializer_class = NameNomenclatureMembershipSerializer
-    renderer_classes = (JSONRenderer, JSONPRenderer)
+    renderer_classes = (JSONRenderer,)
 
     def get_queryset(self, glyph_id):
         return NameNomenclatureMembership.objects.filter(glyph=glyph_id)

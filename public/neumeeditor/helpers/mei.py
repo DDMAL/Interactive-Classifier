@@ -1,13 +1,13 @@
-from StringIO import StringIO
-import requests
+from io import StringIO
+from xml import etree
 from PIL import Image as PIL_Image
-from lxml import etree
+from requests import get
 from neumeeditor.helpers.bounding_box import BoundingBox
 
 
 def get_image(url):
-    print "Fetching image: {0}".format(url)
-    response = requests.get(url)
+    print("Fetching image: {0}".format(url))
+    response = get(url)
     return PIL_Image.open(StringIO(response.content))
 
 def get_st_gallen_390_image_url(folio_name, ulx, uly, width, height):

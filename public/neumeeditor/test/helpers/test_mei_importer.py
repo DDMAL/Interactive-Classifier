@@ -1,6 +1,6 @@
 from lxml import etree
 from django.test import TestCase
-from cantusdata.settings import MEDIA_ROOT, BASE_DIR
+from settings import MEDIA_ROOT, BASE_DIR
 from neumeeditor.helpers.gamera_xml import GameraXML
 from neumeeditor.helpers.importers.gamera_xml_importer import import_gamera_file
 from neumeeditor.helpers.string import strip_leading_characters

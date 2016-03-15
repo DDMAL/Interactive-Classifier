@@ -8,4 +8,4 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # Destroy images
         Image.objects.all().delete()
-        print "Images destroyed."
+        print("Images destroyed.")

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from neumeeditor.models import Name
+from neumeeditor.models.name import Name
 from neumeeditor.models.glyph import Glyph
 from neumeeditor.models.image import Image
 from neumeeditor.models.name_nomenclature_membership import \
