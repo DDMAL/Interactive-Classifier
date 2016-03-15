@@ -60,3 +60,9 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+*.sqlite3
+
+/.idea
+
+/public/.env
