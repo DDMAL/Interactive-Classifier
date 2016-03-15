@@ -66,3 +66,5 @@ target/
 /.idea
 
 /public/.env
+
+/public/classifier_frontend/node_modules
