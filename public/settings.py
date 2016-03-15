@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     # Auth tokens
     'rest_framework',
     'rest_framework.authtoken',
-    'neumeeditor',
+    'classifier',
     'django_extensions',
     'coverage'
 )
@@ -91,7 +91,7 @@ MEDIA_URL = '/media/'
 
 
 # This needs to be an absolute path to the file system location
-STATIC_ROOT = os.path.join(BASE_DIR, 'neumeeditor/static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'classifier/static/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 REST_FRAMEWORK = {

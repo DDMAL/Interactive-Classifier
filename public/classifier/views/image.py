@@ -1,0 +1,27 @@
+from classifier.helpers.authentication import ExpiringTokenAuthentication
+from classifier.models.image import Image
+from classifier.serializers.image import ImageSerializer
+from rest_framework import generics
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.renderers import JSONRenderer
+
+
+class ImageList(generics.ListCreateAPIView):
+    model = Image
+    serializer_class = ImageSerializer
+    queryset = Image.objects.all()
+    renderer_classes = (JSONRenderer,)
+    authentication_classes = (ExpiringTokenAuthentication,
+                              SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+
+class ImageDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Image
+    serializer_class = ImageSerializer
+    queryset = Image.objects.all()
+    renderer_classes = (JSONRenderer,)
+    authentication_classes = (ExpiringTokenAuthentication,
+                              SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
