@@ -6,6 +6,7 @@ export default Backbone.Model.extend({
     urlRoot: GlobalVars.SITE_URL + "glyphs/",
 
     defaults: {
+        //id: 0,
         short_code: "",
         comments: ""
     },
