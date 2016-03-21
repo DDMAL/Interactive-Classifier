@@ -4,7 +4,6 @@ import GlobalVars from "config/GlobalVars";
 import UploadProgressModalView from "views/GlyphList/UploadProgressModalView";
 import getAbsoluteGlyphUrl from "utils/getAbsoluteGlyphUrl";
 import Dropzone from "dropzone";
-
 import template from "./upload-gamera-xml.template.html";
 
 export default Marionette.LayoutView.extend({
@@ -72,10 +71,12 @@ export default Marionette.LayoutView.extend({
         );
         // Set up the callbacks
         var that = this;
-        this.dropzoneObject.on("processing", function(){
+        this.dropzoneObject.on("processing", function()
+        {
             that.modalView.open();
         });
-        this.dropzoneObject.on("uploadprogress", function(file, percent, bytes) {
+        this.dropzoneObject.on("uploadprogress", function(file, percent, bytes)
+        {
             console.log(file, percent, bytes);
             //that.modalView.setPercent(percent);
         });

@@ -1,13 +1,10 @@
 import Marionette from "marionette";
-
 import GlyphCollection from "collections/GlyphCollection";
-
 import FetchModal from "views/GlyphList/FetchModal";
 import CreateGlyphView from "views/GlyphList/CreateGlyphView";
 import UploadMEIView from "views/GlyphList/UploadMEIView";
 import GlyphCompositeView from "views/GlyphList/GlyphCompositeView";
 import UploadGameraXMLView from "views/GlyphList/UploadGameraXMLView";
-
 import template from "./glyph-dashboard.template.html";
 
 export default Marionette.LayoutView.extend({
@@ -21,7 +18,8 @@ export default Marionette.LayoutView.extend({
         glyphListFetchModalRegion: ".glyph-list-fetch-modal-region"
     },
 
-    onShow: function() {
+    onShow: function()
+    {
         var glyphCollection = new GlyphCollection({url: "/classifier/glyphs/"});
         var glyphFetchModal = new FetchModal(
             {

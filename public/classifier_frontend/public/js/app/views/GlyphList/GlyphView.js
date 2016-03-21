@@ -6,7 +6,6 @@ import ImageCollection from "collections/ImageCollection";
 import NameCollection from "collections/NameCollection";
 import NameCollectionView from "views/GlyphList/NameCollectionView";
 import ImageCollectionView from "views/GlyphList/ImageCollectionView";
-
 import template from "./glyph.template.html";
 
 export default Marionette.LayoutView.extend({
@@ -22,18 +21,22 @@ export default Marionette.LayoutView.extend({
         "click .edit-button": "goToEdit"
     },
 
-    goToEdit: function(event) {
+    goToEdit: function(event)
+    {
         event.preventDefault();
         App.appRouter.routeToPage(this.model.get("url"));
     },
 
-    onShow: function() {
+    onShow: function()
+    {
         var nameCollection = this.model.getCollection("name_set", NameCollection, Name);
         var imageCollection;
-        try {
+        try
+        {
             imageCollection = this.model.getCollection("image_set", ImageCollection, Image);
         }
-        catch(ReferenceError) {
+        catch (ReferenceError)
+        {
             // Just make a blank collection
             imageCollection = new ImageCollection();
         }

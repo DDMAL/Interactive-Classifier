@@ -1,11 +1,9 @@
 import Marionette from "marionette";
 import Dropzone from "dropzone";
-
 import App from "App";
 import Image from "models/Image";
 import GlobalVars from "config/GlobalVars";
 import getAbsoluteGlyphUrl from "utils/getAbsoluteGlyphUrl";
-
 import template from "./upload-image.template.html";
 
 export default Marionette.ItemView.extend({

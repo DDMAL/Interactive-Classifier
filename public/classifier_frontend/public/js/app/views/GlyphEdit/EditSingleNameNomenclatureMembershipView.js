@@ -1,5 +1,4 @@
 import Marionette from "marionette";
-
 import template from "./edit-single-name-nomenclature-membership.template.html";
 
 export default Marionette.ItemView.extend({

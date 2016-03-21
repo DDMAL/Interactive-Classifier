@@ -1,8 +1,6 @@
 import Marionette from "marionette";
-
 import GlobalVars from "config/GlobalVars";
 import NameNomenclatureMembership from "models/NameNomenclatureMembership";
-
 import template from "./create-name-nomenclature-membership.template.html";
 
 export default Marionette.ItemView.extend({

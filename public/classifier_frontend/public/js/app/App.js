@@ -2,7 +2,8 @@ import Backbone from "backbone";
 import Marionette from 'marionette';
 import RootView from 'views/Root/RootView';
 import MenuView from "views/MainMenu/MenuView";
-import GlyphDashboardView from "views/GlyphList/GlyphDashboardView";
+import DashBoardView from "views/Dashboard/DashboardView";
+//import GlyphDashboardView from "views/GlyphList/GlyphDashboardView";
 import getCookie from "utils/getCookie";
 
 var App = new Marionette.Application({
@@ -26,7 +27,8 @@ var App = new Marionette.Application({
         this.rootView = new RootView();
         //this.rootView.render();
         this.rootView.navigation.show(new MenuView());
-        this.rootView.container.show(new GlyphDashboardView());
+        //this.rootView.container.show(new GlyphDashboardView());
+        this.rootView.container.show(new DashBoardView());
     },
 
     showNavigation: function(view)

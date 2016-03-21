@@ -1,5 +1,4 @@
 import Marionette from "marionette";
-
 import template from "./edit-single-name.template.html";
 
 export default Marionette.ItemView.extend({
@@ -30,12 +29,14 @@ export default Marionette.ItemView.extend({
         var that = this;
         this.model.save(null,
             {
-                success: function() {
+                success: function()
+                {
                     that.ui.statusDiv.html('<p class="alert alert-success" role="alert">Name saved successfully.</p>');
                     that.ui.statusDiv.find("p").fadeOut(2500);
                     return that.trigger("submit");
                 },
-                error: function(model, event) {
+                error: function(model, event)
+                {
                     that.ui.statusDiv.html('<p class="alert alert-danger" role="alert">Error saving name. - ' + event.responseText +  '<p>');
                     that.ui.statusDiv.find("p").fadeOut(2500);
                 }

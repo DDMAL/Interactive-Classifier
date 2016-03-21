@@ -1,5 +1,4 @@
 import Marionette from "marionette";
-
 import template from "./edit-glyph-properties.template.html";
 
 export default Marionette.ItemView.extend({
