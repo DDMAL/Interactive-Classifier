@@ -91,7 +91,7 @@ MEDIA_URL = '/media/'
 
 
 # This needs to be an absolute path to the file system location
-STATIC_ROOT = os.path.join(BASE_DIR, 'classifier/static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'public/static/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 REST_FRAMEWORK = {
