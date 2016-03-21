@@ -68,3 +68,5 @@ target/
 /public/.env
 
 /public/classifier_frontend/node_modules
+
+.DS_Store
