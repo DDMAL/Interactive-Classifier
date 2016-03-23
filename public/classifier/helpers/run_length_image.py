@@ -41,7 +41,8 @@ class RunLengthImage():
                 if is_black:
                     colour = 'black'
                 # Paint the pixel to the image
-                draw.point(self.get_location_of_runlength(current_pixel), fill=colour)
+                draw.point(self.get_location_of_runlength(current_pixel),
+                           fill=colour)
                 # Increase the current pixel
                 current_pixel += 1
             # Switch from black to white or white to black

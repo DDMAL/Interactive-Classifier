@@ -1,63 +1,49 @@
+import os
+import uuid
+
 from classifier.helpers.gamera_xml import GameraXML
 from classifier.helpers.importers.abstract_importer import AbstractImporter
-from classifier.helpers.string import strip_leading_characters
-from classifier.models.glyph import get_or_create_glyph
-from classifier.models.image import Image as NeumeEditorImage
+from classifier.models.glyph import Glyph
+from classifier.models.page import Page
+from settings import MEDIA_ROOT, MEDIA_URL
 
 
 class GameraXMLImporter(AbstractImporter):
 
     def import_data(self):
         # Build the file
-        gamera = GameraXML(self.file_string)
-        # Get the names
-        names = gamera.get_names()
-        # Create glyphs
-        # self.create_glyphs(names)
-        # Get the run length images
-        rl_images = gamera.get_run_length_images()
-        # for rl_image in rl_images:
-        for name_and_image in rl_images:
-            # Get the values
-            name = strip_leading_characters(name_and_image['name'], "neume.")
-            run_length_image = name_and_image['image']
-            glyph, created = get_or_create_glyph(name)
-            # Create the image
-            self.create_image(run_length_image, glyph)
+        page = Page()
+        page.name = self.file_name
+        page.save()
 
-    def create_glyphs(self, names):
-        '''
-        Given a list of names, create glyphs (if they don't already exist).
+        # Make the dir for the images
+        dir = os.path.join(MEDIA_ROOT, page.uuid.hex)
+        os.makedirs(dir)
 
-        :param names: A list of name strings.
-        :return: void
-        '''
-        for name in names:
-            # If glyph doesn't exist, create it
-            get_or_create_glyph(strip_leading_characters(name, "neume."))
-
-    def create_image(self, run_length_image, glyph):
-        '''
-        Create an Image model for a particular RunLengthImage.
-
-        :param run_length_image: A RunLengthImage object.
-        :param glyph:
-        :return: void
-        '''
-        pil_image = run_length_image.get_image()
-        image = NeumeEditorImage()
-        image.set_PIL_image(pil_image)
-        image.glyph = glyph
-        image.ulx = run_length_image.ulx
-        image.uly = run_length_image.uly
-        image.width = run_length_image.width
-        image.height = run_length_image.height
-        image.folio_name = self.file_name
-        image.set_md5()
-        # Make sure not duplicate
-        if not NeumeEditorImage.objects.filter(glyph=glyph, md5sum=image.md5sum):
-            image.save()
-
+        for xml_glyph in GameraXML(self.file_string).get_glyphs():
+            new_glyph = Glyph()
+            new_glyph.short_code = xml_glyph["short_code"]
+            new_glyph.page = page
+            new_glyph.save()
+            # Handle image
+            image = xml_glyph["image"].get_image()
+            image_name = "{0}.{1}".format(uuid.uuid4().hex, "png")
+            # Save the image
+            image_path = os.path.join(dir, image_name)
+            image_file = open(image_path, 'w')
+            image.save(image_file, "PNG")
+            # Assign the image to the glyph
+            new_glyph.image_file = "{0}/{1}/{2}".format(MEDIA_URL, page.uuid.hex, image_name)
+            # Assign the image properties
+            new_glyph.ulx = xml_glyph["ulx"]
+            new_glyph.uly = xml_glyph["uly"]
+            new_glyph.ncols = xml_glyph["width"]
+            new_glyph.nrows = xml_glyph["height"]
+            new_glyph.confidence = xml_glyph["confidence"]
+            if xml_glyph["id_state"] == "MANUAL":
+                new_glyph.id_state_manual = True
+            # Save the final glyph
+            new_glyph.save()
 
 def import_gamera_file(file_path):
     """
@@ -66,8 +52,8 @@ def import_gamera_file(file_path):
     :param file_path:
     :return:
     """
-    file = open(file_path)
-    data_string = file.read()
-    file_name = file.name
+    gamera_file = open(file_path)
+    data_string = gamera_file.read()
+    file_name = gamera_file.name
     importer = GameraXMLImporter(data_string, file_name)
     importer.import_data()
