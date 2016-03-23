@@ -1,10 +1,14 @@
+from django.core.validators import RegexValidator
 from django.db import models
-from classifier.models.image import Image
-from classifier.models.style import Style
-from classifier.models.fields.short_code_field import ShortCodeField, \
-    sanitize_short_code
+
+from classifier.helpers.storage.media_file_system import media_file_name, \
+    MediaFileSystemStorage
+from classifier.models.page import Page
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
+
+
+SHORT_CODE_REGEX = r"/[a-z0-9]*([a-z0-9]+\.)*[a-z0-9]+/"
 
 
 class Glyph(models.Model):
@@ -12,20 +16,30 @@ class Glyph(models.Model):
         app_label = "classifier"
         # ordering = ['name']
 
-    short_code = ShortCodeField(max_length=128, blank=False, null=False,
-                                unique=False)
-    comments = models.TextField(blank=True, null=False)
+    short_code = models.CharField(
+        max_length=128,
+        validators=[
+            RegexValidator(
+                regex=SHORT_CODE_REGEX,
+                message="Glyph shortcode must be lowercase alphanumeric (with optional periods)",
+                code="invalid_shortcode"
+            )
+        ])
+    id_state_manual = models.BooleanField(default=False)
+    confidence = models.FloatField(default=0.0)
+    page = models.ForeignKey(Page, blank=True, null=True)
+    # Positional fields
+    ulx = models.PositiveIntegerField(null=True, blank=True)
+    uly = models.PositiveIntegerField(null=True, blank=True)
+    nrows = models.PositiveIntegerField(null=True, blank=True)
+    ncols = models.PositiveIntegerField(null=True, blank=True)
+    #Image
+    image_file = models.ImageField(null=True, blank=True,
+                                   upload_to=media_file_name,
+                                   storage=MediaFileSystemStorage())
 
     def __unicode__(self):
-        output = u"{0} : [".format(self.short_code)
-        name_count = self.name_set.count()
-        index = 0
-        for name in self.name_set.all():
-            output += u"{0}".format(name.string)
-            index += 1
-            if index < name_count:
-                output += u", "
-        return output + "]"
+        return u"{0}".format(self.short_code)
 
 
 @receiver(pre_delete, sender=Glyph)
@@ -39,18 +53,3 @@ def pre_glyph_delete(sender, instance, **kwargs):
     :return:
     """
     Image.objects.filter(glyph=sender).delete()
-
-
-def get_or_create_glyph(short_code):
-    """
-    Get or create a glyph with a particular short code.
-
-    :param short_code:
-    :return: (glyph, created)
-    """
-    processed_short_code = sanitize_short_code(short_code)
-    glyph, created = Glyph.objects.get_or_create(
-        short_code=processed_short_code)
-    if glyph.short_code != processed_short_code:
-        print(short_code, processed_short_code, glyph.short_code)
-    return glyph, created
