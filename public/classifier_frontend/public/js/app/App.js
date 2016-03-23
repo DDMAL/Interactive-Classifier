@@ -3,6 +3,7 @@ import Marionette from 'marionette';
 import RootView from 'views/Root/RootView';
 import MenuView from "views/MainMenu/MenuView";
 import DashBoardView from "views/Dashboard/DashboardView";
+import Page from "models/Page";
 //import GlyphDashboardView from "views/GlyphList/GlyphDashboardView";
 import getCookie from "utils/getCookie";
 
@@ -27,8 +28,17 @@ var App = new Marionette.Application({
         this.rootView = new RootView();
         //this.rootView.render();
         this.rootView.navigation.show(new MenuView());
-        //this.rootView.container.show(new GlyphDashboardView());
-        this.rootView.container.show(new DashBoardView());
+
+        var page = new Page();
+        page.url = "/page/41/";
+        console.log(page);
+        var that = this;
+        page.fetch({"success": function()
+            {
+                console.log("success");
+                that.rootView.container.show(new DashBoardView({model: page}));
+            }
+        });
     },
 
     showNavigation: function(view)

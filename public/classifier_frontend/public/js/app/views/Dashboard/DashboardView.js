@@ -21,19 +21,17 @@ export default Marionette.LayoutView.extend({
 
     onShow: function()
     {
-        var classCollection = new GlyphClassCollection();
-
-        classCollection.add({
-            shortcode: "Test!"
-        });
+        //var classCollection = new GlyphClassCollection();
+        //
+        //classCollection.add({
+        //    shortcode: "Test!"
+        //});
 
         var glyphCollection = new GlyphCollection();
-        for (var i = 0; i < 150; i++) {
-            glyphCollection.add(new Glyph());
-        }
+        glyphCollection.add(this.model.get("glyph_set"));
 
         // Show the tree
-        this.glyphTreeRegion.show(new ClassTreeView({collection: classCollection}));
+        this.glyphTreeRegion.show(new ClassTreeView({collection: glyphCollection}));
         // Show the glyph table
         this.glyphTableRegion.show(new GlyphTableView({collection: glyphCollection}));
         // Show the creation view
@@ -49,6 +47,6 @@ export default Marionette.LayoutView.extend({
         console.log(modalViewModel);
         var modal = new ModalView({model: modalViewModel});
         this.modalTestRegion.show(modal);
-        modal.open();
+        //modal.open();
     }
 });

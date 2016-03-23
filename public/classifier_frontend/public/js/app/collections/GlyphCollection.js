@@ -9,9 +9,5 @@ export default Backbone.Collection.extend({
     //    this.url = String(options.url);
     //},
 
-    comparator: function(image)
-    {
-        // Newest names first
-        return 0 - parseInt(image.get("id"));
-    }
+    comparator: "short_code"
 });
