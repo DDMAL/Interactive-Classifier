@@ -6,6 +6,7 @@ from classifier.views.authentication import ObtainExpiringAuthToken
 from classifier.views.file_upload import GameraXMLUploadView, MEIUploadView
 from classifier.views.image import ImageList, ImageDetail
 from classifier.views.main import neumeeditor_home, neumeeditor_api_root
+from classifier.views.page import PageList, PageDetail
 from rest_framework.urlpatterns import format_suffix_patterns
 from classifier.views.glyph import GlyphDetail, GlyphList
 
@@ -28,6 +29,9 @@ urlpatterns += format_suffix_patterns(
         # url(r'^users/$', UserList.as_view(), name="user-list"),
         # url(r'^user/(?P<pk>[0-9]+)/$', UserDetail.as_view(),
         #     name="user-detail"),
+
+        url(r'^pages/$', PageList.as_view(), name="page-list"),
+        url(r'^page/(?P<pk>[0-9]+)/$', PageDetail.as_view(), name="page-detail"),
 
         # File uploads
         url(r'^upload/gamera-xml/$',
