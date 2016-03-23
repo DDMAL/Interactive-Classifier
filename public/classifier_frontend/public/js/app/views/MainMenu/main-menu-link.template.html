@@ -1,1 +1,8 @@
-<a href="<%= url %>"><%= text %></a>
+<a href="<%= url %>" <% if (subLinks.length > 0) { %> class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" <% } %>><%= text %></a>
+<% if (subLinks.length > 0) { %>
+<ul class="dropdown-menu">
+    <% _.each(subLinks, function(link) { %>
+    <li><a href="#"><%= link %></a></li>
+    <% }); %>
+</ul>
+<% } %>

@@ -21,7 +21,11 @@ export default Marionette.CompositeView.extend({
         var menuLinks = new Backbone.Collection();
         menuLinks.add(new MenuLinkViewModel({
             url: "#",
-            text: "Open GameraXML"
+            text: "File",
+            subLinks: [
+                new MenuLinkViewModel({text: "Open"}),
+                new MenuLinkViewModel({text: "Save"})
+            ]
         }));
 
         this.collection = menuLinks;

@@ -5,7 +5,7 @@ import template from "./main-menu-link.template.html";
 export default Marionette.ItemView.extend({
     template,
 
-    tagName: "li",
+    tagName: 'li class="dropdown"',
 
     events: {
         "click a": "goToUrl"
