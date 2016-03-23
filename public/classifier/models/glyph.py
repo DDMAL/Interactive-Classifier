@@ -1,6 +1,5 @@
 from django.db import models
 from classifier.models.image import Image
-from classifier.models.name import Name
 from classifier.models.style import Style
 from classifier.models.fields.short_code_field import ShortCodeField, \
     sanitize_short_code
@@ -13,7 +12,6 @@ class Glyph(models.Model):
         app_label = "classifier"
         # ordering = ['name']
 
-    style = models.ForeignKey(Style, blank=True, null=True)
     short_code = ShortCodeField(max_length=128, blank=False, null=False,
                                 unique=False)
     comments = models.TextField(blank=True, null=False)
@@ -40,7 +38,6 @@ def pre_glyph_delete(sender, instance, **kwargs):
     :param kwargs:
     :return:
     """
-    Name.objects.filter(glyph=sender).delete()
     Image.objects.filter(glyph=sender).delete()
 
 
