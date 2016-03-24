@@ -8,7 +8,13 @@ export default Backbone.Model.extend({
     defaults: {
         //id: 0,
         short_code: "",
-        comments: ""
+        id_state_manual: false,
+        confidence: 0.0,
+        ulx: 0,
+        uly: 0,
+        nrows: 0,
+        ncols: 0,
+        image_file: ""
     },
 
     /**
