@@ -10,6 +10,10 @@ export default Marionette.ItemView.extend({
         "click .glyph": "onClickGlyph"
     },
 
+    modelEvents: {
+        "change": "render"
+    },
+
     onClickGlyph: function(event)
     {
         event.preventDefault();

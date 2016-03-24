@@ -3,7 +3,9 @@ import GlobalVars from "config/GlobalVars";
 
 export default Backbone.Model.extend({
 
-    urlRoot: GlobalVars.SITE_URL + "glyphs/",
+    url: function() {
+        return this.get("url");
+    },
 
     defaults: {
         //id: 0,
