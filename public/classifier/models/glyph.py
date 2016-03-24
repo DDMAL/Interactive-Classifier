@@ -17,14 +17,15 @@ class Glyph(models.Model):
         # ordering = ['name']
 
     short_code = models.CharField(
-        max_length=128,
-        validators=[
-            RegexValidator(
-                regex=SHORT_CODE_REGEX,
-                message="Glyph shortcode must be lowercase alphanumeric (with optional periods)",
-                code="invalid_shortcode"
-            )
-        ])
+        max_length=128
+        # validators=[
+        #     RegexValidator(
+        #         regex=SHORT_CODE_REGEX,
+        #         message="Glyph shortcode must be lowercase alphanumeric (with optional periods)",
+        #         code="invalid_shortcode"
+        #     )
+        # ]
+    )
     id_state_manual = models.BooleanField(default=False)
     confidence = models.FloatField(default=0.0)
     page = models.ForeignKey(Page, blank=True, null=True)
