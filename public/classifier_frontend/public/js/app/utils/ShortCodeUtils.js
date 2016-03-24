@@ -36,10 +36,12 @@ export default {
         var leading = 0,
             trailing = 0;
 
-        if (string.charAt(0) === char) {
+        if (string.charAt(0) === char)
+        {
             leading = 1;
         }
-        if (string.charAt(string.length - 1) === char) {
+        if (string.charAt(string.length - 1) === char)
+        {
             trailing = 1;
         }
 
