@@ -33,7 +33,7 @@ class GameraXMLImporter(AbstractImporter):
             image_file = open(image_path, 'w')
             image.save(image_file, "PNG")
             # Assign the image to the glyph
-            new_glyph.image_file = "{0}/{1}/{2}".format(MEDIA_URL, page.uuid.hex, image_name)
+            new_glyph.image_file = "{1}/{2}".format(MEDIA_URL, page.uuid.hex, image_name)
             # Assign the image properties
             new_glyph.ulx = xml_glyph["ulx"]
             new_glyph.uly = xml_glyph["uly"]
