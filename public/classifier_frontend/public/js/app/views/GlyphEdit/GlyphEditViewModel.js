@@ -37,9 +37,14 @@ export default Backbone.Model.extend({
         // Update the gui
         this.set("id_state_manual", true);
         // Update the internal model
-        this.model.save({
-            "short_code": this.model.get("short_code"),
-            "id_state_manual": true
-        });
+        this.model.save(
+            {
+                "short_code": this.model.get("short_code"),
+                "id_state_manual": true
+            },
+            {
+                patch: true
+            }
+        );
     }
 });
