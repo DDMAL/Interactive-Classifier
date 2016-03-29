@@ -30,7 +30,7 @@ var App = new Marionette.Application({
         this.rootView.navigation.show(new MenuView());
 
         var page = new Page();
-        page.url = "/page/41/";
+        page.url = "/page/1/";
         console.log(page);
         var that = this;
         page.fetch({"success": function()
