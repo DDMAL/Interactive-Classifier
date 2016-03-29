@@ -1,5 +1,5 @@
 import Backbone from "backbone";
-import GlobalVars from "config/GlobalVars";
+
 
 export default Backbone.Model.extend({
 
