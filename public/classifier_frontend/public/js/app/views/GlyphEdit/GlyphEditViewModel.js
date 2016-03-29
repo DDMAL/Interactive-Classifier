@@ -18,7 +18,21 @@ export default Backbone.Model.extend({
         this.set(this.model.attributes);
     },
 
-    onChangeClass: function(event)
+    manualConfirm: function()
+    {
+        this.set("id_state_manual", true);
+        // Update the internal model
+        this.model.save(
+            {
+                "id_state_manual": true
+            },
+            {
+                patch: true
+            }
+        );
+    },
+
+    onChangeClass: function()
     {
         // Update the gui
         this.set("id_state_manual", true);

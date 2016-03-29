@@ -15,7 +15,12 @@
             </tr>
             <tr>
                 <td>Manual ID</td>
-                <td><%= id_state_manual %></td>
+                <td>
+                    <%= id_state_manual %>
+                    <% if (!id_state_manual) { %>
+                    <a class="btn btn-default pull-right manual-confirm-button" href="#" role="button">Confirm</a>
+                    <% } %>
+                </td>
             </tr>
             <tr>
                 <td>Confidence</td>

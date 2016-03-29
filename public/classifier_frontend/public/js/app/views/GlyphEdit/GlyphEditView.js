@@ -6,11 +6,17 @@ export default Marionette.ItemView.extend({
     template,
 
     ui: {
-        classInput: 'input[title="glyph-class"]'
+        classInput: 'input[title="glyph-class"]',
+        manualConfirmButton: '.manual-confirm-button'
     },
 
     events: {
-        "submit": "onSubmitForm"
+        "submit": "onSubmitForm",
+        "click @ui.manualConfirmButton": "onClickConfirmButton"
+    },
+
+    modelEvents: {
+        "change": "render"
     },
 
     onSubmitForm: function(event)
@@ -18,6 +24,12 @@ export default Marionette.ItemView.extend({
         event.preventDefault();
         console.log("submitForm", this.ui.classInput.val());
         this.model.set("short_code", this.ui.classInput.val());
+    },
+
+    onClickConfirmButton: function(event)
+    {
+        event.preventDefault();
+        this.model.manualConfirm();
     }
 
 });
