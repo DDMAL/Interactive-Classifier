@@ -39,7 +39,7 @@ export default Backbone.Model.extend({
         // Update the internal model
         this.model.save(
             {
-                "short_code": this.model.get("short_code"),
+                "short_code": this.get("short_code"),
                 "id_state_manual": true
             },
             {

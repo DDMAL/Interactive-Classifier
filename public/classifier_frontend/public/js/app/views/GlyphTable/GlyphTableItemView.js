@@ -1,10 +1,10 @@
 import Marionette from "marionette";
-import GlyphEvents from "events/GlyphEvents"
-import template from "./table-item.template.html";
+import GlyphEvents from "events/GlyphEvents";
+// import template from "./table.template.html";
 
 
 export default Marionette.ItemView.extend({
-    template,
+    // template,
 
     events: {
         "click .glyph": "onClickGlyph"

@@ -1,21 +1,42 @@
 import Marionette from "marionette";
+import _ from "underscore";
 import GlyphEvents from "events/GlyphEvents";
-import GlyphTableItemView from "views/GlyphTable/GlyphTableItemView";
+import template from "./table.template.html";
 
 
-export default Marionette.CollectionView.extend({
-    childView: GlyphTableItemView,
+export default Marionette.ItemView.extend({
+    template,
 
-    childEvents: {},
+    // childEvents: {},
 
-    initialize: function()
-    {
-        this.childEvents[GlyphEvents.clickGlyph] = "onClickChild";
+    events: {
+        "click .glyph": "clickGlyph"
     },
 
-    onClickChild: function(child)
+    collectionEvents: {
+        "change": "render"
+    },
+
+    // initialize: function()
+    // {
+    //     this.childEvents[GlyphEvents.clickGlyph] = "onClickChild";
+    // },
+
+    serializeData: function()
     {
+        return {
+            "glyphs": _.groupBy(this.collection.toJSON(), "short_code")
+        };
+    },
+
+    clickGlyph: function(event)
+    {
+        event.preventDefault();
+        // Get the glyph id from the dom element
+        var id = parseInt(event.currentTarget.name);
+        // Load the correct model
+        var glyph = this.collection.get(id);
         // We want to open a glyph editor for a particular model
-        this.trigger(GlyphEvents.openGlyphEdit, child.model);
+        this.trigger(GlyphEvents.openGlyphEdit, glyph);
     }
 });
