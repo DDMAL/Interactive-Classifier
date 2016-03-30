@@ -29,7 +29,7 @@ class RunLengthImage():
         return x, y
 
     def get_image(self):
-        image = Image.new("RGB", (self.width, self.height), "white")
+        image = Image.new("RGBA", (self.width, self.height), (255,255,255,0))
         draw = ImageDraw.Draw(image)
         current_pixel = 0
         is_black = False
@@ -37,12 +37,13 @@ class RunLengthImage():
         for length in self.run_length_data:
             for n in range(length):
                 # 0 = white, 1 = black
-                colour = 'white'
-                if is_black:
-                    colour = 'black'
+                # colour = 'white'
+                # if is_black:
+                #     colour = 'black'
                 # Paint the pixel to the image
-                draw.point(self.get_location_of_runlength(current_pixel),
-                           fill=colour)
+                if is_black:
+                    draw.point(self.get_location_of_runlength(current_pixel),
+                               fill="black")
                 # Increase the current pixel
                 current_pixel += 1
             # Switch from black to white or white to black
