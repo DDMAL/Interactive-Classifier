@@ -3,6 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from classifier.views.authentication import ObtainExpiringAuthToken
 from classifier.views.file_upload import GameraXMLUploadView, MEIUploadView
+from classifier.views.gamera_classify import GameraClassifyAllView
 from classifier.views.main import neumeeditor_home, neumeeditor_api_root
 from classifier.views.page import PageList, PageDetail
 from rest_framework.urlpatterns import format_suffix_patterns
@@ -21,6 +22,7 @@ urlpatterns += format_suffix_patterns(
 
         url(r'^pages/$', PageList.as_view(), name="page-list"),
         url(r'^page/(?P<pk>[0-9]+)/$', PageDetail.as_view(), name="page-detail"),
+        url(r'^page/(?P<pk>[0-9]+)/guess/all/$', GameraClassifyAllView.as_view(), name="guess-all"),
 
         # File uploads
         url(r'^upload/gamera-xml/$',
