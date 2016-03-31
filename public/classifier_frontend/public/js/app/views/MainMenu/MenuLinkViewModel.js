@@ -4,6 +4,7 @@ export default Backbone.Model.extend({
     defaults: {
         url: "#",
         text: "Link",
-        subLinks: []
+        clickEvent: null,
+        subLinks: undefined
     }
 });

@@ -22,10 +22,17 @@ export default Marionette.CompositeView.extend({
         menuLinks.add(new MenuLinkViewModel({
             url: "#",
             text: "File",
-            subLinks: [
+            subLinks: new Backbone.Collection([
                 new MenuLinkViewModel({text: "Open"}),
                 new MenuLinkViewModel({text: "Save"})
-            ]
+            ])
+        }));
+        menuLinks.add(new MenuLinkViewModel({
+            url: "#",
+            text: "Classifier",
+            subLinks: new Backbone.Collection([
+                new MenuLinkViewModel({text: "Guess All"})
+            ])
         }));
 
         this.collection = menuLinks;
