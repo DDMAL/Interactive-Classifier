@@ -20,8 +20,6 @@ class GameraClassifyAllView(generics.GenericAPIView):
         # Start up Gamera
         init_gamera()
 
-        training_glyphs = []
-
         classifier = knn.kNNInteractive()
 
         # Train the classifier
@@ -41,15 +39,6 @@ class GameraClassifyAllView(generics.GenericAPIView):
             glyph.short_code = result[0][1]
             glyph.confidence = result[0][0]
             glyph.save()
-
-        # classifier.serialize(os.path.join(MEDIA_ROOT, "classifier.xml"))
-
-
-        # cknn = knn.kNNNonInteractive(training_glyphs,
-        #                              ["aspect_ratio", "moments", "volume64regions", "nrows_feature"],
-        #                              0, normalize=True)
-
-
 
         # Did it work?
         return Response(data={"success": "GameraXML file parsed successfully."},
