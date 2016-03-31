@@ -22,4 +22,4 @@ export default function(shortCodes, root)
             node = node.getOrAppendChild(codeArray[j]);
         }
     }
-};
+}
