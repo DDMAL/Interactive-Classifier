@@ -71,3 +71,4 @@ target/
 
 .DS_Store
 media/
+public/static/
