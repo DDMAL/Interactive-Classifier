@@ -1,16 +1,18 @@
 import Marionette from "marionette";
-import GlobalVars from "config/GlobalVars";
-//import App from "App";
+import App from "App";
+
 
 export default Marionette.AppRouter.extend({
     /* standard routes can be mixed with appRoutes/Controllers above */
     routes:
     {
-        "neumeeditor/": "openGlyphList",
-        "neumeeditor/glyph/:id/": "openGlyphEditor",
-        "neumeeditor/nomenclatures/": "openNomenclatureList",
-        "neumeeditor/nomenclature/:id/": "openNomenclatureEdit"
+        "page/:id/": "editPage"
     },
+
+    editPage: function(id)
+    {
+        App.editPage(id);
+    }
 
     //openGlyphList: function()
     //{
@@ -37,13 +39,13 @@ export default Marionette.AppRouter.extend({
     //    App.module("NomenclatureEdit").initializeId(id);
     //},
 
-    routeToPage: function(url)
-    {
-        var newPageUrl = GlobalVars.SITE_SUBFOLDER + String(url).replace(/.*\/neumeeditor\//g, "");
-        this.navigate(
-            // Strip site url if need be
-            newPageUrl,
-            {trigger: true}
-        );
-    }
+    // routeToPage: function(url)
+    // {
+    //     var newPageUrl = GlobalVars.SITE_SUBFOLDER + String(url).replace(/.*\/neumeeditor\//g, "");
+    //     this.navigate(
+    //         // Strip site url if need be
+    //         newPageUrl,
+    //         {trigger: true}
+    //     );
+    // }
 });

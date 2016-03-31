@@ -8,7 +8,7 @@ class Command(BaseCommand):
     args = ""
 
     def handle(self, *args, **kwargs):
-        test_image_url = os.path.join(MEDIA_ROOT, "image_test.png")
+        test_image_url = os.path.join(MEDIA_ROOT, "image_test2.png")
         print test_image_url
         importer = ImageImporter(None, test_image_url)
         importer.import_data()

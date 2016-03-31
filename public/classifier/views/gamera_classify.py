@@ -41,5 +41,5 @@ class GameraClassifyAllView(generics.GenericAPIView):
             glyph.save()
 
         # Did it work?
-        return Response(data={"success": "GameraXML file parsed successfully."},
-                        status=201)
+        return Response(data={"success": "Glyphs classified."},
+                        status=200)

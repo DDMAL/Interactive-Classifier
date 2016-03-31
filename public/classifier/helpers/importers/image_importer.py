@@ -29,8 +29,8 @@ class ImageImporter(AbstractImporter):
         os.makedirs(dir)
         for cc in ccs:
             # Save the image
-            new_image_path = os.path.join(dir, "{0}.{1}".format(uuid.uuid4(), "png"))
-            save_image(cc, new_image_path)
+            new_image_path = "{0}/{1}.{2}".format(page.uuid.hex, uuid.uuid4(), "png")
+            save_image(cc, os.path.join(MEDIA_ROOT, new_image_path))
 
             glyph = Glyph()
             glyph.page = page

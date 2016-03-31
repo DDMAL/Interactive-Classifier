@@ -28,23 +28,26 @@ var App = new Marionette.Application({
         this.rootView = new RootView();
         //this.rootView.render();
         this.rootView.navigation.show(new MenuView());
-
-        var page = new Page();
-        page.url = "/page/1/";
-        console.log(page);
-        var that = this;
-        page.fetch({"success": function()
-            {
-                console.log("success");
-                that.rootView.container.show(new DashBoardView({model: page}));
-            }
-        });
     },
 
     showNavigation: function(view)
     {
         console.log(this.rootView);
         this.rootView.navigation.show(view);
+    },
+
+    editPage: function(id)
+    {
+        var page = new Page();
+        page.url = "/page/" + parseInt(id) + "/";
+        console.log(page);
+        var that = this;
+        page.fetch({"success": function()
+        {
+            console.log("success");
+            that.rootView.container.show(new DashBoardView({model: page}));
+        }
+        });
     }
 });
 

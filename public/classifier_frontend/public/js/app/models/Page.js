@@ -8,5 +8,10 @@ export default Backbone.Model.extend({
         glyph_set: [],
         uuid: "",
         name: ""
+    },
+
+    getGuessAllUrl: function()
+    {
+        return this.get("url") + "guess/all/"
     }
 });
