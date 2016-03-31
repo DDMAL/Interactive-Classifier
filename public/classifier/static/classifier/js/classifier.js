@@ -94,10 +94,10 @@
 
         routeToPage: function(url)
         {
-            var newPageUrl = SITE_SUBFOLDER + String(url).replace(/.*\/neumeeditor\//g, "");
+            //var newPageUrl = SITE_SUBFOLDER + String(url).replace(/.*\/neumeeditor\//g, "");
             this.navigate(
                     // Strip site url if need be
-                    newPageUrl,
+                    url,
                     {trigger: true}
                 );
         }
