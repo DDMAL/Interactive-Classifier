@@ -1,6 +1,6 @@
 
 
-class AbstractImporter():
+class AbstractImporter:
     """
     Abstract class describing a file importer
     """
