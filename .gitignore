@@ -72,3 +72,5 @@ target/
 .DS_Store
 media/
 public/static/
+
+/public/gamera
