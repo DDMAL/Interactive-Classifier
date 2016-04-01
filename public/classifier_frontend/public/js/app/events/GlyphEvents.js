@@ -1,4 +1,5 @@
 export default {
     openGlyphEdit: "open:glyphEdit",
-    clickGlyph: "click:glyph"
+    clickGlyph: "click:glyph",
+    moveGlyph: "move:glyph"
 }

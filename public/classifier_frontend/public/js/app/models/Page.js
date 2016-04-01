@@ -10,8 +10,15 @@ export default Backbone.Model.extend({
         name: ""
     },
 
-    getGuessAllUrl: function()
+    /**
+     * Use Gamera to guess all the unclassified glyphs.
+     */
+    guessAll: function (onSuccess)
     {
-        return this.get("url") + "guess/all/"
+       return Backbone.ajax(this.get("url") + "guess/all/",
+           {
+               method: "GET",
+               success: onSuccess
+           });
     }
 });

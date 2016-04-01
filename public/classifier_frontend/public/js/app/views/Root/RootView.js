@@ -5,6 +5,7 @@ export default Marionette.LayoutView.extend({
 
     regions: {
         container: "#content",
-        navigation: "#navigation"
+        navigation: "#navigation",
+        modal: "#root-modal"
     }
 });
