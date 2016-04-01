@@ -1,13 +1,12 @@
 import Marionette from "marionette";
-import _ from "underscore";
+// import _ from "underscore";
+import GlyphTableRowView from "views/GlyphTable/Row/GlyphTableRowView";
 import GlyphEvents from "events/GlyphEvents";
-import template from "./table.template.html";
 
 
-export default Marionette.ItemView.extend({
-    template,
-
-    // childEvents: {},
+export default Marionette.CollectionView.extend({
+    tagName: 'table class="table table-hover"',
+    childView: GlyphTableRowView,
 
     events: {
         "click .glyph": "clickGlyph"
@@ -22,12 +21,12 @@ export default Marionette.ItemView.extend({
     //     this.childEvents[GlyphEvents.clickGlyph] = "onClickChild";
     // },
 
-    serializeData: function()
-    {
-        return {
-            "glyphs": _.groupBy(this.collection.toJSON(), "short_code")
-        };
-    },
+    // serializeData: function()
+    // {
+    //     return {
+    //         "glyphs": _.groupBy(this.collection.toJSON(), "short_code")
+    //     };
+    // },
 
     clickGlyph: function(event)
     {

@@ -5,7 +5,7 @@
     <td>
         <% _.each(value, function(element, index, list) { %>
         <a href="/glyph/<%= element.id %>/" class="glyph" name="<%= element.id %>">
-            <img src="<%= element.image_file %>" alt="<%= element.short_code %>" class="img-thumbnail <% if (element.id_state_manual) { %>alert-success<% } else { %>alert-warning<% } %>" style="height: 50px; float:left; image-rendering: pixelated;">
+            <img src="#" alt="<%= element.short_code %>" class="img-thumbnail <% if (element.id_state_manual) { %>alert-success<% } else { %>alert-warning<% } %>" style="height: 50px; float:left; image-rendering: pixelated;">
         </a>
         <% }); %>
     </td>
