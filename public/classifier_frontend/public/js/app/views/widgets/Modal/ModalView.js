@@ -22,9 +22,14 @@ export default Marionette.LayoutView.extend({
         console.log(this.model.get("innerView"));
         if (this.model.get("innerView"))
         {
-            console.log("Rendering innerview...");
-            this.modalBody.show(this.model.get("innerView"));
+            this.showInnerView();
         }
+    },
+
+    showInnerView: function()
+    {
+        console.log("Rendering innerview...");
+        this.modalBody.show(this.model.get("innerView"));
     },
 
     open: function()

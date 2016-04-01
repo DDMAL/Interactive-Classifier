@@ -19,7 +19,6 @@ export default Marionette.ItemView.extend({
     onClickGlyph: function(event)
     {
         event.preventDefault();
-        console.log("lowest");
         Radio.trigger("edit", GlyphEvents.openGlyphEdit, this.model);
     }
 });

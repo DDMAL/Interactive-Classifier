@@ -6,6 +6,7 @@ import MenuView from "views/MainMenu/MenuView";
 import DashBoardView from "views/Dashboard/DashboardView";
 import ModalView from "views/widgets/Modal/ModalView";
 import ModalViewModel from "views/widgets/Modal/ModalViewModel";
+import ModalCollectionView from "views/widgets/Modal/ModalCollectionView";
 import LoadingScreenView from "views/widgets/LoadingScreen/LoadingScreenView";
 import LoadingScreenViewModel from "views/widgets/LoadingScreen/LoadingScreenViewModel";
 import Page from "models/Page";
@@ -13,6 +14,10 @@ import Page from "models/Page";
 import getCookie from "utils/getCookie";
 
 var App = new Marionette.Application({
+
+    modalCollection: undefined,
+
+
     behaviors: {
     },
 
@@ -31,8 +36,63 @@ var App = new Marionette.Application({
         };
         // Instantiate the root view
         this.rootView = new RootView();
-        //this.rootView.render();
         this.rootView.navigation.show(new MenuView());
+
+        this.modalCollection = new Backbone.Collection();
+
+        // Prepare the modal collection
+        this.rootView.modal.show(new ModalCollectionView({
+            collection: this.modalCollection
+        }));
+
+        // Loading modal
+        var loadingModal = new ModalViewModel({
+            id: "loading",
+            title: "Loading Page...",
+            isCloseable: false,
+            innerView: new LoadingScreenView({
+                model: new LoadingScreenViewModel({
+                    text: "Loading page glyphs from the server.  This may take some time..."
+                })
+            })
+        });
+        this.modalCollection.add(loadingModal);
+        // Guess All modal
+        this.modalCollection.add(
+            new ModalViewModel({
+                id: "guessAll",
+                title: "Guessing All Glyphs...",
+                isCloseable: false,
+                innerView: new LoadingScreenView({
+                    model: new LoadingScreenViewModel({
+                        text: "Gamera is currently guessing all glyph classifications.  This may take some time..."
+                    })
+                })
+            })
+        );
+        var fileOpenModal = new ModalViewModel({
+            id: "fileOpen",
+            title: "Open File",
+            isCloseable: true,
+            innerView: new LoadingScreenView({
+                model: new LoadingScreenViewModel({
+                    text: "To implement..."
+                })
+            })
+        });
+        this.modalCollection.add(fileOpenModal);
+
+        var fileSaveModal = new ModalViewModel({
+            id: "fileSave",
+            title: "Save File",
+            isCloseable: true,
+            innerView: new LoadingScreenView({
+                model: new LoadingScreenViewModel({
+                    text: "To implement..."
+                })
+            })
+        });
+        this.modalCollection.add(fileSaveModal);
 
         var that = this;
         // Menuchannel
@@ -40,37 +100,13 @@ var App = new Marionette.Application({
         menuChannel.on("click:file:open",
             function()
             {
-                var modal = new ModalView({
-                    model: new ModalViewModel({
-                        title: "Open File",
-                        isCloseable: true,
-                        innerView: new LoadingScreenView({
-                            model: new LoadingScreenViewModel({
-                                text: "To implement..."
-                            })
-                        })
-                    })
-                });
-                that.rootView.modal.show(modal);
-                modal.open();
+                fileOpenModal.open();
             }
         );
         menuChannel.on("click:file:save",
             function()
             {
-                var modal = new ModalView({
-                    model: new ModalViewModel({
-                        title: "Save Page",
-                        isCloseable: true,
-                        innerView: new LoadingScreenView({
-                            model: new LoadingScreenViewModel({
-                                text: "To implement..."
-                            })
-                        })
-                    })
-                });
-                that.rootView.modal.show(modal);
-                modal.open();
+                fileSaveModal.open();
             }
         );
     },
@@ -83,57 +119,36 @@ var App = new Marionette.Application({
 
     editPage: function(id)
     {
-        var loadingModal = new ModalView({
-            model: new ModalViewModel({
-                title: "Loading Page...",
-                isCloseable: false,
-                innerView: new LoadingScreenView({
-                    model: new LoadingScreenViewModel({
-                        text: "Loading page glyphs from the server.  This may take some time..."
-                    })
-                })
-            })
-        });
-        this.rootView.modal.show(loadingModal);
+        var loadingModal = this.modalCollection.get("loading");
         loadingModal.open();
 
         var page = new Page();
         page.url = "/page/" + parseInt(id) + "/";
         console.log(page);
         var that = this;
-        page.fetch({"success": function()
-        {
-            console.log("success");
-            that.rootView.container.show(new DashBoardView({model: page}));
-            loadingModal.close();
-        }
-        });
+        page.fetch(
+            {
+                "success": function()
+                {
+                    console.log("success");
+                    that.rootView.container.show(new DashBoardView({model: page}));
+                    loadingModal.close();
+                }
+            }
+        );
 
         // Menuchannel
         var menuChannel = Radio.channel("menu");
         menuChannel.on("click:guess:all",
             function()
             {
-                var modal = new ModalView({
-                    model: new ModalViewModel({
-                        title: "Guessing All Glyphs...",
-                        isCloseable: false,
-                        innerView: new LoadingScreenView({
-                            model: new LoadingScreenViewModel({
-                                text: "Gamera is currently guessing all glyph classifications.  This may take some time..."
-                            })
-                        })
-                    })
-                });
-                that.rootView.modal.show(modal);
-                modal.open();
-                console.log("guessing all!!");
+                var guessAllModal = that.modalCollection.get("guessAll");
+                guessAllModal.open();
+
                 page.guessAll(function()
                 {
-                    modal.close();
-                    Backbone.history.navigate("/page/" + page.get("id") +"/", {
-                        trigger: true
-                    });
+                    guessAllModal.close();
+                    that.editPage(page.get("id"));
                 });
             }
         );
