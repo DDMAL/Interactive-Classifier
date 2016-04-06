@@ -1,4 +1,6 @@
 import uuid
+
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -10,6 +12,7 @@ class Page(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=128, blank=False, null=False)
     image = models.ImageField(blank=True, null=True)
+    owner = models.ForeignKey(User, blank=True, null=True)
 
     @property
     def classes(self):
