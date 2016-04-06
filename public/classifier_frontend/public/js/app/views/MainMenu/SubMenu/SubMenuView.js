@@ -3,5 +3,7 @@ import SubMenuLinkView from "views/MainMenu/SubMenu/SubMenuLinkView";
 
 
 export default Marionette.CollectionView.extend({
-    childView: SubMenuLinkView
+    childView: SubMenuLinkView,
+
+    tagName: 'ul'
 });
