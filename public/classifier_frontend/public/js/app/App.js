@@ -1,25 +1,28 @@
 import Backbone from "backbone";
 import Radio from "backbone.radio";
+import RadioChannels from "radio/RadioChannels";
 import Marionette from 'marionette';
 import RootView from 'views/Root/RootView';
 import MenuView from "views/MainMenu/MenuView";
 import DashBoardView from "views/Dashboard/DashboardView";
-import ModalView from "views/widgets/Modal/ModalView";
 import ModalViewModel from "views/widgets/Modal/ModalViewModel";
 import ModalCollectionView from "views/widgets/Modal/ModalCollectionView";
 import LoadingScreenView from "views/widgets/LoadingScreen/LoadingScreenView";
 import LoadingScreenViewModel from "views/widgets/LoadingScreen/LoadingScreenViewModel";
+import GameraXMLUploadView from "views/GameraXMLUpload/GameraXMLUploadView";
+import FileOpenView from "views/FileOpen/FileOpenView";
 import Page from "models/Page";
-//import GlyphDashboardView from "views/GlyphList/GlyphDashboardView";
+import ModalEvents from "events/ModalEvents";
+import MainMenuEvents from "events/MainMenuEvents";
 import getCookie from "utils/getCookie";
+import WelcomeView from "./views/Welcome/WelcomeView";
+
 
 var App = new Marionette.Application({
 
+    modals: {},
     modalCollection: undefined,
-
-
-    behaviors: {
-    },
+    behaviors: {},
 
     onBeforeStart: function ()
     {
@@ -38,6 +41,28 @@ var App = new Marionette.Application({
         this.rootView = new RootView();
         this.rootView.navigation.show(new MenuView());
 
+        // Create the modals
+        this.initializeModals();
+
+        // Menuchannel
+        var that = this;
+        var menuChannel = Radio.channel("menu");
+        menuChannel.on(MainMenuEvents.clickFileOpen,
+            function()
+            {
+                that.modals.fileOpen.open();
+            }
+        );
+        menuChannel.on(MainMenuEvents.clickFileImport,
+            function()
+            {
+                that.modals.fileImport.open();
+            }
+        );
+    },
+
+    initializeModals: function()
+    {
         this.modalCollection = new Backbone.Collection();
 
         // Prepare the modal collection
@@ -46,8 +71,7 @@ var App = new Marionette.Application({
         }));
 
         // Loading modal
-        var loadingModal = new ModalViewModel({
-            id: "loading",
+        this.modals.loading = new ModalViewModel({
             title: "Loading Page...",
             isCloseable: false,
             innerView: new LoadingScreenView({
@@ -56,64 +80,66 @@ var App = new Marionette.Application({
                 })
             })
         });
-        this.modalCollection.add(loadingModal);
+        this.modalCollection.add(this.modals.loading);
+
         // Guess All modal
-        this.modalCollection.add(
-            new ModalViewModel({
-                id: "guessAll",
-                title: "Guessing All Glyphs...",
-                isCloseable: false,
-                innerView: new LoadingScreenView({
-                    model: new LoadingScreenViewModel({
-                        text: "Gamera is currently guessing all glyph classifications.  This may take some time..."
-                    })
+        this.modals.guessAll = new ModalViewModel({
+            title: "Guessing All Glyphs...",
+            isCloseable: false,
+            innerView: new LoadingScreenView({
+                model: new LoadingScreenViewModel({
+                    text: "Gamera is currently guessing all glyph classifications.  This may take some time..."
                 })
             })
-        );
-        var fileOpenModal = new ModalViewModel({
-            id: "fileOpen",
+        });
+        this.modalCollection.add(this.modals.guessAll);
+
+        // Reset All modal
+        this.modals.resetAll = new ModalViewModel({
+            title: "Resetting Glyph Classifications...",
+            isCloseable: false,
+            innerView: new LoadingScreenView({
+                model: new LoadingScreenViewModel({
+                    text: "All machine-classified glyphs will be reset to 'UNCLASSIFIED'..."
+                })
+            })
+        });
+        this.modalCollection.add(this.modals.resetAll);
+
+        // File Open Modal
+        this.modals.fileOpen = new ModalViewModel({
             title: "Open File",
             isCloseable: true,
-            innerView: new LoadingScreenView({
-                model: new LoadingScreenViewModel({
-                    text: "To implement..."
-                })
-            })
+            innerView: new FileOpenView()
         });
-        this.modalCollection.add(fileOpenModal);
+        this.modalCollection.add(this.modals.fileOpen);
 
-        var fileSaveModal = new ModalViewModel({
-            id: "fileSave",
-            title: "Save File",
+        // File Save Modal
+        this.modals.fileImport = new ModalViewModel({
+            title: "Import File",
             isCloseable: true,
-            innerView: new LoadingScreenView({
-                model: new LoadingScreenViewModel({
-                    text: "To implement..."
-                })
-            })
+            innerView: new GameraXMLUploadView()
         });
-        this.modalCollection.add(fileSaveModal);
+        this.modalCollection.add(this.modals.fileImport);
 
+        // Listen to the "closeAll" channel
         var that = this;
-        // Menuchannel
-        var menuChannel = Radio.channel("menu");
-        menuChannel.on("click:file:open",
-            function()
+        RadioChannels.modal.on(ModalEvents.closeAll,
+            function ()
             {
-                fileOpenModal.open();
-            }
-        );
-        menuChannel.on("click:file:save",
-            function()
-            {
-                fileSaveModal.open();
+                // Make sure all the modals are closed
+                that.modalCollection.each(
+                    function(modal)
+                    {
+                        modal.close();
+                    }
+                )
             }
         );
     },
 
     showNavigation: function(view)
     {
-        console.log(this.rootView);
         this.rootView.navigation.show(view);
     },
 
@@ -124,39 +150,47 @@ var App = new Marionette.Application({
 
     editPage: function(id)
     {
-        var loadingModal = this.modalCollection.get("loading");
-        loadingModal.open();
+        this.modals.loading.open();
 
         var page = new Page();
         page.url = "/page/" + parseInt(id) + "/";
-        console.log(page);
+
         var that = this;
         page.fetch(
             {
                 "success": function()
                 {
-                    console.log("success");
                     that.rootView.container.show(new DashBoardView({model: page}));
-                    loadingModal.close();
+                    that.modals.loading.close();
                 }
             }
         );
 
         // Menuchannel
         var menuChannel = Radio.channel("menu");
-        menuChannel.on("click:guess:all",
+        menuChannel.on(MainMenuEvents.clickClassifierGuessAll,
             function()
             {
-                var guessAllModal = that.modalCollection.get("guessAll");
-                guessAllModal.open();
+                that.modals.guessAll.open();
 
                 page.guessAll(function()
                 {
-                    guessAllModal.close();
+                    that.modals.guessAll.close();
                     that.editPage(page.get("id"));
                 });
             }
         );
+        menuChannel.on(MainMenuEvents.clickClassifierResetAll,
+            function()
+            {
+                that.modals.resetAll.open();
+
+                page.resetAll(function()
+                {
+                    that.modals.resetAll.close();
+                    that.editPage(page.get("id"));
+                });
+            });
     }
 });
 
@@ -167,7 +201,5 @@ App.on('initialize:before', function()
 App.on('initialize:after', function()
 {
 });
-
-console.log(App);
 
 export default App;
