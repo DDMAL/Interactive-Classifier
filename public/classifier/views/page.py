@@ -17,6 +17,22 @@ class PageList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
 
 
+class MyPageList(generics.ListAPIView):
+    model = Page
+    serializer_class = PageTeaserSerializer
+    renderer_classes = (JSONRenderer,)
+    authentication_classes = (ExpiringTokenAuthentication,
+                              SessionAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        """
+        This view should return a list of all pages I own.
+        """
+        user = self.request.user
+        return Page.objects.filter(owner=user)
+
+
 class PageDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Page
     serializer_class = PageFullSerializer
