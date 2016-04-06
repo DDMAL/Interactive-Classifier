@@ -117,6 +117,11 @@ var App = new Marionette.Application({
         this.rootView.navigation.show(view);
     },
 
+    home: function()
+    {
+        this.rootView.container.show(new WelcomeView());
+    },
+
     editPage: function(id)
     {
         var loadingModal = this.modalCollection.get("loading");
