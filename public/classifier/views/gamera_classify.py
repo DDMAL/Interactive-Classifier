@@ -43,3 +43,18 @@ class GameraClassifyAllView(generics.GenericAPIView):
         # Did it work?
         return Response(data={"success": "Glyphs classified."},
                         status=200)
+
+
+class GameraResetAllView(generics.GenericAPIView):
+    def get(self, request, *args, **kwargs):
+        # Get the page
+        page = Page.objects.get(id=kwargs['pk'])
+
+        for glyph in Glyph.objects.filter(page=page, id_state_manual=False):
+            glyph.short_code = "UNCLASSIFIED"
+            glyph.confidence = 0.0
+            glyph.save()
+
+        # Did it work?
+        return Response(data={"success": "Glyphs reset."},
+                        status=200)
