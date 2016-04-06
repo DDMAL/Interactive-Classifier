@@ -9,7 +9,7 @@ import ModalViewModel from "views/widgets/Modal/ModalViewModel";
 import ModalCollectionView from "views/widgets/Modal/ModalCollectionView";
 import LoadingScreenView from "views/widgets/LoadingScreen/LoadingScreenView";
 import LoadingScreenViewModel from "views/widgets/LoadingScreen/LoadingScreenViewModel";
-import GameraXMLUploadView from "views/GameraXMLUpload/GameraXMLUploadView";
+import GameraXMLUploadView from "views/Upload/GameraXML/GameraXMLUploadView";
 import FileOpenView from "views/FileOpen/FileOpenView";
 import Page from "models/Page";
 import ModalEvents from "events/ModalEvents";
