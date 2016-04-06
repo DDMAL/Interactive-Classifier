@@ -29,12 +29,7 @@ export default Marionette.LayoutView.extend({
         var glyphCollection = new GlyphCollection();
         glyphCollection.add(this.model.get("glyph_set"));
 
-        // Show the tree
-        this.glyphTreeRegion.show(new ClassTreeView({collection: glyphCollection}));
-
-
         // Construct the glyph table data structure
-
         var tableRowCollection = new GlyphTableRowCollection();
         var groupedGlyphs = _.groupBy(glyphCollection.toJSON(), "short_code");
         _.each(groupedGlyphs, function(value, key)
@@ -45,25 +40,29 @@ export default Marionette.LayoutView.extend({
             })
         });
 
+        // Show the tree
+        this.glyphTreeRegion.show(new ClassTreeView({collection: tableRowCollection}));
+
         // Show the glyph table
         var glyphTable = new GlyphTableView({collection: tableRowCollection});
         this.glyphTableRegion.show(glyphTable);
 
         // Glyph Editing Events
-        var editChannel = Radio.channel("edit");
-        var that = this;
-        editChannel.on(GlyphEvents.openGlyphEdit,
-            function(glyph)
-            {
-                that.openGlyphEditModal(glyph)
-            }
-        );
-        editChannel.on(GlyphEvents.moveGlyph,
+        this.editChannel = Radio.channel("edit");
+        this.listenTo(this.editChannel, GlyphEvents.openGlyphEdit, this.openGlyphEditModal);
+        this.listenTo(this.editChannel, GlyphEvents.moveGlyph,
             function(glyph,oldShortCode, newShortCode)
             {
                 tableRowCollection.moveGlyph(glyph, oldShortCode, newShortCode);
             }
         );
+    },
+
+    onDestroy: function()
+    {
+        console.log("onDestroy");
+        this.editChannel.stopListening();
+        delete this.editChannel;
     },
 
     openGlyphEditModal: function(model)
