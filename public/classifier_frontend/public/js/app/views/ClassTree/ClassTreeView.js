@@ -13,23 +13,9 @@ export default Marionette.LayoutView.extend({
     },
 
     collectionEvents: {
-        "add": "render",
-        "change": "showSubTree"
+        "add": "showSubTree",
+        "remove": "showSubTree"
     },
-
-    // serializeData: function() {
-    //     console.log(this.collection);
-    //
-    //     var shortCodes = _.uniq(this.collection.pluck("short_code"));
-    //     var mod = new RecursiveUnorderedListViewModel();
-    //     shortCodeArraytoRecursiveTree(shortCodes, mod);
-    //     console.log("test", mod);
-    //
-    //
-    //     return {
-    //         "short_codes": shortCodes
-    //     }
-    // }
 
     onShow: function()
     {
