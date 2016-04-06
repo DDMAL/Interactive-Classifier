@@ -20,5 +20,19 @@ export default Backbone.Model.extend({
                method: "GET",
                success: onSuccess
            });
+    },
+
+    /**
+     * Reset all of the gamera classifications of the machine-classified glyphs.
+     *
+     * @param onSuccess
+     */
+    resetAll: function (onSuccess)
+    {
+        return Backbone.ajax(this.get("url") + "reset/all/",
+            {
+                method: "GET",
+                success: onSuccess
+            });
     }
 });
