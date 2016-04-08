@@ -54,6 +54,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware'
 )
 
+FILE_UPLOAD_HANDLERS = ["django.core.files.uploadhandler.TemporaryFileUploadHandler", ]
+
 ROOT_URLCONF = 'urls'
 
 WSGI_APPLICATION = 'wsgi.application'
@@ -86,12 +88,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
+STATIC_URL = 'http://localhost:8084/static/'
+MEDIA_URL = 'http://localhost:8084/media/'
 
 
 # This needs to be an absolute path to the file system location
-STATIC_ROOT = os.path.join(BASE_DIR, 'public/static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 REST_FRAMEWORK = {
