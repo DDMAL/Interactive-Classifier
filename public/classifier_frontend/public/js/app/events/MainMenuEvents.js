@@ -1,6 +1,8 @@
 export default {
     clickFileOpen: "file:open",
-    clickFileImport: "file:import",
+    clickGameraImport: "file:gamera:import",
+    clickMEIImport: "file:mei:import",
+    clickImageImport: "file:image:import",
     clickClassifierGuessAll: "classifier:guess:all",
     clickClassifierResetAll: "classifier:reset:all"
 }
