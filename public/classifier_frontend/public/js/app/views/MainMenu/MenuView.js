@@ -31,15 +31,15 @@ export default Marionette.CompositeView.extend({
                 }),
                 new MenuLinkViewModel({
                     text: "Import GameraXML",
-                    clickEvent: MainMenuEvents.clickFileImport
+                    clickEvent: MainMenuEvents.clickGameraImport
                 }),
                 new MenuLinkViewModel({
                     text: "Import MEI",
-                    clickEvent: MainMenuEvents.clickFileImport
+                    clickEvent: MainMenuEvents.clickMEIImport
                 }),
                 new MenuLinkViewModel({
                     text: "Import Image",
-                    clickEvent: MainMenuEvents.clickFileImport
+                    clickEvent: MainMenuEvents.clickImageImport
                 })
             ])
         }));
