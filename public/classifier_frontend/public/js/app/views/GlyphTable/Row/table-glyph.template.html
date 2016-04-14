@@ -1,3 +1,3 @@
-<a href="/glyph/<%= id %>/" class="glyph">
-    <img src="<%= image_file %>" alt="<%= short_code %>" class="img-thumbnail <% if (id_state_manual) { %>alert-success<% } else { %>alert-warning<% } %>" style="height: 50px; float:left; image-rendering: pixelated;">
+<a href="/glyph/<%= id %>/" class="glyph img-thumbnail <% if (id_state_manual) { %>alert-success<% } else { %>alert-warning<% } %>" style="float:left; min-height:50px">
+    <img src="http://localhost:8084/media/empty.png" alt="<%= short_code %>" width="<%= ncols %>" height="<%= nrows %>" style="float:left; image-rendering: pixelated; background: url(<%= spriteSheetUrl %>); background-position: -<%= ulx %>px -<%= uly %>px;" />
 </a>

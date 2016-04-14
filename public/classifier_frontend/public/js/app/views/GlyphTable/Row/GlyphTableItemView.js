@@ -8,8 +8,18 @@ import template from "./table-glyph.template.html";
 export default Marionette.ItemView.extend({
     template,
 
+    tableViewModel: undefined,
+
     events: {
         "click .glyph": "onClickGlyph"
+    },
+
+    initialize: function (options)
+    {
+        // Call the super constructor
+        Marionette.ItemView.prototype.initialize.call(this, options);
+
+        this.tableViewModel = options.tableViewModel;
     },
 
     modelEvents: {
@@ -20,5 +30,12 @@ export default Marionette.ItemView.extend({
     {
         event.preventDefault();
         Radio.trigger("edit", GlyphEvents.openGlyphEdit, this.model);
+    },
+
+    serializeData: function ()
+    {
+        var data = this.model.toJSON();
+        data.spriteSheetUrl = this.tableViewModel.get("spriteSheetUrl");
+        return data;
     }
 });
