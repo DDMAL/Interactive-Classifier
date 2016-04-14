@@ -15,7 +15,10 @@ import Page from "models/Page";
 import ModalEvents from "events/ModalEvents";
 import MainMenuEvents from "events/MainMenuEvents";
 import getCookie from "utils/getCookie";
-import WelcomeView from "./views/Welcome/WelcomeView";
+import WelcomeView from "views/Welcome/WelcomeView";
+import UploaderViewModel from "views/Upload/GameraXML/UploaderViewModel";
+import GameraClassifier from "./models/GameraClassifier";
+import ClassifierDashboardView from "./views/ClassifierDashboard/ClassifierDashboardView";
 
 
 var App = new Marionette.Application({
@@ -53,10 +56,16 @@ var App = new Marionette.Application({
                 that.modals.fileOpen.open();
             }
         );
-        menuChannel.on(MainMenuEvents.clickFileImport,
+        menuChannel.on(MainMenuEvents.clickGameraImport,
             function()
             {
-                that.modals.fileImport.open();
+                that.modals.gameraImport.open();
+            }
+        );
+        menuChannel.on(MainMenuEvents.clickImageImport,
+            function()
+            {
+                that.modals.imageImport.open();
             }
         );
     },
@@ -115,12 +124,33 @@ var App = new Marionette.Application({
         this.modalCollection.add(this.modals.fileOpen);
 
         // File Save Modal
-        this.modals.fileImport = new ModalViewModel({
-            title: "Import File",
+        this.modals.gameraImport = new ModalViewModel({
+            title: "Import GameraXML File",
             isCloseable: true,
-            innerView: new GameraXMLUploadView()
+            innerView: new GameraXMLUploadView({
+                model: new UploaderViewModel({
+                    uploadUrl: "/upload/gamera-xml/",
+                    successMessage: "GameraXML file uploaded successfully.",
+                    progressMessage: "Analyzing GameraXML file...",
+                    errorMessage: "Error in uploading and parsing GameraXML file"
+                })
+            })
         });
-        this.modalCollection.add(this.modals.fileImport);
+        this.modals.imageImport = new ModalViewModel({
+            title: "Import Image File",
+            isCloseable: true,
+            innerView: new GameraXMLUploadView({
+                model: new UploaderViewModel({
+                    uploadUrl: "/upload/image/",
+                    successMessage: "Image uploaded successfully.",
+                    progressMessage: "Analyzing image file...",
+                    errorMessage: "Error in uploading and analyzing image."
+                })
+            })
+        });
+
+        this.modalCollection.add(this.modals.gameraImport);
+        this.modalCollection.add(this.modals.imageImport);
 
         // Listen to the "closeAll" channel
         var that = this;
@@ -191,6 +221,22 @@ var App = new Marionette.Application({
                     that.editPage(page.get("id"));
                 });
             });
+    },
+    
+    editClassifier: function (id)
+    {
+        console.log("editClassifier: " + id);
+        
+        var classifier = new GameraClassifier();
+        classifier.url = "/classifier/" + parseInt(id) + "/";
+
+        var that = this;
+        classifier.fetch({success: function ()
+        {
+            that.rootView.container.show(new ClassifierDashboardView({
+                model: classifier
+            }));
+        }});
     }
 });
 
