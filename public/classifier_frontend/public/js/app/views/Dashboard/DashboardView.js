@@ -9,9 +9,10 @@ import GlyphTableView from "views/GlyphTable/GlyphTableView";
 import GlyphEditView from "views/GlyphEdit/GlyphEditView";
 import GlyphEditViewModel from "views/GlyphEdit/GlyphEditViewModel";
 import GlyphTableRowCollection from "views/GlyphTable/Row/GlyphTableRowCollection";
-import ModalViewModel from "views/widgets/Modal/ModalViewModel";
-import ModalView from "views/widgets/Modal/ModalView";
+import ClassTreeViewModel from "views/ClassTree/ClassTreeViewModel";
 import template from "./dashboard.template.html";
+import GlyphTableRowViewModel from "../GlyphTable/Row/GlyphTableRowViewModel";
+import GlyphTableViewModel from "../GlyphTable/GlyphTableViewModel";
 
 
 export default Marionette.LayoutView.extend({
@@ -21,41 +22,66 @@ export default Marionette.LayoutView.extend({
         classCreateRegion: ".glyph-class-create-region",
         glyphTreeRegion: ".glyph-class-tree-region",
         glyphTableRegion: ".glyph-table-region",
+        glyphEditRegion: ".glyph-edit-region",
         modalTestRegion: ".modal-test"
     },
 
     onShow: function()
     {
-        var glyphCollection = new GlyphCollection();
-        glyphCollection.add(this.model.get("glyph_set"));
-
-        // Construct the glyph table data structure
+        // // Construct the glyph table data structure
         var tableRowCollection = new GlyphTableRowCollection();
-        var groupedGlyphs = _.groupBy(glyphCollection.toJSON(), "short_code");
-        _.each(groupedGlyphs, function(value, key)
-        {
-            tableRowCollection.add({
-                short_code: key,
-                glyphs: new GlyphCollection(value)
-            })
-        });
-
-        // Show the tree
-        this.glyphTreeRegion.show(new ClassTreeView({collection: tableRowCollection}));
-
-        // Show the glyph table
-        var glyphTable = new GlyphTableView({collection: tableRowCollection});
-        this.glyphTableRegion.show(glyphTable);
 
         // Glyph Editing Events
         this.editChannel = Radio.channel("edit");
-        this.listenTo(this.editChannel, GlyphEvents.openGlyphEdit, this.openGlyphEditModal);
+        this.listenTo(this.editChannel, GlyphEvents.openGlyphEdit, this.openGlyphEdit);
         this.listenTo(this.editChannel, GlyphEvents.moveGlyph,
             function(glyph,oldShortCode, newShortCode)
             {
                 tableRowCollection.moveGlyph(glyph, oldShortCode, newShortCode);
             }
         );
+
+        // Show the tree
+        var ctvm = new ClassTreeViewModel();
+        ctvm.url = this.model.getClassesUrl();
+        this.glyphTreeRegion.show(new ClassTreeView({model: ctvm}));
+        // Poll the class tree
+        ctvm.fetch();
+        // setInterval(function ()
+        // {
+        //     ctvm.fetch();
+        // }, 20000);
+
+        // Show the glyph table
+        var glyphTable = new GlyphTableView({
+            collection: tableRowCollection,
+            // Let the collection know what the sprite sheet will be
+            model: new GlyphTableViewModel({
+                spriteSheetUrl: this.model.get("binary_image")
+            })
+        });
+        this.glyphTableRegion.show(glyphTable);
+
+        var that = this;
+        _.each(this.model.get("glyph_classes"), function(value)
+        {
+            var glyphs = new GlyphCollection();
+            glyphs.url = "/page/" + that.model.get("id") + "/glyphs/?short_code=" + value;
+            console.log(glyphs.url);
+
+            var row = new GlyphTableRowViewModel({
+                short_code: value,
+                glyphs: glyphs
+            });
+
+            // Fetch the glyphs, then add to the table when successful.
+            glyphs.fetch({
+                success: function ()
+                {
+                    tableRowCollection.add(row);
+                }
+            });
+        });
     },
 
     onDestroy: function()
@@ -65,21 +91,13 @@ export default Marionette.LayoutView.extend({
         delete this.editChannel;
     },
 
-    openGlyphEditModal: function(model)
+    openGlyphEdit: function(model)
     {
         console.log("Open glyphedit!", model);
-        var modal = new ModalView({
-            model: new ModalViewModel({
-                title: "Edit Glyph",
-                isCloseable: true,
-                innerView: new GlyphEditView({
-                    model: new GlyphEditViewModel({
-                        model: model
-                    })
-                })
+        this.glyphEditRegion.show(new GlyphEditView({
+            model: new GlyphEditViewModel({
+                model: model
             })
-        });
-        this.modalTestRegion.show(modal);
-        modal.open();
+        }));
     }
 });
