@@ -9,5 +9,8 @@ export default Backbone.Collection.extend({
     //    this.url = String(options.url);
     //},
 
-    comparator: "short_code"
+    comparator: function(glyph)
+    {
+        return - glyph.get("id_state_manual");
+    }
 });
