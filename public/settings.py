@@ -41,7 +41,8 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'classifier',
     'django_extensions',
-    'coverage'
+    'coverage',
+    'debug_toolbar'
 )
 
 MIDDLEWARE_CLASSES = (
