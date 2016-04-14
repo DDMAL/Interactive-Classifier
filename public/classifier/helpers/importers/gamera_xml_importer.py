@@ -45,6 +45,8 @@ class GameraXMLImporter(AbstractImporter):
             # Save the final glyph
             new_glyph.save()
 
+        return page
+
 def import_gamera_file(file_path):
     """
     Given a path, import the GameraXML file at that location.

@@ -1,8 +1,8 @@
 import uuid
 import os
 from classifier.helpers.importers.abstract_importer import AbstractImporter
-from classifier.models.page import Page
 from classifier.models.glyph import Glyph
+from classifier.models.page import Page, paint_thumbnails
 from gamera.core import *
 
 from settings import MEDIA_ROOT
@@ -10,18 +10,29 @@ from settings import MEDIA_ROOT
 
 class ImageImporter(AbstractImporter):
 
+
     def import_data(self):
         # Save a new page
         page = Page()
         page.image = self.file_name
         page.save()
+
         # Use Gamera to extract connected components from the page
         init_gamera()
+
         # Binarize the image
-        gamera_image = load_image(self.file_name)
-        print gamera_image
+        gamera_image = load_image(os.path.join(MEDIA_ROOT, self.file_name))
+        page.width = gamera_image.width
+        page.height = gamera_image.height
         binarized = gamera_image.to_onebit()
-        print binarized
+
+        # Save the binarized page
+        file_name, ext = os.path.splitext(self.file_name)
+        binarized_image_path = "{0}_bin{1}".format(file_name, ext)
+        save_image(binarized, os.path.join(MEDIA_ROOT, binarized_image_path))
+        page.binary_image = binarized_image_path
+
+        # Do connected component analysis
         ccs = binarized.cc_analysis()
 
         # Save the CCs as glyphs
@@ -42,3 +53,8 @@ class ImageImporter(AbstractImporter):
             glyph.short_code = "UNCLASSIFIED"
             glyph.id_state_manual = False
             glyph.save()
+
+        # Generate the page thumbnails
+        # paint_thumbnails(page)
+
+        return page
