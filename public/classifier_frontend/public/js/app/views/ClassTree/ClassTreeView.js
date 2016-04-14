@@ -1,5 +1,4 @@
 import Marionette from "marionette";
-import _ from "underscore";
 import RecursiveUnorderedListView from "views/widgets/RecursiveUnorderedList/RecursiveUnorderedListView";
 import RecursiveUnorderedListViewModel from "views/widgets/RecursiveUnorderedList/RecursiveUnorderedListViewModel";
 import shortCodeArraytoRecursiveTree from "views/widgets/RecursiveUnorderedList/shortCodeArrayToRecursiveTree";
@@ -12,9 +11,8 @@ export default Marionette.LayoutView.extend({
         "classTreeRegion": ".class-tree"
     },
 
-    collectionEvents: {
-        "add": "showSubTree",
-        "remove": "showSubTree"
+    modelEvents: {
+        "change": "showSubTree"
     },
 
     onShow: function()
@@ -24,7 +22,8 @@ export default Marionette.LayoutView.extend({
 
     showSubTree: function()
     {
-        var shortCodes = _.uniq(this.collection.pluck("short_code"));
+        var shortCodes = this.model.get("short_codes");
+        console.log("shortCodes:", shortCodes);
         var mod = new RecursiveUnorderedListViewModel();
         shortCodeArraytoRecursiveTree(shortCodes, mod);
         this.classTreeRegion.show(new RecursiveUnorderedListView({model: mod}));

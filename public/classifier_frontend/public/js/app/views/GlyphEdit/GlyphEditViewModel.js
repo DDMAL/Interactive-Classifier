@@ -12,7 +12,7 @@ export default Backbone.Model.extend({
     {
         this.model = options.model;
         this.loadModelProperties();
-        this.on("change:short_code", this.onChangeClass);
+        this.on("change", this.onChangeClass);
     },
 
     loadModelProperties: function()
