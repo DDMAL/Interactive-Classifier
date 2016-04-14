@@ -22,6 +22,11 @@ export default Backbone.Model.extend({
         return fullUrl.substring(21);
     },
 
+    getClassesUrl: function ()
+    {
+        return this.get("url") + "classes/";
+    },
+
     /**
      * Use Gamera to guess all the unclassified glyphs.
      */

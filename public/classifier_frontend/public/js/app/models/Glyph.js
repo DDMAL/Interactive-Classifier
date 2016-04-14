@@ -16,7 +16,8 @@ export default Backbone.Model.extend({
         uly: 0,
         nrows: 0,
         ncols: 0,
-        image_file: ""
+        image_file: "",
+        context_thumbnail: ""
     },
 
     /**
