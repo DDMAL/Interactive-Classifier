@@ -7,7 +7,8 @@ export default Marionette.AppRouter.extend({
     routes:
     {
         "": "home",
-        "page/:id/": "editPage"
+        "page/:id/": "editPage",
+        "classifier/:id/": "editClassifier"
     },
 
     home: function()
@@ -18,5 +19,9 @@ export default Marionette.AppRouter.extend({
     editPage: function(id)
     {
         App.editPage(id);
+    },
+
+    editClassifier: function (id) {
+        App.editClassifier(id);
     }
 });
