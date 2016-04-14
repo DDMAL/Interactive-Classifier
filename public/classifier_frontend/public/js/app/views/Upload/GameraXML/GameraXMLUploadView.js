@@ -1,33 +1,74 @@
+import Backbone from "backbone";
 import Marionette from "marionette";
-import Dropzone from "dropzone";
-import App from "app";
+import getCookie from "utils/getCookie";
+import LoadingScreenView from "views/widgets/LoadingScreen/LoadingScreenView";
+import LoadingScreenViewModel from "views/widgets/LoadingScreen/LoadingScreenViewModel";
+import ErrorStatusView from "views/widgets/ErrorStatus/ErrorStatusView";
+import ErrorStatusViewModel from "views/widgets/ErrorStatus/ErrorStatusViewModel";
+import StatusEnum from "views/widgets/ErrorStatus/StatusEnum";
 import template from "./gamera-upload.template.html"
 
 
-export default Marionette.ItemView.extend({
+export default Marionette.LayoutView.extend({
     template,
 
-    // API parameters
-    uploadUrl: "/upload/gamera-xml/",
-
     ui: {
-        "gameraDropzone": ".gamera-dropzone"
+        "file": 'input[type="file"]',
+        "button": 'button[type="submit"]'
     },
 
-    onShow: function()
+    events: {
+        "submit": "onSubmit"
+    },
+
+    regions: {
+        statusRegion: ".status-region"
+    },
+
+    onSubmit: function(event)
     {
-        new Dropzone(this.ui.gameraDropzone.selector,
+        event.preventDefault();
+        this.ui.button.attr("disabled", "disabled");
+        this.statusRegion.show(new LoadingScreenView({
+            model: new LoadingScreenViewModel({
+                text: this.model.get("progressMessage")
+            })
+        }));
+        var that = this;
+        Backbone.ajax(this.model.get("uploadUrl"),
             {
-                url: this.uploadUrl,
-                autoProcessQueue: true,
-                paramName: this.paramName,
+                cache: false,
+                contentType: false,
+                processData: false,
+                type: "POST",
+                data: this.ui.file[0].files[0],
                 headers: {
-                    // We need to include the CSRF token again
-                    "X-CSRFToken": App.csrftoken
-                }
-                //params: {
-                //    glyph: this.glyphId
-                //}
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    "test": "test"
+                },
+                success:
+                    function(event, event2)
+                    {
+                        console.log(event, event2);
+                        that.ui.button.removeAttr("disabled");
+                        that.statusRegion.show(new ErrorStatusView({
+                            model: new ErrorStatusViewModel({
+                                status: StatusEnum.success,
+                                text: that.model.get("successMessage")
+                            })
+                        }))
+                    },
+                error:
+                    function()
+                    {
+                        that.ui.button.removeAttr("disabled");
+                        that.statusRegion.show(new ErrorStatusView({
+                            model: new ErrorStatusViewModel({
+                                status: StatusEnum.error,
+                                text: that.model.get("errorMessage")
+                            })
+                        }))
+                    }
             }
         );
     }
