@@ -106,9 +106,9 @@ class InteractiveClassifier(RodanTask):
 
         if settings["state"] == ClassifierStateEnum.IMPORT_XML:
             self.run_import_stage(settings, classifier_path, result_path)
-            return self.WAITING_FOR_INPUT(settings_update=settings)
-        elif settings["classifier_state"] == ClassifierStateEnum.CORRECTION:
-            self.run_correction_stage()
+            return self.WAITING_FOR_INPUT()
+        elif settings["state"] == ClassifierStateEnum.CORRECTION:
+            self.run_correction_stage(settings)
             return self.WAITING_FOR_INPUT()
         else:
             # No more corrections are required.  We can now exit!
@@ -119,30 +119,37 @@ class InteractiveClassifier(RodanTask):
         # Extract the glyphs from the Gamera XML file
         settings["glyphs"] = GameraXML(classifier_path).get_glyphs()
         # Switch to "Correction mode" for the next round
-        settings["classifier_state"] = ClassifierStateEnum.CORRECTION
+        settings["state"] = ClassifierStateEnum.CORRECTION
         # cknn = gamera.knn.kNNInteractive(database=classifier_path,
         #                                  features='all',
         #                                  perform_splits=True,
         #                                  num_k=1)
         # cknn.to_xml_filename(result_path)
 
-    def run_correction_stage(self):
+    def run_correction_stage(self, settings):
         # Re-run gamera to re-classify the glyphs taking into account the
+        print("Running correction stage!")
+
+        for changed_glyph in settings["@changed_glyphs"]:
+            glyph = next(x for x in settings["glyphs"] if x["id"] == changed_glyph["id"])
+            glyph["id_state_manual"] = changed_glyph["id_state_manual"]
+            glyph["short_code"] = changed_glyph["short_code"]
+
         # manual corrections
-        cknn = gamera.knn.kNNInteractive(database=[],
-                                         features='all',
-                                         perform_splits=True,
-                                         num_k=1)
-        training_glyphs = []
-        glyphs_to_classify = []
-        # Divide the glyphs into training data and data to classify
-        for glyph in self.settings["glyphs"]:
-            if glyph["id_state_manual"]:
-                # Manually identified, so we will use it as training data
-                training_glyphs.append(glyph)
-            else:
-                # Not manually identified, so we will classify it
-                glyphs_to_classify.append(glyph)
+        # cknn = gamera.knn.kNNInteractive(database=[],
+        #                                  features='all',
+        #                                  perform_splits=True,
+        #                                  num_k=1)
+        # training_glyphs = []
+        # glyphs_to_classify = []
+        # # Divide the glyphs into training data and data to classify
+        # for glyph in self.settings["glyphs"]:
+        #     if glyph["id_state_manual"]:
+        #         # Manually identified, so we will use it as training data
+        #         training_glyphs.append(glyph)
+        #     else:
+        #         # Not manually identified, so we will classify it
+        #         glyphs_to_classify.append(glyph)
 
 
     def validate_my_user_input(self, inputs, settings, user_input):
@@ -151,5 +158,8 @@ class InteractiveClassifier(RodanTask):
             self.settings["state"] = ClassifierStateEnum.EXPORT_XML
         else:
             # We will prepare for another round of classification
-            pass
-
+            # TODO: Do this in a more efficient way
+            return {
+                "@changed_glyphs": user_input["glyphs"]
+            }
+        return {}

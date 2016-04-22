@@ -27,7 +27,6 @@ class GameraXML:
             height = int(glyph.get("nrows"))
             ulx = int(glyph.get("ulx"))
             uly = int(glyph.get("uly"))
-            print(ulx, uly)
             name = glyph.find("ids").find("id").get("name")
             run_length_data = glyph.find("data").text.replace('\n', '')
 
