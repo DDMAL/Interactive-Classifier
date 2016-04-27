@@ -230,9 +230,27 @@ class InteractiveClassifier(RodanTask):
         print("Running output stage!")
         output_training_classifier_path = outputs['Training Classifier'][0]['resource_path']
         output_classified_data_path = outputs['Classified Data'][0]['resource_path']
+        # Save the outputs to disk
+        self.output_training_data(cknn, output_training_classifier_path)
+        self.output_corrected_data(cknn, glyphs, output_classified_data_path)
+        print("Complete!")
+
+    def output_training_data(self, cknn, output_path):
+        """
+        Save the training data to disk so that it can be used again in a future
+        classification project.
+
+        The output is a GameraXML file that contains only the manually
+        classified glyphs which are used as training data.
+        """
         # Save the training database
-        cknn.to_xml_filename(output_training_classifier_path)
-        # TODO: Save the classified glyph info...
+        cknn.to_xml_filename(output_path)
+
+    def output_corrected_data(self, cknn, glyphs, output_path):
+        """
+        Output the corrected data to disk.  This includes both the manually
+        corrected and the automatically corrected glyphs.
+        """
         output_images = []
         for glyph in glyphs:
             gamera_image = RunLengthImage(
@@ -245,14 +263,13 @@ class InteractiveClassifier(RodanTask):
             if glyph["id_state_manual"]:
                 gamera_image.classify_manual(glyph["short_code"])
             else:
-                gamera_image.classify_automatic(glyph["short_code"])
+                cknn.classify_glyph_automatic(gamera_image)
             output_images.append(gamera_image)
-        # Dump all the glyphs to disk
+            # Dump all the glyphs to disk
         cknn.generate_features_on_glyphs(output_images)
         output_xml = gamera.gamera_xml.WriteXMLFile(glyphs=output_images,
                                                     with_features=True)
-        output_xml.write_filename(output_classified_data_path)
-        print("Complete!")
+        output_xml.write_filename(output_path)
 
     def validate_my_user_input(self, inputs, settings, user_input):
         if 'complete' in user_input:
