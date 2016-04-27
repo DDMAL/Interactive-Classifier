@@ -6,8 +6,10 @@ import gamera.gamera_xml
 import gamera.classify
 import gamera.knn
 from rodan.jobs.base import RodanTask
-from rodan.jobs.interactive_classifier.intermediary.gamera_xml import GameraXML, gamera_xml_to_gamera_image_list
-from rodan.jobs.interactive_classifier.intermediary.run_length_image import RunLengthImage
+from rodan.jobs.interactive_classifier.intermediary.gamera_xml import GameraXML, \
+    gamera_xml_to_gamera_image_list
+from rodan.jobs.interactive_classifier.intermediary.run_length_image import \
+    RunLengthImage
 from rodan.settings import MEDIA_URL, MEDIA_ROOT
 
 
@@ -101,10 +103,10 @@ class InteractiveClassifier(RodanTask):
     def run_my_task(self, inputs, settings, outputs):
         # Initialize a gamera classifier
         classifier_path = inputs['Classifier'][0]['resource_path']
-        output_training_classifier = outputs['Training Classifier'][0]['resource_path']
         # Handle importing the optional training classifier
         if "Training Classifier" in inputs:
-            training_database = gamera_xml_to_gamera_image_list(inputs['Training Classifier'][0]['resource_path'])
+            training_database = gamera_xml_to_gamera_image_list(
+                inputs['Training Classifier'][0]['resource_path'])
         else:
             training_database = []
         # Set the initial state
@@ -119,17 +121,15 @@ class InteractiveClassifier(RodanTask):
         elif settings["@state"] == ClassifierStateEnum.CORRECTION:
             # Update any changed glyphs
             self.update_changed_glyphs(settings)
-            self.run_correction_stage(settings,
-                                      training_database)
+            self.run_correction_stage(settings, training_database)
             return self.WAITING_FOR_INPUT()
         else:
             # Update changed glyphs
             self.update_changed_glyphs(settings)
             # Do one final classification before quitting
-            cknn = self.run_correction_stage(settings,
-                                      training_database)
+            cknn = self.run_correction_stage(settings, training_database)
             # No more corrections are required.  We can now output the data
-            self.run_output_stage(cknn, None, None)
+            self.run_output_stage(cknn, outputs)
 
     def run_import_stage(self, settings, classifier_path):
         # Extract the glyphs from the Gamera XML file
@@ -142,12 +142,15 @@ class InteractiveClassifier(RodanTask):
         # We will prepare for another round of classification
         # TODO: Do this in a more efficient way
         for changed_glyph in settings["@changed_glyphs"]:
-            glyph = next(x for x in settings["glyphs"] if x["id"] == changed_glyph["id"])
+            glyph = next(
+                x for x in settings["glyphs"] if x["id"] == changed_glyph["id"])
             glyph["id_state_manual"] = changed_glyph["id_state_manual"]
             glyph["short_code"] = changed_glyph["short_code"]
 
     def run_correction_stage(self, settings, training_database):
-        # Re-run gamera to re-classify the glyphs taking into account the
+        """
+        Run the automatic correction stage of the Rodan job.
+        """
         features = [
             "aspect_ratio",
             "diagonal_projection",
@@ -162,29 +165,13 @@ class InteractiveClassifier(RodanTask):
             "volume",
             "zernike_moments",
         ]
-        # manual corrections
-        cknn = gamera.knn.kNNInteractive(database=training_database,
-                                         features=features,
-                                         perform_splits=True,
-                                         num_k=1)
-        # Training loop
-        for training_glyph in settings["glyphs"]:
-            if training_glyph["id_state_manual"] == True:
-                # It's a training glyph
-                # Get the gamera image
-                rli = RunLengthImage(
-                    training_glyph["ulx"],
-                    training_glyph["uly"],
-                    training_glyph["ncols"],
-                    training_glyph["nrows"],
-                    training_glyph["image"]
-                )
-                gamera_glyph = rli.get_gamera_image()
-                short_code = training_glyph["short_code"]
-                # Add the image to the classifier
-                cknn.classify_glyph_manual(gamera_glyph, short_code)
+        # Train a classifier
+        cknn = self.prepare_classifier(training_database,
+                                       settings["glyphs"],
+                                       features)
+        # The automatic classifications
         for glyph in settings["glyphs"]:
-            if glyph["id_state_manual"] == False:
+            if not glyph["id_state_manual"]:
                 # It's a glyph to be classified
                 gamera_glyph = RunLengthImage(
                     glyph["ulx"],
@@ -200,10 +187,54 @@ class InteractiveClassifier(RodanTask):
                 glyph["short_code"] = result[0][1]
         return cknn
 
-    def run_output_stage(self, cknn, output_classifier_path, output_glyph_data_path):
+    def get_manual_glyphs(self, glyphs):
+        """
+        From the glyph list, extract the Gamera ImageList of manual glyphs.
+        """
+        # Prepare the training glyphs
+        training_glyphs = []
+        for glyph in glyphs:
+            if glyph["id_state_manual"] == True:
+                # Get the gamera image
+                gamera_image = RunLengthImage(
+                    glyph["ulx"],
+                    glyph["uly"],
+                    glyph["ncols"],
+                    glyph["nrows"],
+                    glyph["image"]
+                ).get_gamera_image()
+                # It's a training glyph!
+                gamera_image.classify_manual(glyph["short_code"])
+                training_glyphs.append(gamera_image)
+        return training_glyphs
+
+    def prepare_classifier(self, training_database, glyphs, features):
+        """
+        Given a training database and a list of glyph dicts, train the classifier
+        """
+        # Prepare the training glyphs
+        training_glyphs = self.get_manual_glyphs(glyphs)
+        # The database is a mixture of the original database plus all
+        # our manual corrections that we've done in the GUI.
+        database = training_database + training_glyphs
+        # Train the classifier
+        return gamera.knn.kNNInteractive(database=database,
+                                         features=features,
+                                         perform_splits=True,
+                                         num_k=1)
+
+    def run_output_stage(self, cknn, outputs):
+        """
+        The job is complete, so save the results to disk.
+        """
+        print("Running output stage!")
+        output_training_classifier_path = outputs['Training Classifier'][0]['resource_path']
+        output_classified_data_path = outputs['Classified Data'][0]['resource_path']
         # Save the training database
-        cknn.to_xml_filename(output_classifier_path)
+        cknn.to_xml_filename(output_training_classifier_path)
         # TODO: Save the classified glyph info...
+        cknn.to_xml_filename(output_classified_data_path)
+        print("Complete!")
 
     def validate_my_user_input(self, inputs, settings, user_input):
         if 'complete' in user_input:
