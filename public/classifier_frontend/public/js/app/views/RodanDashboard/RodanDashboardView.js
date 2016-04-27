@@ -1,20 +1,24 @@
 import _ from "underscore";
 import Marionette from "marionette";
 import Radio from "backbone.radio";
-
 import GlyphEvents from "events/GlyphEvents";
+
 import GlyphCollection from "collections/GlyphCollection";
+
 import ClassTreeView from "views/ClassTree/ClassTreeView";
-import GlyphTableView from "views/GlyphTable/GlyphTableView";
+import ClassTreeViewModel from "views/ClassTree/ClassTreeViewModel";
+
 import GlyphEditView from "views/GlyphEdit/GlyphEditView";
 import GlyphEditViewModel from "views/GlyphEdit/GlyphEditViewModel";
-import GlyphTableRowCollection from "views/GlyphTable/Row/GlyphTableRowCollection";
-import ClassTreeViewModel from "views/ClassTree/ClassTreeViewModel";
-import template from "./dashboard.template.html";
+
+import GlyphTableView from "views/GlyphTable/GlyphTableView";
 import GlyphTableRowViewModel from "../GlyphTable/Row/GlyphTableRowViewModel";
 import GlyphTableViewModel from "../GlyphTable/GlyphTableViewModel";
+import GlyphTableRowCollection from "views/GlyphTable/Row/GlyphTableRowCollection";
+
 import ImagePreviewView from "../ImagePreview/ImagePreviewView";
 import ImagePreviewViewModel from "../ImagePreview/ImagePreviewViewModel";
+import template from "./rodan-dashboard.template.html";
 
 
 export default Marionette.LayoutView.extend({
@@ -35,14 +39,16 @@ export default Marionette.LayoutView.extend({
         var previewView = new ImagePreviewView({
             model: new ImagePreviewViewModel({
                 backgroundImage: this.model.get("binary_image"),
-                width: this.model.get("width"),
-                height: this.model.get("height")
+                width: 500,
+                height: 500
+                // width: this.model.get("width"),
+                // height: this.model.get("height")
             })
         });
         // Create the preview
         this.pagePreviewRegion.show(previewView);
 
-        // // Construct the glyph table data structure
+        // // // Construct the glyph table data structure
         var tableRowCollection = new GlyphTableRowCollection();
 
         // Glyph Editing Events
@@ -61,16 +67,30 @@ export default Marionette.LayoutView.extend({
             }
         );
 
+        var shortCodes = _.uniq(this.collection.pluck("short_code")).sort();
         // Show the tree
-        var ctvm = new ClassTreeViewModel();
-        ctvm.url = this.model.getClassesUrl();
+        var ctvm = new ClassTreeViewModel({
+            short_codes: shortCodes
+        });
         this.glyphTreeRegion.show(new ClassTreeView({model: ctvm}));
-        // Poll the class tree
-        ctvm.fetch();
-        // setInterval(function ()
-        // {
-        //     ctvm.fetch();
-        // }, 20000);
+
+        var glyphCollections = {};
+        // Separate the glyphs by their class
+        for (var i = 0; i < shortCodes.length; i++)
+        {
+            glyphCollections[shortCodes[i]] = new GlyphCollection();
+        }
+
+        // Add the glyphs to the glyph collections
+        _.each(this.collection.toArray(), function(element)
+        {
+            var shortCode = element.get("short_code");
+            var json = element.toJSON();
+            var c = glyphCollections[shortCode];
+            glyphCollections[shortCode].add(json);
+        });
+
+        console.log(glyphCollections);
 
         // Show the glyph table
         var glyphTable = new GlyphTableView({
@@ -82,24 +102,14 @@ export default Marionette.LayoutView.extend({
         });
         this.glyphTableRegion.show(glyphTable);
 
-        _.each(this.model.get("glyph_classes"), function(value)
+        _.each(shortCodes, function(shortCode)
         {
-            var glyphs = new GlyphCollection();
-            glyphs.url = "/page/" + that.model.get("id") + "/glyphs/?short_code=" + value;
-            console.log(glyphs.url);
-
             var row = new GlyphTableRowViewModel({
-                short_code: value,
-                glyphs: glyphs
+                short_code: shortCode,
+                glyphs: glyphCollections[shortCode]
             });
 
-            // Fetch the glyphs, then add to the table when successful.
-            glyphs.fetch({
-                success: function ()
-                {
-                    tableRowCollection.add(row);
-                }
-            });
+            tableRowCollection.add(row);
         });
     },
 

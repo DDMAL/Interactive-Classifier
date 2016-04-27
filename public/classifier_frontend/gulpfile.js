@@ -124,7 +124,7 @@ gulp.task('bundle:js', ['build:modernizr'], function (cb)
 
 gulp.task('clean:js', function (done)
 {
-    del(['../../static/js/', './.tmp'], {force: true}, function (err)
+    del(['../../rodan_job/static/js/', './.tmp'], {force: true}, function (err)
     {
         if (err)
             done(err);
@@ -200,7 +200,7 @@ gulp.task('bundle:css', function ()
         .pipe(gulpif(isScssFile, compileScss()))
         .pipe(concat('classifier.min.css'))
         .pipe(gulpif(isDevBuild, sourcemaps.write('.')))
-        .pipe(gulp.dest('../../static/css'))
+        .pipe(gulp.dest('../../rodan_job/static/css/'))
         .pipe(gulpif(isCssFile, livereload())); // Don't reload for sourcemaps
 });
 

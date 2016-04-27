@@ -8,7 +8,7 @@ export default Backbone.Model.extend({
     },
 
     defaults: {
-        //id: 0,
+        id: 0,
         short_code: "",
         id_state_manual: false,
         confidence: 0.0,
@@ -17,6 +17,7 @@ export default Backbone.Model.extend({
         nrows: 0,
         ncols: 0,
         image_file: "",
+        image_b64: "",
         context_thumbnail: ""
     },
 

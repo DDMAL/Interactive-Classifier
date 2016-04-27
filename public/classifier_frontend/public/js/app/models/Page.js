@@ -1,25 +1,16 @@
 import Backbone from "backbone";
+import BaseModel from "models/BaseModel";
 
 
-export default Backbone.Model.extend({
+export default BaseModel.extend({
     defaults: {
         id: 0,
         url: "",
         glyph_set: [],
         uuid: "",
-        name: ""
-    },
-
-
-    /**
-     * Get the relative URL of the page.
-     * @returns {string}
-     */
-    getRelativeUrl: function()
-    {
-        // TODO: This is a temporary solution.  We need a less janky method.
-        var fullUrl = this.get("url");
-        return fullUrl.substring(21);
+        name: "",
+        width: 0,
+        height: 0
     },
 
     getClassesUrl: function ()

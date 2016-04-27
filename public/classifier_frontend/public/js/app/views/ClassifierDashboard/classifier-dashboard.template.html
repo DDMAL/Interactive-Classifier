@@ -1,6 +1,27 @@
 <div class="row">
     <div class="col-md-4" id="left">
-        <h1><%= name %></h1>
+        <h1><%= name %> <small>Project</small></h1>
+        <hr/>
+        <h2>Import Data</h2>
+        <div class="btn-group btn-group-justified" role="group" aria-label="...">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default import-image">Image</button>
+            </div>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default import-gamera-xml">GameraXML</button>
+            </div>
+        </div>
+        <h2>Export Data</h2>
+        <div class="btn-group btn-group-justified" role="group" aria-label="...">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default">GameraXML</button>
+            </div>
+        </div>
+        <hr/>
+        <h2>Project Metadata</h2>
+        <div class="classifier-stats">
+            <p>Loading...</p>
+        </div>
     </div>
     <div class="col-sm-8" id="right">
         <h2>Pages</h2>

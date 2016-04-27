@@ -20,20 +20,6 @@ export default Backbone.Model.extend({
         this.set(this.model.attributes);
     },
 
-    manualConfirm: function()
-    {
-        this.set("id_state_manual", true);
-        // Update the internal model
-        this.model.save(
-            {
-                "id_state_manual": true
-            },
-            {
-                patch: true
-            }
-        );
-    },
-
     onChangeClass: function()
     {
         var oldShortCode = this.model.get("short_code");
@@ -42,17 +28,13 @@ export default Backbone.Model.extend({
         // Update the gui
         this.set("id_state_manual", true);
         // Update the internal model
-        this.model.save(
-            {
-                "short_code": newShortCode,
-                "id_state_manual": true
-            },
-            {
-                patch: true
-            }
-        );
+        this.model.set({
+            "short_code": newShortCode,
+            "id_state_manual": true
+        });
 
         // Update glyph table location
         Radio.trigger("edit", GlyphEvents.moveGlyph, this.model, oldShortCode, newShortCode);
+        Radio.trigger("edit", GlyphEvents.changeGlyph, this.model);
     }
 });

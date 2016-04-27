@@ -1,7 +1,7 @@
-import Backbone from "backbone";
+import BaseModel from "models/BaseModel";
 
 
-export default Backbone.Model.extend({
+export default BaseModel.extend({
     default: {
         name: "",
         id: 0,

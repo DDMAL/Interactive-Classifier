@@ -50,3 +50,26 @@ class GameraXML:
                 }
             )
         return output
+
+
+def gamera_xml_to_gamera_image_list(gamera_file_path):
+    """
+    Given a path to a gamera XML file, create a Gamera ImageList.
+    """
+    glyphs = GameraXML(gamera_file_path).get_glyphs()
+    output = []
+    for glyph in glyphs:
+        ulx = glyph["ulx"]
+        uly = glyph["uly"]
+        width = glyph["ncols"]
+        height = glyph["nrows"]
+        run_length_data = glyph["image"]
+        gamera_image = RunLengthImage(width=width,
+                                      height=height,
+                                      ulx=ulx,
+                                      uly=uly,
+                                      run_length_data=run_length_data).get_gamera_image()
+        if glyph["id_state_manual"]:
+            gamera_image.classify_manual(glyph["short_code"])
+        output.append(gamera_image)
+    return output

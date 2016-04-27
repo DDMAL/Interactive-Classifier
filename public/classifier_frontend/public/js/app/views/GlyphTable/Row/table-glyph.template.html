@@ -1,3 +1,3 @@
 <a href="/glyph/<%= id %>/" class="glyph img-thumbnail <% if (id_state_manual) { %>alert-success<% } else { %>alert-warning<% } %>" style="float:left; min-height:50px">
-    <img src="http://localhost:8084/media/empty.png" alt="<%= short_code %>" width="<%= ncols %>" height="<%= nrows %>" style="float:left; image-rendering: pixelated; background: url(<%= spriteSheetUrl %>); background-position: -<%= ulx %>px -<%= uly %>px;" />
+    <img src="data:image/png;base64,<%= image_b64 %>" alt="<%= short_code %>" width="<%= ncols %>" height="<%= nrows %>"/>
 </a>

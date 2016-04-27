@@ -1,5 +1,5 @@
 import Marionette from "marionette";
-// import App from "App";
+import Radio from "backbone.radio";
 import SubMenuView from "views/MainMenu/SubMenu/SubMenuView";
 import template from "./main-menu-link.template.html";
 
@@ -9,18 +9,17 @@ export default Marionette.LayoutView.extend({
     tagName: 'li class="dropdown"',
 
     events: {
-        "click .menu-link": "goToUrl"
+        "click .menu-link": "onClick"
     },
 
     regions: {
         dropDownRegion: ".dropdown-menu"
     },
 
-    goToUrl: function(event)
+    onClick: function(event)
     {
         event.preventDefault();
-        console.log("click menu link");
-        // App.appRouter.routeToPage(event.target.href);
+        Radio.trigger("menu", this.model.get("clickEvent"));
     },
 
     onShow: function()

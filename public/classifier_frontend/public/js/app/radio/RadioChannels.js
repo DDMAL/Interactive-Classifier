@@ -2,5 +2,7 @@ import Radio from "backbone.radio";
 
 
 export default {
-    modal: Radio.channel("modal")
+    modal: Radio.channel("modal"),
+    globalUI: Radio.channel("globalUI"),
+    edit: Radio.channel("edit")
 }

@@ -1,6 +1,6 @@
 import Backbone from "backbone";
 import Marionette from "marionette";
-import Page from "models/Page";
+import GameraClassifier from "models/GameraClassifier";
 import FileOpenRowView from "views/FileOpen/FileOpenRowView";
 
 
@@ -12,8 +12,8 @@ export default Marionette.CollectionView.extend({
     initialize: function()
     {
         this.collection = new Backbone.Collection();
-        this.collection.url = "/pages/mine/";
-        this.collection.model = Page;
+        this.collection.url = "/classifiers/";
+        this.collection.model = GameraClassifier;
         this.collection.fetch();
     }
 });

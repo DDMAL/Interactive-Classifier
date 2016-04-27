@@ -2,6 +2,8 @@ import Marionette from "marionette";
 import template from "./page-item.template.html";
 import PageStatsView from "../PageStats/PageStatsView";
 import PageStatsViewModel from "../PageStats/PageStatsViewModel";
+import App from "App";
+import Page from "../../models/Page";
 
 
 export default Marionette.LayoutView.extend({
@@ -11,6 +13,14 @@ export default Marionette.LayoutView.extend({
 
     regions: {
         statsRegion: ".stats"
+    },
+
+    ui: {
+        editButton: ".btn"
+    },
+
+    events: {
+        "click @ui.editButton": "onClickEditButton"
     },
 
     onShow: function()
@@ -24,5 +34,21 @@ export default Marionette.LayoutView.extend({
         }));
 
         mv.fetch();
+    },
+
+    onClickEditButton: function(event)
+    {
+        event.preventDefault();
+
+        console.log("Click edit button!");
+
+        // Create a page object
+        var page = new Page(this.model.toJSON());
+
+        App.appRouter.navigate(page.getRelativeUrl(),
+            {
+                trigger: true
+            }
+        );
     }
 })

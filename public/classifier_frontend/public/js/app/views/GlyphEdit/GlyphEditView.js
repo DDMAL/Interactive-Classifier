@@ -11,8 +11,7 @@ export default Marionette.ItemView.extend({
     },
 
     events: {
-        "submit": "onSubmitForm",
-        "click @ui.manualConfirmButton": "onClickConfirmButton"
+        "submit": "onSubmitForm"
     },
 
     modelEvents: {
@@ -34,12 +33,5 @@ export default Marionette.ItemView.extend({
             "short_code": this.ui.classInput.val(),
             "id_state_manual": true
         });
-    },
-
-    onClickConfirmButton: function(event)
-    {
-        event.preventDefault();
-        this.model.manualConfirm();
     }
-
 });

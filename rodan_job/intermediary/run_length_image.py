@@ -2,10 +2,14 @@ import base64
 from aetypes import Enum
 
 import cStringIO
+
+from gamera.gameracore import RGBPixel
+
 from PIL import ImageDraw
 from PIL import Image as PILImage
+from gamera.args import Pixel
 from gamera.core import Image as GameraImage
-from gamera.enums import ONEBIT
+from gamera.enums import ONEBIT, DENSE
 from gamera.enums import RLE
 
 
@@ -89,10 +93,18 @@ class RunLengthImage():
         return base64.b64encode(buffer.getvalue())
 
     def get_gamera_image(self):
-        image = GameraImage((self.ulx, self.uly), (self.ulx + self.width, self.uly + self.height),
+        # Image has to be encoded Dense and not RLE.  If RLE, will seg fault
+        image = GameraImage((self.ulx, self.uly),
+                            (self.ulx + self.width, self.uly + self.height),
                             ONEBIT,
-                            RLE)
-        # TODO: everything
+                            DENSE)
+        # Build the image by pixels
+        for x in range(self.width):
+            for y in range(self.height):
+                if self.pixel_matrix[x][y] == BinaryPixelEnum.BLACK:
+                    image.set((x,y), 1)
+                else:
+                    image.set((x,y), 0)
         return image
 
     def __unicode__(self):
