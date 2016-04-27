@@ -129,7 +129,7 @@ class InteractiveClassifier(RodanTask):
             # Do one final classification before quitting
             cknn = self.run_correction_stage(settings, training_database)
             # No more corrections are required.  We can now output the data
-            self.run_output_stage(cknn, outputs)
+            self.run_output_stage(cknn, settings["glyphs"], outputs)
 
     def run_import_stage(self, settings, classifier_path):
         # Extract the glyphs from the Gamera XML file
@@ -223,7 +223,7 @@ class InteractiveClassifier(RodanTask):
                                          perform_splits=True,
                                          num_k=1)
 
-    def run_output_stage(self, cknn, outputs):
+    def run_output_stage(self, cknn, glyphs, outputs):
         """
         The job is complete, so save the results to disk.
         """
@@ -233,7 +233,25 @@ class InteractiveClassifier(RodanTask):
         # Save the training database
         cknn.to_xml_filename(output_training_classifier_path)
         # TODO: Save the classified glyph info...
-        cknn.to_xml_filename(output_classified_data_path)
+        output_images = []
+        for glyph in glyphs:
+            gamera_image = RunLengthImage(
+                glyph["ulx"],
+                glyph["uly"],
+                glyph["ncols"],
+                glyph["nrows"],
+                glyph["image"]
+            ).get_gamera_image()
+            if glyph["id_state_manual"]:
+                gamera_image.classify_manual(glyph["short_code"])
+            else:
+                gamera_image.classify_automatic(glyph["short_code"])
+            output_images.append(gamera_image)
+        # Dump all the glyphs to disk
+        cknn.generate_features_on_glyphs(output_images)
+        output_xml = gamera.gamera_xml.WriteXMLFile(glyphs=output_images,
+                                                    with_features=True)
+        output_xml.write_filename(output_classified_data_path)
         print("Complete!")
 
     def validate_my_user_input(self, inputs, settings, user_input):
