@@ -1,19 +1,12 @@
 import base64
-from aetypes import Enum
-
 import cStringIO
-
-from gamera.gameracore import RGBPixel
-
 from PIL import ImageDraw
 from PIL import Image as PILImage
-from gamera.args import Pixel
 from gamera.core import Image as GameraImage
 from gamera.enums import ONEBIT, DENSE
-from gamera.enums import RLE
 
 
-class BinaryPixelEnum(Enum):
+class BinaryPixelEnum:
     WHITE = 0
     BLACK = 1
 

@@ -1,6 +1,5 @@
 import json
 import os
-from aetypes import Enum
 import gamera.core
 import gamera.gamera_xml
 import gamera.classify
@@ -13,7 +12,7 @@ from rodan.jobs.interactive_classifier.intermediary.run_length_image import \
 from rodan.settings import MEDIA_URL, MEDIA_ROOT
 
 
-class ClassifierStateEnum(Enum):
+class ClassifierStateEnum:
     IMPORT_XML = 0
     CORRECTION = 1
     EXPORT_XML = 2
