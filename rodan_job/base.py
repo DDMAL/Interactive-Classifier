@@ -102,6 +102,10 @@ class InteractiveClassifier(RodanTask):
     def run_my_task(self, inputs, settings, outputs):
         # Initialize a gamera classifier
         classifier_path = inputs['Classifier'][0]['resource_path']
+        if "Feature Selection" in inputs:
+            features = inputs['Feature Selection'][0]['resource_path']
+        else:
+            features = None
         # Handle importing the optional training classifier
         if "Training Classifier" in inputs:
             training_database = gamera_xml_to_gamera_image_list(
@@ -120,13 +124,15 @@ class InteractiveClassifier(RodanTask):
         elif settings["@state"] == ClassifierStateEnum.CORRECTION:
             # Update any changed glyphs
             self.update_changed_glyphs(settings)
-            self.run_correction_stage(settings, training_database)
+            self.run_correction_stage(settings, training_database, features)
             return self.WAITING_FOR_INPUT()
         else:
             # Update changed glyphs
             self.update_changed_glyphs(settings)
             # Do one final classification before quitting
-            cknn = self.run_correction_stage(settings, training_database)
+            cknn = self.run_correction_stage(settings,
+                                             training_database,
+                                             features)
             # No more corrections are required.  We can now output the data
             self.run_output_stage(cknn, settings["glyphs"], outputs)
 
@@ -146,28 +152,14 @@ class InteractiveClassifier(RodanTask):
             glyph["id_state_manual"] = changed_glyph["id_state_manual"]
             glyph["short_code"] = changed_glyph["short_code"]
 
-    def run_correction_stage(self, settings, training_database):
+    def run_correction_stage(self, settings, training_database, features_file_path):
         """
         Run the automatic correction stage of the Rodan job.
         """
-        features = [
-            "aspect_ratio",
-            "diagonal_projection",
-            "fourier_broken",
-            "moments",
-            "nholes",
-            "nholes_extended",
-            "skeleton_features",
-            "top_bottom",
-            "volume16regions",
-            "volume64regions",
-            "volume",
-            "zernike_moments",
-        ]
         # Train a classifier
         cknn = self.prepare_classifier(training_database,
                                        settings["glyphs"],
-                                       features)
+                                       features_file_path)
         # The automatic classifications
         for glyph in settings["glyphs"]:
             if not glyph["id_state_manual"]:
@@ -207,7 +199,7 @@ class InteractiveClassifier(RodanTask):
                 training_glyphs.append(gamera_image)
         return training_glyphs
 
-    def prepare_classifier(self, training_database, glyphs, features):
+    def prepare_classifier(self, training_database, glyphs, features_file_path):
         """
         Given a training database and a list of glyph dicts, train the classifier
         """
@@ -217,10 +209,13 @@ class InteractiveClassifier(RodanTask):
         # our manual corrections that we've done in the GUI.
         database = training_database + training_glyphs
         # Train the classifier
-        return gamera.knn.kNNInteractive(database=database,
-                                         features=features,
-                                         perform_splits=True,
-                                         num_k=1)
+        classifier = gamera.knn.kNNInteractive(database=database,
+                                               perform_splits=True,
+                                               num_k=1)
+        # Load features document if applicable
+        if features_file_path:
+            classifier.load_settings(features_file_path)
+        return classifier
 
     def run_output_stage(self, cknn, glyphs, outputs):
         """
