@@ -28,12 +28,12 @@ class InteractiveClassifier(RodanTask):
     # Description
     #############
 
-    name = "gamera.custom.interactive_classification"
+    name = "Interactive Classifier"
     author = "Andrew Fogarty"
     description = "A GUI for Gamera interactive kNN classification."
     settings = {}
     enabled = True
-    category = "Classifier"
+    category = "Gamera - Classification"
     interactive = True
     input_port_types = [
         {
