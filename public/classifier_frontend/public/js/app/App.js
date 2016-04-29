@@ -131,7 +131,25 @@ var App = new Marionette.Application({
     {
         console.log("FINALIZE AND QUIT!");
 
-        // TODO: Make a request back to the server
+        var data = JSON.stringify({
+            "complete": true,
+            "glyphs": this.changedGlyphs.toJSON()
+        });
+
+        // Submit the corrections and close the window
+        $.ajax({
+            url: '',
+            type: 'POST',
+            data: data,
+            contentType: 'application/json',
+            complete: function (response) {
+                console.log("Complete", response);
+                // window.location = 'about:blank';
+
+                // Close the window
+                window.close();
+            }
+        });
     },
 
     initializeModals: function()
