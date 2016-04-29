@@ -15,7 +15,9 @@ import GlyphEvents from "events/GlyphEvents";
 import ModalEvents from "events/ModalEvents";
 import MainMenuEvents from "events/MainMenuEvents";
 import getCookie from "utils/getCookie";
-import GlyphCollection from "./collections/GlyphCollection";
+import GlyphCollection from "collections/GlyphCollection";
+import ConfirmView from "views/widgets/Confirm/ConfirmView";
+import ConfirmViewModel from "views/widgets/Confirm/ConfirmViewModel";
 
 
 var App = new Marionette.Application({
@@ -52,13 +54,13 @@ var App = new Marionette.Application({
         menuChannel.on(MainMenuEvents.clickSubmitCorrections,
             function()
             {
-                that.submitCorrections()
+                that.modals.submitCorrections.open();
             }
         );
         menuChannel.on(MainMenuEvents.clickFinalizeCorrections,
             function()
             {
-                that.finalizeAndQuit();
+                that.modals.finalizeCorrections.open();
             }
         );
 
@@ -119,6 +121,7 @@ var App = new Marionette.Application({
             complete: function (response) {
                 console.log("Complete", response);
                 // window.location = 'about:blank';
+                window.close();
             }
         });
     },
@@ -154,6 +157,8 @@ var App = new Marionette.Application({
 
     initializeModals: function()
     {
+        var that = this;
+
         this.modalCollection = new Backbone.Collection();
 
         // Prepare the modal collection
@@ -173,9 +178,41 @@ var App = new Marionette.Application({
         });
         this.modalCollection.add(this.modals.loading);
 
+        // Submit Corrections modal
+        this.modals.submitCorrections = new ModalViewModel({
+            title: "Submit Corrections...",
+            isCloseable: true,
+            innerView: new ConfirmView({
+                model: new ConfirmViewModel({
+                    text: "Your manual corrections will be sent back to Rodan for another round of Gamera classification. Once the classification is complete, you can make more manual corrections.",
+                    callback: function ()
+                    {
+                        // Once the user confirms, submit the corrections.
+                        that.submitCorrections();
+                    }
+                })
+            })
+        });
+        this.modalCollection.add(this.modals.submitCorrections);
+
+        // Finalize Corrections modal
+        this.modals.finalizeCorrections = new ModalViewModel({
+            title: "Finalize Corrections...",
+            isCloseable: true,
+            innerView: new ConfirmView({
+                model: new ConfirmViewModel({
+                    text: "Your manual corrections will be sent back to Rodan for a final round of Gamera classification.  The results will be saved, and the job will complete.  <b>You will not be able to do any more manual corrections!</b>",
+                    callback: function ()
+                    {
+                        // Once the user confirms, submit the corrections.
+                        that.finalizeAndQuit();
+                    }
+                })
+            })
+        });
+        this.modalCollection.add(this.modals.finalizeCorrections);
 
         // Listen to the "closeAll" channel
-        var that = this;
         RadioChannels.modal.on(ModalEvents.closeAll,
             function ()
             {
