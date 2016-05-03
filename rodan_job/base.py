@@ -23,6 +23,28 @@ def media_file_path_to_public_url(media_file_path):
     return os.path.join(MEDIA_URL, media_file_path[chars_to_remove:])
 
 
+def get_manual_glyphs(glyphs):
+    """
+    From the glyph list, extract the Gamera ImageList of manual glyphs.
+    """
+    # Prepare the training glyphs
+    training_glyphs = []
+    for glyph in glyphs:
+        if glyph["id_state_manual"] == True:
+            # Get the gamera image
+            gamera_image = RunLengthImage(
+                glyph["ulx"],
+                glyph["uly"],
+                glyph["ncols"],
+                glyph["nrows"],
+                glyph["image"]
+            ).get_gamera_image()
+            # It's a training glyph!
+            gamera_image.classify_manual(glyph["short_code"])
+            training_glyphs.append(gamera_image)
+    return training_glyphs
+
+
 class InteractiveClassifier(RodanTask):
     #############
     # Description
@@ -177,27 +199,6 @@ class InteractiveClassifier(RodanTask):
                 result, confidence = cknn.guess_glyph_automatic(gamera_glyph)
                 glyph["short_code"] = result[0][1]
         return cknn
-
-    def get_manual_glyphs(self, glyphs):
-        """
-        From the glyph list, extract the Gamera ImageList of manual glyphs.
-        """
-        # Prepare the training glyphs
-        training_glyphs = []
-        for glyph in glyphs:
-            if glyph["id_state_manual"] == True:
-                # Get the gamera image
-                gamera_image = RunLengthImage(
-                    glyph["ulx"],
-                    glyph["uly"],
-                    glyph["ncols"],
-                    glyph["nrows"],
-                    glyph["image"]
-                ).get_gamera_image()
-                # It's a training glyph!
-                gamera_image.classify_manual(glyph["short_code"])
-                training_glyphs.append(gamera_image)
-        return training_glyphs
 
     def prepare_classifier(self, training_database, glyphs, features_file_path):
         """
