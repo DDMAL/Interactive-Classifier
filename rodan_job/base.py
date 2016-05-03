@@ -45,6 +45,112 @@ def get_manual_glyphs(glyphs):
     return training_glyphs
 
 
+def output_training_data(cknn, output_path):
+    """
+    Save the training data to disk so that it can be used again in a future
+    classification project.
+
+    The output is a GameraXML file that contains only the manually
+    classified glyphs which are used as training data.
+    """
+    # Save the training database
+    cknn.to_xml_filename(output_path)
+
+
+def output_corrected_data(cknn, glyphs, output_path):
+    """
+    Output the corrected data to disk.  This includes both the manually
+    corrected and the automatically corrected glyphs.
+    """
+    output_images = []
+    for glyph in glyphs:
+        gamera_image = RunLengthImage(
+            glyph["ulx"],
+            glyph["uly"],
+            glyph["ncols"],
+            glyph["nrows"],
+            glyph["image"]
+        ).get_gamera_image()
+        if glyph["id_state_manual"]:
+            gamera_image.classify_manual(glyph["short_code"])
+        else:
+            cknn.classify_glyph_automatic(gamera_image)
+        output_images.append(gamera_image)
+        # Dump all the glyphs to disk
+    cknn.generate_features_on_glyphs(output_images)
+    output_xml = gamera.gamera_xml.WriteXMLFile(glyphs=output_images,
+                                                with_features=True)
+    output_xml.write_filename(output_path)
+
+
+def run_output_stage(cknn, glyphs, outputs):
+    """
+    The job is complete, so save the results to disk.
+    """
+    print("Running output stage!")
+    output_training_classifier_path = outputs['Training Classifier'][0]['resource_path']
+    output_classified_data_path = outputs['Classified Data'][0]['resource_path']
+    # Save the outputs to disk
+    output_training_data(cknn, output_training_classifier_path)
+    output_corrected_data(cknn, glyphs, output_classified_data_path)
+    print("Complete!")
+
+
+def prepare_classifier(training_database, glyphs, features_file_path):
+    """
+    Given a training database and a list of glyph dicts, train the classifier
+    """
+    # Prepare the training glyphs
+    training_glyphs = get_manual_glyphs(glyphs)
+    # The database is a mixture of the original database plus all
+    # our manual corrections that we've done in the GUI.
+    database = training_database + training_glyphs
+    # Train the classifier
+    classifier = gamera.knn.kNNInteractive(database=database,
+                                           perform_splits=True,
+                                           num_k=1)
+    # Load features document if applicable
+    if features_file_path:
+        classifier.load_settings(features_file_path)
+    return classifier
+
+
+def run_correction_stage(settings, training_database, features_file_path):
+    """
+    Run the automatic correction stage of the Rodan job.
+    """
+    # Train a classifier
+    cknn = prepare_classifier(training_database,
+                                   settings["glyphs"],
+                                   features_file_path)
+    # The automatic classifications
+    for glyph in settings["glyphs"]:
+        if not glyph["id_state_manual"]:
+            # It's a glyph to be classified
+            gamera_glyph = RunLengthImage(
+                glyph["ulx"],
+                glyph["uly"],
+                glyph["ncols"],
+                glyph["nrows"],
+                glyph["image"]
+            ).get_gamera_image()
+            # Classify it!
+            cknn.classify_glyph_automatic(gamera_glyph)
+            # Save the classification back into memory
+            result, confidence = cknn.guess_glyph_automatic(gamera_glyph)
+            glyph["short_code"] = result[0][1]
+    return cknn
+
+
+def run_import_stage(settings, classifier_path):
+    """
+    Extract glyphs from the GameraXML file at the classifier_path and save them
+    to the settings dictionary.
+    """
+    # Extract the glyphs from the Gamera XML file
+    settings["glyphs"] = GameraXML(classifier_path).get_glyphs()
+
+
 def update_changed_glyphs(settings):
     """
     Update the glyph objects that have been changed since the last round of classification
@@ -165,120 +271,21 @@ class InteractiveClassifier(RodanTask):
             settings["@state"] = ClassifierStateEnum.IMPORT_XML
             settings["glyphs"] = []
         if settings["@state"] == ClassifierStateEnum.IMPORT_XML:
-            self.run_import_stage(settings,
-                                  classifier_path)
+            run_import_stage(settings, classifier_path)
             settings["@state"] = ClassifierStateEnum.CORRECTION
             return self.WAITING_FOR_INPUT()
         elif settings["@state"] == ClassifierStateEnum.CORRECTION:
             # Update any changed glyphs
-            self.update_changed_glyphs(settings)
-            self.run_correction_stage(settings, training_database, features)
+            update_changed_glyphs(settings)
+            run_correction_stage(settings, training_database, features)
             return self.WAITING_FOR_INPUT()
         else:
             # Update changed glyphs
-            self.update_changed_glyphs(settings)
+            update_changed_glyphs(settings)
             # Do one final classification before quitting
-            cknn = self.run_correction_stage(settings,
-                                             training_database,
-                                             features)
+            cknn = run_correction_stage(settings, training_database, features)
             # No more corrections are required.  We can now output the data
-            self.run_output_stage(cknn, settings["glyphs"], outputs)
-
-    def run_import_stage(self, settings, classifier_path):
-        # Extract the glyphs from the Gamera XML file
-        settings["glyphs"] = GameraXML(classifier_path).get_glyphs()
-
-    def run_correction_stage(self, settings, training_database, features_file_path):
-        """
-        Run the automatic correction stage of the Rodan job.
-        """
-        # Train a classifier
-        cknn = self.prepare_classifier(training_database,
-                                       settings["glyphs"],
-                                       features_file_path)
-        # The automatic classifications
-        for glyph in settings["glyphs"]:
-            if not glyph["id_state_manual"]:
-                # It's a glyph to be classified
-                gamera_glyph = RunLengthImage(
-                    glyph["ulx"],
-                    glyph["uly"],
-                    glyph["ncols"],
-                    glyph["nrows"],
-                    glyph["image"]
-                ).get_gamera_image()
-                # Classify it!
-                cknn.classify_glyph_automatic(gamera_glyph)
-                # Save the classification back into memory
-                result, confidence = cknn.guess_glyph_automatic(gamera_glyph)
-                glyph["short_code"] = result[0][1]
-        return cknn
-
-    def prepare_classifier(self, training_database, glyphs, features_file_path):
-        """
-        Given a training database and a list of glyph dicts, train the classifier
-        """
-        # Prepare the training glyphs
-        training_glyphs = self.get_manual_glyphs(glyphs)
-        # The database is a mixture of the original database plus all
-        # our manual corrections that we've done in the GUI.
-        database = training_database + training_glyphs
-        # Train the classifier
-        classifier = gamera.knn.kNNInteractive(database=database,
-                                               perform_splits=True,
-                                               num_k=1)
-        # Load features document if applicable
-        if features_file_path:
-            classifier.load_settings(features_file_path)
-        return classifier
-
-    def run_output_stage(self, cknn, glyphs, outputs):
-        """
-        The job is complete, so save the results to disk.
-        """
-        print("Running output stage!")
-        output_training_classifier_path = outputs['Training Classifier'][0]['resource_path']
-        output_classified_data_path = outputs['Classified Data'][0]['resource_path']
-        # Save the outputs to disk
-        self.output_training_data(cknn, output_training_classifier_path)
-        self.output_corrected_data(cknn, glyphs, output_classified_data_path)
-        print("Complete!")
-
-    def output_training_data(self, cknn, output_path):
-        """
-        Save the training data to disk so that it can be used again in a future
-        classification project.
-
-        The output is a GameraXML file that contains only the manually
-        classified glyphs which are used as training data.
-        """
-        # Save the training database
-        cknn.to_xml_filename(output_path)
-
-    def output_corrected_data(self, cknn, glyphs, output_path):
-        """
-        Output the corrected data to disk.  This includes both the manually
-        corrected and the automatically corrected glyphs.
-        """
-        output_images = []
-        for glyph in glyphs:
-            gamera_image = RunLengthImage(
-                glyph["ulx"],
-                glyph["uly"],
-                glyph["ncols"],
-                glyph["nrows"],
-                glyph["image"]
-            ).get_gamera_image()
-            if glyph["id_state_manual"]:
-                gamera_image.classify_manual(glyph["short_code"])
-            else:
-                cknn.classify_glyph_automatic(gamera_image)
-            output_images.append(gamera_image)
-            # Dump all the glyphs to disk
-        cknn.generate_features_on_glyphs(output_images)
-        output_xml = gamera.gamera_xml.WriteXMLFile(glyphs=output_images,
-                                                    with_features=True)
-        output_xml.write_filename(output_path)
+            run_output_stage(cknn, settings["glyphs"], outputs)
 
     def validate_my_user_input(self, inputs, settings, user_input):
         if 'complete' in user_input:
