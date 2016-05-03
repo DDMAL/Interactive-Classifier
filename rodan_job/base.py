@@ -45,6 +45,32 @@ def get_manual_glyphs(glyphs):
     return training_glyphs
 
 
+def update_changed_glyphs(settings):
+    """
+    Update the glyph objects that have been changed since the last round of classification
+    """
+    # Build a hash of the changed glyphs by their id
+    changed_glyph_hash = {g["id"]: g for g in settings["@changed_glyphs"]}
+    # Loop through all glyphs.  Update if changed.
+    for glyph in settings["glyphs"]:
+        if not changed_glyph_hash:
+            # No more changed glyphs, so break
+            break
+        else:
+            # There are still glyphs to update
+            key = glyph["id"]
+            # Grab the changed glyph
+            if key in changed_glyph_hash:
+                changed_glyph = changed_glyph_hash[key]
+                # Update the Glyph proper
+                glyph["id_state_manual"] = changed_glyph["id_state_manual"]
+                glyph["short_code"] = changed_glyph["short_code"]
+                # Pop the changed glyph from the hash
+                changed_glyph_hash.pop(key, None)
+    # Clear out the @changed_glyphs from the settings...
+    settings["@changed_glyphs"] = []
+
+
 class InteractiveClassifier(RodanTask):
     #############
     # Description
@@ -161,18 +187,6 @@ class InteractiveClassifier(RodanTask):
     def run_import_stage(self, settings, classifier_path):
         # Extract the glyphs from the Gamera XML file
         settings["glyphs"] = GameraXML(classifier_path).get_glyphs()
-
-    def update_changed_glyphs(self, settings):
-        """
-        Update the glyph objects that have been changed since the last round of classification
-        """
-        # We will prepare for another round of classification
-        # TODO: Do this in a more efficient way
-        for changed_glyph in settings["@changed_glyphs"]:
-            glyph = next(
-                x for x in settings["glyphs"] if x["id"] == changed_glyph["id"])
-            glyph["id_state_manual"] = changed_glyph["id_state_manual"]
-            glyph["short_code"] = changed_glyph["short_code"]
 
     def run_correction_stage(self, settings, training_database, features_file_path):
         """
