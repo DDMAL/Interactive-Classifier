@@ -1,6 +1,5 @@
 import _ from "underscore";
 import Marionette from "marionette";
-import Radio from "backbone.radio";
 import GlyphEvents from "events/GlyphEvents";
 
 import GlyphCollection from "collections/GlyphCollection";
@@ -9,7 +8,8 @@ import ClassTreeView from "views/ClassTree/ClassTreeView";
 import ClassTreeViewModel from "views/ClassTree/ClassTreeViewModel";
 
 import GlyphEditView from "views/GlyphEdit/GlyphEditView";
-import GlyphEditViewModel from "views/GlyphEdit/GlyphEditViewModel";
+import GlyphMultiEditView from "../GlyphMultiEdit/GlyphMultiEditView";
+
 
 import GlyphTableView from "views/GlyphTable/GlyphTableView";
 import GlyphTableRowViewModel from "../GlyphTable/Row/GlyphTableRowViewModel";
@@ -18,6 +18,9 @@ import GlyphTableRowCollection from "views/GlyphTable/Row/GlyphTableRowCollectio
 
 import ImagePreviewView from "../ImagePreview/ImagePreviewView";
 import ImagePreviewViewModel from "../ImagePreview/ImagePreviewViewModel";
+
+import RadioChannels from "../../radio/RadioChannels";
+
 import template from "./rodan-dashboard.template.html";
 
 
@@ -53,17 +56,22 @@ export default Marionette.LayoutView.extend({
 
         // Glyph Editing Events
         var that = this;
-        this.editChannel = Radio.channel("edit");
-        this.listenTo(this.editChannel, GlyphEvents.openGlyphEdit,
+        this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
             function(model)
             {
                 previewView.highlightGlyph(model);
                 that.openGlyphEdit(model);
             });
-        this.listenTo(this.editChannel, GlyphEvents.moveGlyph,
+        this.listenTo(RadioChannels.edit, GlyphEvents.moveGlyph,
             function(glyph,oldShortCode, newShortCode)
             {
                 tableRowCollection.moveGlyph(glyph, oldShortCode, newShortCode);
+            }
+        );
+        this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
+            function(boundingBox, collection)
+            {
+                that.openMultiGlyphEdit(collection);
             }
         );
 
@@ -86,7 +94,6 @@ export default Marionette.LayoutView.extend({
         {
             var shortCode = element.get("short_code");
             var json = element.toJSON();
-            var c = glyphCollections[shortCode];
             glyphCollections[shortCode].add(json);
         });
 
@@ -113,20 +120,18 @@ export default Marionette.LayoutView.extend({
         });
     },
 
-    onDestroy: function()
-    {
-        console.log("onDestroy");
-        this.editChannel.stopListening();
-        delete this.editChannel;
-    },
-
     openGlyphEdit: function(model)
     {
         console.log("Open glyphedit!", model);
         this.glyphEditRegion.show(new GlyphEditView({
-            model: new GlyphEditViewModel({
-                model: model
-            })
+            model: model
+        }));
+    },
+
+    openMultiGlyphEdit: function(collection)
+    {
+        this.glyphEditRegion.show(new GlyphMultiEditView({
+            collection: collection
         }));
     }
 });
