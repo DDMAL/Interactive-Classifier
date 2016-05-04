@@ -1,3 +1,5 @@
-<a href="/glyph/<%= id %>/" class="glyph img-thumbnail <% if (id_state_manual) { %>alert-success<% } else { %>alert-warning<% } %>" style="float:left; min-height:50px">
-    <img src="data:image/png;base64,<%= image_b64 %>" alt="<%= short_code %>" width="<%= ncols %>" height="<%= nrows %>"/>
-</a>
+<div class="<%= outerTag %>" style="padding: 5px; border: 1px solid #aaaaaa">
+    <a href="/glyph/<%= id %>/" class="glyph img-thumbnail <%= cssTag %>" style="width: 100%; min-height:50px">
+        <img src="data:image/png;base64,<%= image_b64 %>" alt="<%= short_code %>" width="<%= ncols %>" height="<%= nrows %>"/>
+    </a>
+</div>

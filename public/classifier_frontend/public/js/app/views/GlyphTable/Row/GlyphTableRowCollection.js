@@ -5,6 +5,7 @@ import GlyphCollection from "collections/GlyphCollection";
 
 export default Backbone.Collection.extend({
     model: GlyphTableRowViewModel,
+
     comparator: "short_code",
 
     /**
