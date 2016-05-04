@@ -1,6 +1,5 @@
 import $ from "jquery";
 import Backbone from "backbone";
-import Radio from "backbone.radio";
 import RadioChannels from "radio/RadioChannels";
 import Marionette from 'marionette';
 import RootView from 'views/Root/RootView';
@@ -50,14 +49,13 @@ var App = new Marionette.Application({
 
         // Menuchannel
         var that = this;
-        var menuChannel = Radio.channel("menu");
-        menuChannel.on(MainMenuEvents.clickSubmitCorrections,
+        RadioChannels.menu.on(MainMenuEvents.clickSubmitCorrections,
             function()
             {
                 that.modals.submitCorrections.open();
             }
         );
-        menuChannel.on(MainMenuEvents.clickFinalizeCorrections,
+        RadioChannels.menu.on(MainMenuEvents.clickFinalizeCorrections,
             function()
             {
                 that.modals.finalizeCorrections.open();
