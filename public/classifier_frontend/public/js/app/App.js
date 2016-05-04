@@ -121,7 +121,7 @@ var App = new Marionette.Application({
             complete: function (response) {
                 console.log("Complete", response);
                 // window.location = 'about:blank';
-                window.close();
+                // window.close();
             }
         });
     },
@@ -150,7 +150,7 @@ var App = new Marionette.Application({
                 // window.location = 'about:blank';
 
                 // Close the window
-                window.close();
+                // window.close();
             }
         });
     },
