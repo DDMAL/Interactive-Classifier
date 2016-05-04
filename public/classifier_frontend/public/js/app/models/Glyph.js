@@ -1,4 +1,6 @@
 import Backbone from "backbone";
+import GlyphEvents from "../events/GlyphEvents";
+import RadioChannels from "../radio/RadioChannels";
 
 
 export default Backbone.Model.extend({
@@ -21,18 +23,17 @@ export default Backbone.Model.extend({
         context_thumbnail: ""
     },
 
-    /**
-     * Get a collection containing the Glyph's names.
-     *
-     * @param attributeName
-     * @param CollectionType
-     * @returns {*}
-     */
-    getCollection: function(attributeName, CollectionType)
+    changeClass: function(newShortCode)
     {
-        var collectionAttributes = this.get(String(attributeName));
-        var collection = new CollectionType();
-        collection.add(collectionAttributes);
-        return collection;
+        var oldShortCode = this.get("short_code");
+
+        this.set({
+            short_code: newShortCode,
+            id_state_manual: true
+        });
+
+        // Update glyph table location
+        RadioChannels.edit.trigger(GlyphEvents.moveGlyph, this, oldShortCode, newShortCode);
+        RadioChannels.edit.trigger(GlyphEvents.changeGlyph, this);
     }
 });
