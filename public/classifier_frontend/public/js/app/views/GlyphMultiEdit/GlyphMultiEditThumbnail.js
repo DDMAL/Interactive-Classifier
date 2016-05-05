@@ -6,6 +6,10 @@ export default Marionette.ItemView.extend({
     template,
     tagName: "tr",
 
+    modelEvents: {
+        "change": "render"
+    },
+
     serializeData: function ()
     {
         console.log("TEST: ", this.model);
