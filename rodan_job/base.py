@@ -171,6 +171,7 @@ def update_changed_glyphs(settings):
                 # Update the Glyph proper
                 glyph["id_state_manual"] = changed_glyph["id_state_manual"]
                 glyph["short_code"] = changed_glyph["short_code"]
+                glyph["confidence"] = changed_glyph["confidence"]
                 # Pop the changed glyph from the hash
                 changed_glyph_hash.pop(key, None)
     # Clear out the @changed_glyphs from the settings...
