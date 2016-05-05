@@ -73,10 +73,7 @@ var App = new Marionette.Application({
 
         RadioChannels.edit.on(GlyphEvents.changeGlyph, function(glyphModel)
         {
-            console.log("Change glyph!");
-            console.log(glyphModel);
             that.changedGlyphs.add(glyphModel);
-            console.log(that.changedGlyphs.toJSON());
         });
     },
 
