@@ -47,6 +47,13 @@ export default Marionette.ItemView.extend({
                 }
             }
         );
+        RadioChannels.edit.on(GlyphEvents.openGlyphEdit, function(model)
+        {
+            if (that.model !== model)
+            {
+                that.viewModel.deactivate();
+            }
+        });
     },
 
     onClickGlyph: function(event)
