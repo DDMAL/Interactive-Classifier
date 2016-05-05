@@ -23,7 +23,6 @@ import RadioChannels from "../../radio/RadioChannels";
 
 import template from "./rodan-dashboard.template.html";
 
-
 export default Marionette.LayoutView.extend({
     template,
 
@@ -63,7 +62,7 @@ export default Marionette.LayoutView.extend({
                 that.openGlyphEdit(model);
             });
         this.listenTo(RadioChannels.edit, GlyphEvents.moveGlyph,
-            function(glyph,oldShortCode, newShortCode)
+            function(glyph, oldShortCode, newShortCode)
             {
                 tableRowCollection.moveGlyph(glyph, oldShortCode, newShortCode);
             }
@@ -96,8 +95,6 @@ export default Marionette.LayoutView.extend({
             var json = element.toJSON();
             glyphCollections[shortCode].add(json);
         });
-
-        console.log(glyphCollections);
 
         // Show the glyph table
         var glyphTable = new GlyphTableView({

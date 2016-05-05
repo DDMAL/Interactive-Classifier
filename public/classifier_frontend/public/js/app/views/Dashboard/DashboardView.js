@@ -1,7 +1,6 @@
 import _ from "underscore";
 import Marionette from "marionette";
 import Radio from "backbone.radio";
-
 import GlyphEvents from "events/GlyphEvents";
 import GlyphCollection from "collections/GlyphCollection";
 import ClassTreeView from "views/ClassTree/ClassTreeView";
@@ -10,12 +9,11 @@ import GlyphEditView from "views/GlyphEdit/GlyphEditView";
 import GlyphEditViewModel from "views/GlyphEdit/GlyphEditViewModel";
 import GlyphTableRowCollection from "views/GlyphTable/Row/GlyphTableRowCollection";
 import ClassTreeViewModel from "views/ClassTree/ClassTreeViewModel";
+import GlyphTableRowViewModel from "views/GlyphTable/Row/GlyphTableRowViewModel";
+import GlyphTableViewModel from "views/GlyphTable/GlyphTableViewModel";
+import ImagePreviewView from "views/ImagePreview/ImagePreviewView";
+import ImagePreviewViewModel from "views/ImagePreview/ImagePreviewViewModel";
 import template from "./dashboard.template.html";
-import GlyphTableRowViewModel from "../GlyphTable/Row/GlyphTableRowViewModel";
-import GlyphTableViewModel from "../GlyphTable/GlyphTableViewModel";
-import ImagePreviewView from "../ImagePreview/ImagePreviewView";
-import ImagePreviewViewModel from "../ImagePreview/ImagePreviewViewModel";
-
 
 export default Marionette.LayoutView.extend({
     template,

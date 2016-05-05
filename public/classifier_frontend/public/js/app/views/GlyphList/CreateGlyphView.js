@@ -11,6 +11,8 @@ export default Marionette.LayoutView.extend({
      */
     createdCollection: undefined,
     tagName: 'form class="form" action="#"',
+    // SubViewModels
+    errorStatusViewModel: undefined,
 
     ui: {
         "shortCodeField": "#glyph-short-code-field",
@@ -24,9 +26,6 @@ export default Marionette.LayoutView.extend({
     events: {
         "submit": "createGlyphButtonCallback"
     },
-
-    // SubViewModels
-    errorStatusViewModel: undefined,
 
     initialize: function(options)
     {
@@ -55,7 +54,10 @@ export default Marionette.LayoutView.extend({
             {
                 success: function()
                 {
-                    that.errorStatusViewModel.success('Glyph "<a href="' + newGlyph.get("url") + '">' + newGlyph.get("short_code") + '</a>" saved successfully.');
+                    that.errorStatusViewModel.success('Glyph "<a href="'
+                        + newGlyph.get("url") + '">'
+                        + newGlyph.get("short_code")
+                        + '</a>" saved successfully.');
                     // Add the created glyph to the createdCollection
                     that.createdCollection.add(newGlyph);
                     // Empty the short code field

@@ -1,11 +1,11 @@
 import Backbone from "backbone";
-import GlyphEvents from "../events/GlyphEvents";
-import RadioChannels from "../radio/RadioChannels";
-
+import GlyphEvents from "events/GlyphEvents";
+import RadioChannels from "radio/RadioChannels";
 
 export default Backbone.Model.extend({
 
-    url: function() {
+    url: function()
+    {
         return this.get("url");
     },
 

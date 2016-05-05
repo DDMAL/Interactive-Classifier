@@ -2,7 +2,6 @@ import Marionette from "marionette";
 import App from "App";
 import template from "./file-open.template.html";
 
-
 export default Marionette.ItemView.extend({
     template,
 

@@ -1,7 +1,6 @@
 import Backbone from "backbone";
 import BaseModel from "models/BaseModel";
 
-
 export default BaseModel.extend({
     defaults: {
         id: 0,
@@ -23,11 +22,12 @@ export default BaseModel.extend({
      */
     guessAll: function (onSuccess)
     {
-       return Backbone.ajax(this.get("url") + "guess/all/",
-           {
-               method: "GET",
-               success: onSuccess
-           });
+        return Backbone.ajax(this.get("url") + "guess/all/",
+            {
+                method: "GET",
+                success: onSuccess
+            }
+        );
     },
 
     /**
@@ -41,6 +41,7 @@ export default BaseModel.extend({
             {
                 method: "GET",
                 success: onSuccess
-            });
+            }
+        );
     }
 });

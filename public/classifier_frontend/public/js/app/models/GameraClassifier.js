@@ -1,6 +1,5 @@
 import BaseModel from "models/BaseModel";
 
-
 export default BaseModel.extend({
     default: {
         name: "",

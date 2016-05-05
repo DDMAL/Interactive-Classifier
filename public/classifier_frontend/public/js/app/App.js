@@ -17,6 +17,7 @@ import getCookie from "utils/getCookie";
 import GlyphCollection from "collections/GlyphCollection";
 import ConfirmView from "views/widgets/Confirm/ConfirmView";
 import ConfirmViewModel from "views/widgets/Confirm/ConfirmViewModel";
+import Strings from "./localization/Strings";
 
 
 var App = new Marionette.Application({
@@ -113,7 +114,8 @@ var App = new Marionette.Application({
             type: 'POST',
             data: data,
             contentType: 'application/json',
-            complete: function (response) {
+            complete: function (response)
+            {
                 console.log("Complete", response);
                 // window.location = 'about:blank';
                 // window.close();
@@ -140,7 +142,8 @@ var App = new Marionette.Application({
             type: 'POST',
             data: data,
             contentType: 'application/json',
-            complete: function (response) {
+            complete: function (response)
+            {
                 console.log("Complete", response);
                 // window.location = 'about:blank';
 
@@ -162,12 +165,13 @@ var App = new Marionette.Application({
         }));
 
         // Loading modal
+        
         this.modals.loading = new ModalViewModel({
             title: "Loading Page...",
             isCloseable: false,
             innerView: new LoadingScreenView({
                 model: new LoadingScreenViewModel({
-                    text: "Loading page glyphs from the server.  This may take some time..."
+                    text: Strings.loadingGlyphs
                 })
             })
         });
@@ -179,7 +183,7 @@ var App = new Marionette.Application({
             isCloseable: true,
             innerView: new ConfirmView({
                 model: new ConfirmViewModel({
-                    text: "Your manual corrections will be sent back to Rodan for another round of Gamera classification. Once the classification is complete, you can make more manual corrections.",
+                    text: Strings.submissionWarning,
                     callback: function ()
                     {
                         // Once the user confirms, submit the corrections.
@@ -196,7 +200,7 @@ var App = new Marionette.Application({
             isCloseable: true,
             innerView: new ConfirmView({
                 model: new ConfirmViewModel({
-                    text: "Your manual corrections will be sent back to Rodan for a final round of Gamera classification.  The results will be saved, and the job will complete.  <b>You will not be able to do any more manual corrections!</b>",
+                    text: Strings.finalizeWarning,
                     callback: function ()
                     {
                         // Once the user confirms, submit the corrections.

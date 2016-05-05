@@ -3,7 +3,6 @@ import Marionette from "marionette";
 import GameraClassifier from "models/GameraClassifier";
 import FileOpenRowView from "views/FileOpen/FileOpenRowView";
 
-
 export default Marionette.CollectionView.extend({
     childView: FileOpenRowView,
 

@@ -14,16 +14,14 @@ import FileOpenView from "views/FileOpen/FileOpenView";
 import Page from "models/Page";
 import ModalEvents from "events/ModalEvents";
 import MainMenuEvents from "events/MainMenuEvents";
-import getCookie from "utils/getCookie";
 import WelcomeView from "views/Welcome/WelcomeView";
 import UploaderViewModel from "views/Upload/GameraXML/UploaderViewModel";
 import GameraClassifier from "./models/GameraClassifier";
 import ClassifierDashboardView from "./views/ClassifierDashboard/ClassifierDashboardView";
 import GlobalUIEvents from "./events/GlobalUIEvents";
-
+import getCookie from "utils/getCookie";
 
 var App = new Marionette.Application({
-
     modals: {},
     modalCollection: undefined,
     behaviors: {},
@@ -235,26 +233,32 @@ var App = new Marionette.Application({
                     that.modals.resetAll.close();
                     that.editPage(page.get("id"));
                 });
-            });
+            }
+        );
     },
     
     editClassifier: function (id)
     {
         // Close any open modals
         this.closeAllModals();
-
-        console.log("editClassifier: " + id);
-        
         var classifier = new GameraClassifier();
         classifier.url = "/classifier/" + parseInt(id) + "/";
 
         var that = this;
-        classifier.fetch({success: function ()
-        {
-            that.rootView.container.show(new ClassifierDashboardView({
-                model: classifier
-            }));
-        }});
+        classifier.fetch(
+            {
+                success: function ()
+                {
+                    that.rootView.container.show(
+                        new ClassifierDashboardView(
+                            {
+                                model: classifier
+                            }
+                        )
+                    );
+                }
+            }
+        );
     }
 });
 

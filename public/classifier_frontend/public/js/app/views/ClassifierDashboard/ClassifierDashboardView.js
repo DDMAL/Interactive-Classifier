@@ -7,7 +7,6 @@ import template from "./classifier-dashboard.template.html";
 import RadioChannels from "../../radio/RadioChannels";
 import GlobalUIEvents from "../../events/GlobalUIEvents";
 
-
 export default Marionette.LayoutView.extend({
     template,
 

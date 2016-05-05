@@ -1,7 +1,6 @@
 import Marionette from "marionette";
 import template from "./page-stats.template.html";
 
-
 export default Marionette.ItemView.extend({
     template,
 

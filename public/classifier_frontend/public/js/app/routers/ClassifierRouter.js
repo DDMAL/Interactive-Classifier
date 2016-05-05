@@ -1,9 +1,7 @@
 import Marionette from "marionette";
 import App from "App";
 
-
 export default Marionette.AppRouter.extend({
-    /* standard routes can be mixed with appRoutes/Controllers above */
     routes:
     {
         "": "home",
@@ -21,7 +19,8 @@ export default Marionette.AppRouter.extend({
         App.editPage(id);
     },
 
-    editClassifier: function (id) {
+    editClassifier: function (id)
+    {
         App.editClassifier(id);
     }
 });

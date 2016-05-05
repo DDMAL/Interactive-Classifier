@@ -2,7 +2,6 @@ import Marionette from "marionette";
 import GlyphMultiEditThumbnailList from "./GlyphMultiEditThumbnailList";
 import template from "views/GlyphMultiEdit/glyph-multi-edit.template.html";
 
-
 export default Marionette.LayoutView.extend({
     template,
 

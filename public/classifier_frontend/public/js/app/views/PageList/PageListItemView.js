@@ -1,14 +1,12 @@
 import Marionette from "marionette";
-import template from "./page-item.template.html";
-import PageStatsView from "../PageStats/PageStatsView";
-import PageStatsViewModel from "../PageStats/PageStatsViewModel";
+import PageStatsView from "views/PageStats/PageStatsView";
+import PageStatsViewModel from "views/PageStats/PageStatsViewModel";
 import App from "App";
-import Page from "../../models/Page";
-
+import Page from "models/Page";
+import template from "./page-item.template.html";
 
 export default Marionette.LayoutView.extend({
     template,
-
     tagName: 'div class="col-sm-4 col-md-3 col-lg-2"',
 
     regions: {
@@ -28,7 +26,6 @@ export default Marionette.LayoutView.extend({
         var mv = new PageStatsViewModel();
         mv.url = "/page/" + this.model.get("id") + "/stats/";
 
-
         this.statsRegion.show(new PageStatsView({
             model: mv
         }));
@@ -40,8 +37,6 @@ export default Marionette.LayoutView.extend({
     {
         event.preventDefault();
 
-        console.log("Click edit button!");
-
         // Create a page object
         var page = new Page(this.model.toJSON());
 
@@ -51,4 +46,4 @@ export default Marionette.LayoutView.extend({
             }
         );
     }
-})
+});

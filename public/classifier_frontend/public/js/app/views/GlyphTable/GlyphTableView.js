@@ -1,12 +1,9 @@
-// import Backbone from "backbone";
-import Marionette from "marionette";
 import _ from "underscore";
-// import $ from "jquery";
-import Radio from "backbone.radio";
+import $ from "jquery";
+import Marionette from "marionette";
 import GlyphTableRowView from "views/GlyphTable/Row/GlyphTableRowView";
 import GlyphEvents from "events/GlyphEvents";
 import RadioChannels from "../../radio/RadioChannels";
-
 
 export default Marionette.CollectionView.extend({
     tagName: 'table class="table table-hover"',
@@ -23,8 +20,30 @@ export default Marionette.CollectionView.extend({
     },
 
     events: {
-        "mousedown": "onMouseDown",
+        "mousedown": "onMouseDown"
         // "mouseup": "onMouseUp"
+    },
+
+    initialize: function ()
+    {
+        var prevViewModelSet = [];
+        var clearPrevViewModels = function ()
+        {
+            _.each(prevViewModelSet, function(vm)
+            {
+                vm.deactivate();
+            });
+        };
+
+        this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
+            function(model, viewModel)
+            {
+                clearPrevViewModels();
+                // Activate the view so that it turns blue
+                viewModel.activate();
+                prevViewModelSet = [viewModel]
+            }
+        );
     },
 
     onMouseDown: function (event)
@@ -52,7 +71,8 @@ export default Marionette.CollectionView.extend({
                 y = event.clientY;
 
             var that = this;
-            if (x - this.mouseDownX !== 0 && y - this.mouseDownY !== 0) {
+            if (x - this.mouseDownX !== 0 && y - this.mouseDownY !== 0)
+            {
                 var boundingBox = {
                     left: Math.min(that.mouseDownX, x),
                     top: Math.min(that.mouseDownY, y),
@@ -69,30 +89,6 @@ export default Marionette.CollectionView.extend({
 
         // Delete the selection box from the DOM
         this.selectionBox.style.visibility = "hidden";
-    },
-
-    initialize: function ()
-    {
-        var prevViewModelSet = [];
-        var clearPrevViewModels = function ()
-        {
-            _.each(prevViewModelSet, function(vm)
-            {
-                vm.deactivate();
-            });
-        };
-
-        this.listenTo(Radio.channel("edit"), GlyphEvents.openGlyphEdit,
-            function(model, viewModel)
-            {
-                clearPrevViewModels();
-                // Activate the view so that it turns blue
-                viewModel.activate();
-                prevViewModelSet = [viewModel]
-            });
-
-        // this.selectionBox = document.createElement("div");
-
     },
 
     childViewOptions: function ()
@@ -128,14 +124,10 @@ export default Marionette.CollectionView.extend({
             {
                 if (event.buttons === 0)
                 {
-                    // that.isMouseDown = false;
-                    // that.selectionBox.style.visibility = "hidden";
-
                     that.onMouseUp(event);
                 }
                 else
                 {
-                    // console.log("Mousemove!", event);
                     var x = event.pageX,
                         y = event.pageY;
 
