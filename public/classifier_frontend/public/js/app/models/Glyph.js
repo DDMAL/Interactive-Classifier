@@ -29,7 +29,8 @@ export default Backbone.Model.extend({
 
         this.set({
             short_code: newShortCode,
-            id_state_manual: true
+            id_state_manual: true,
+            confidence: 1.0
         });
 
         // Update glyph table location
