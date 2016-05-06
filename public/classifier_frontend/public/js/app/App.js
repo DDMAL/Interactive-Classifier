@@ -13,15 +13,12 @@ import Page from "models/Page";
 import GlyphEvents from "events/GlyphEvents";
 import ModalEvents from "events/ModalEvents";
 import MainMenuEvents from "events/MainMenuEvents";
-import getCookie from "utils/getCookie";
 import GlyphCollection from "collections/GlyphCollection";
 import ConfirmView from "views/widgets/Confirm/ConfirmView";
 import ConfirmViewModel from "views/widgets/Confirm/ConfirmViewModel";
 import Strings from "./localization/Strings";
 
-
 var App = new Marionette.Application({
-
     modals: {},
     modalCollection: undefined,
     behaviors: {},
@@ -30,17 +27,6 @@ var App = new Marionette.Application({
 
     onBeforeStart: function ()
     {
-        // Get the CRSF token
-        this.csrftoken = getCookie('csrftoken');
-        var oldSync = Backbone.sync;
-        Backbone.sync = function(method, model, options)
-        {
-            options.beforeSend = function(xhr)
-            {
-                xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
-            };
-            return oldSync(method, model, options);
-        };
         // Instantiate the root view
         this.rootView = new RootView();
         this.rootView.navigation.show(new MenuView());
