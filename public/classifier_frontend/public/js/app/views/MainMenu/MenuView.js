@@ -4,7 +4,7 @@ import MenuLinkView from "views/MainMenu/MenuLinkView";
 import MenuLinkViewModel from "views/MainMenu/MenuLinkViewModel";
 import MenuViewModel from "views/MainMenu/MenuViewModel";
 import MainMenuEvents from "events/MainMenuEvents";
-
+import Strings from "localization/Strings";
 import template from "./main-menu.template.html"
 
 export default Marionette.CompositeView.extend({
@@ -16,7 +16,7 @@ export default Marionette.CompositeView.extend({
     {
         // A model to handle the main properties of the menu
         this.model = new MenuViewModel({
-            title: "Interactive Classifier"
+            title: Strings.siteTitle
         });
         // A collection representing the menu links
         var menuLinks = new Backbone.Collection();
