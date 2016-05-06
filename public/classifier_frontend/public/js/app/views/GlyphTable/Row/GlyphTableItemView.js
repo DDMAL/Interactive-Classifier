@@ -39,7 +39,6 @@ export default Marionette.ItemView.extend({
                 // gotta add the model to the multi selection collection.
                 if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
                 {
-                    console.log("Adding model!");
                     collection.add(that.model);
                     that.viewModel.activate();
                 } else {
