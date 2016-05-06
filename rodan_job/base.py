@@ -151,6 +151,20 @@ def run_import_stage(settings, classifier_path):
     settings["glyphs"] = GameraXML(classifier_path).get_glyphs()
 
 
+def serialize_glyphs_to_json(settings):
+    """
+    Serialize the glyphs as JSON and save them in the settings.
+    """
+    settings["glyphs_json"] = json.dumps(settings["glyphs"])
+
+
+def purge_serialized_json(settings):
+    """
+    Remove the cached JSON from the settings
+    """
+    settings["glyphs_json"] = None
+
+
 def update_changed_glyphs(settings):
     """
     Update the glyph objects that have been changed since the last round of classification
@@ -248,7 +262,7 @@ class InteractiveClassifier(RodanTask):
         staffless_image_path = inputs['Staffless Image'][0]['resource_path']
         # We need to figure out the best way to include the data in the template
         data = {
-            "glyphs": json.dumps(settings["glyphs"]),
+            "glyphs": settings["glyphs_json"],
             "binary_image_path": media_file_path_to_public_url(
                 staffless_image_path)
         }
@@ -274,11 +288,13 @@ class InteractiveClassifier(RodanTask):
         if settings["@state"] == ClassifierStateEnum.IMPORT_XML:
             run_import_stage(settings, classifier_path)
             settings["@state"] = ClassifierStateEnum.CORRECTION
+            serialize_glyphs_to_json(settings)
             return self.WAITING_FOR_INPUT()
         elif settings["@state"] == ClassifierStateEnum.CORRECTION:
             # Update any changed glyphs
             update_changed_glyphs(settings)
             run_correction_stage(settings, training_database, features)
+            serialize_glyphs_to_json(settings)
             return self.WAITING_FOR_INPUT()
         else:
             # Update changed glyphs
@@ -287,6 +303,8 @@ class InteractiveClassifier(RodanTask):
             cknn = run_correction_stage(settings, training_database, features)
             # No more corrections are required.  We can now output the data
             run_output_stage(cknn, settings["glyphs"], outputs)
+            # Remove the JSON string from the database
+            purge_serialized_json(settings)
 
     def validate_my_user_input(self, inputs, settings, user_input):
         if 'complete' in user_input:
