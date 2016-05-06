@@ -49,9 +49,16 @@ var App = new Marionette.Application({
             }
         );
 
+        var pageElement = $("#page");
+        var glyphsElement = $("#glyphs");
+
         // Extract the page image URL
-        var binaryPageImage = $("#page").attr("data-page");
-        var glyphs = JSON.parse($("#glyphs").attr("data-glyphs"));
+        var binaryPageImage = pageElement.attr("data-page");
+        var glyphs = JSON.parse(glyphsElement.attr("data-glyphs"));
+
+        // Delete the data elements from the dom
+        pageElement.remove();
+        glyphsElement.remove();
 
         var glyphCollection = new GlyphCollection(glyphs);
 
@@ -151,7 +158,6 @@ var App = new Marionette.Application({
         }));
 
         // Loading modal
-        
         this.modals.loading = new ModalViewModel({
             title: "Loading Page...",
             isCloseable: false,
