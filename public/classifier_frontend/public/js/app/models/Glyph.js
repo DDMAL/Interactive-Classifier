@@ -40,5 +40,6 @@ export default Backbone.Model.extend({
         // Update glyph table location
         RadioChannels.edit.trigger(GlyphEvents.moveGlyph, this, oldShortCode, this.get("short_code"));
         RadioChannels.edit.trigger(GlyphEvents.changeGlyph, this);
+        RadioChannels.edit.trigger(GlyphEvents.setGlyphName, this.get("short_code"));
     }
 });
