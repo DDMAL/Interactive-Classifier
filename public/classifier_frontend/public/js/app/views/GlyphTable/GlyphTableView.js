@@ -83,7 +83,12 @@ export default Marionette.CollectionView.extend({
                 // Empty the previous selection
                 var collection = this.model.get("selection");
                 collection.reset();
-                RadioChannels.edit.trigger(GlyphEvents.dragSelect, boundingBox, collection);
+
+                RadioChannels.edit.trigger(
+                    GlyphEvents.dragSelect,
+                    boundingBox,
+                    collection
+                );
             }
         }
 
