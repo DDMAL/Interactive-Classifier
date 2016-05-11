@@ -3,7 +3,7 @@ import $ from "jquery";
 import Marionette from "marionette";
 import GlyphTableRowView from "views/GlyphTable/Row/GlyphTableRowView";
 import GlyphEvents from "events/GlyphEvents";
-import RadioChannels from "../../radio/RadioChannels";
+import RadioChannels from "radio/RadioChannels";
 
 export default Marionette.CollectionView.extend({
     tagName: 'table class="table table-hover"',
@@ -21,7 +21,6 @@ export default Marionette.CollectionView.extend({
 
     events: {
         "mousedown": "onMouseDown"
-        // "mouseup": "onMouseUp"
     },
 
     initialize: function ()
@@ -70,8 +69,11 @@ export default Marionette.CollectionView.extend({
             var x = event.clientX,
                 y = event.clientY;
 
+            var width = Math.abs(x - this.mouseDownX),
+                height = Math.abs(y - this.mouseDownY);
+
             var that = this;
-            if (x - this.mouseDownX !== 0 && y - this.mouseDownY !== 0)
+            if (width !== 0 && height !== 0 && (width * height) > 10)
             {
                 var boundingBox = {
                     left: Math.min(that.mouseDownX, x),
