@@ -48,37 +48,42 @@ var App = new Marionette.Application({
                 that.modals.finalizeCorrections.open();
             }
         );
-
-        var pageElement = $("#page");
-        var glyphsElement = $("#glyphs");
-
-        // Extract the page image URL
-        var binaryPageImage = pageElement.attr("data-page");
-        var glyphs = JSON.parse(glyphsElement.attr("data-glyphs"));
-
-        // Delete the data elements from the dom
-        pageElement.remove();
-        glyphsElement.remove();
-
-        var glyphCollection = new GlyphCollection(glyphs);
-
-        // Open the view to edit the page
-        this.editPage(glyphCollection, binaryPageImage);
-
         RadioChannels.edit.on(GlyphEvents.changeGlyph, function(glyphModel)
         {
             that.changedGlyphs.add(glyphModel);
         });
+
+        this.modals.loading.open();
+    },
+
+    onStart: function ()
+    {
+        console.log("onStart!");
+
+        var that = this;
+        setTimeout(
+            function () {
+                var pageElement = $("#page");
+                var glyphsElement = $("#glyphs");
+
+                // Extract the page image URL
+                var binaryPageImage = pageElement.attr("data-page");
+                var glyphs = JSON.parse(glyphsElement.attr("data-glyphs"));
+
+                // Delete the data elements from the dom
+                pageElement.remove();
+                glyphsElement.remove();
+
+                var glyphCollection = new GlyphCollection(glyphs);
+                // Open the view to edit the page
+                that.editPage(glyphCollection, binaryPageImage);
+            },
+            1000
+        );
     },
 
     editPage: function(glyphCollection, image_path)
     {
-        // Send out an event to close all of the open modals before starting
-        // the page load process
-        this.closeAllModals();
-
-        this.modals.loading.open();
-
         var page = new Page({
             binary_image: image_path
         });
