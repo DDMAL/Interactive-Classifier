@@ -11,5 +11,12 @@ export default {
     "job will complete.  <b>You will not be able to do any more" +
     " manual corrections!</b>",
 
-    loadingGlyphs: "Loading page glyphs from the server.  This may take some time..."
+    loadingGlyphs: "Loading page glyphs from the server.  This may take some time...",
+
+    menuSubmitLabel: "Submit Corrections and Re-Classify",
+    menuFinalizeLabel: "Finalize Classification and Save GameraXML",
+    
+    loadingPage: "Loading Page...",
+    submitCorrections: "Submit Corrections...",
+    finalizeCorrections: "Finalize Corrections..."
 };
