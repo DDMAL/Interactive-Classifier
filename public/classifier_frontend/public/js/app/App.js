@@ -95,8 +95,6 @@ var App = new Marionette.Application({
      */
     submitCorrections: function ()
     {
-        console.log("SUBMIT CORRECTIONS!");
-
         var data = JSON.stringify({
             "glyphs": this.changedGlyphs.toJSON()
         });
@@ -164,7 +162,7 @@ var App = new Marionette.Application({
 
         // Loading modal
         this.modals.loading = new ModalViewModel({
-            title: "Loading Page...",
+            title: Strings.loadingPage,
             isCloseable: false,
             innerView: new LoadingScreenView({
                 model: new LoadingScreenViewModel({
@@ -176,7 +174,7 @@ var App = new Marionette.Application({
 
         // Submit Corrections modal
         this.modals.submitCorrections = new ModalViewModel({
-            title: "Submit Corrections...",
+            title: Strings.submitCorrections,
             isCloseable: true,
             innerView: new ConfirmView({
                 model: new ConfirmViewModel({
@@ -193,7 +191,7 @@ var App = new Marionette.Application({
 
         // Finalize Corrections modal
         this.modals.finalizeCorrections = new ModalViewModel({
-            title: "Finalize Corrections...",
+            title: Strings.finalizeCorrections,
             isCloseable: true,
             innerView: new ConfirmView({
                 model: new ConfirmViewModel({
