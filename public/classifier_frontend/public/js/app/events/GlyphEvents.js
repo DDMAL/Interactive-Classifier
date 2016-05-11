@@ -3,5 +3,7 @@ export default {
     clickGlyph: "click:glyph",
     moveGlyph: "move:glyph",
     changeGlyph: "change:glyph",
-    dragSelect: "open:multiEdit"
+    dragSelect: "open:multiEdit",
+    setGlyphName: "change:glyph:name",
+    clickGlyphName: "click:glyph:name"
 }
