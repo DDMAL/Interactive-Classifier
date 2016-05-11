@@ -143,7 +143,6 @@ var App = new Marionette.Application({
             complete: function (response)
             {
                 console.log("Complete", response);
-                // window.location = 'about:blank';
 
                 // Close the window if successful POST
                 if (response.status === 200)
@@ -233,14 +232,6 @@ var App = new Marionette.Application({
             }
         )
     }
-});
-
-App.on('initialize:before', function()
-{
-    // options.anotherThing = true; // Add more data to your options
-});
-App.on('initialize:after', function()
-{
 });
 
 export default App;
