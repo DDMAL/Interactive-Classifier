@@ -21,7 +21,7 @@ export default Marionette.LayoutView.extend({
     initialize: function ()
     {
         var that = this;
-        RadioChannels.edit.on(GlyphEvents.setGlyphName, function (newShortCode)
+        this.listenTo(RadioChannels.edit, GlyphEvents.setGlyphName, function (newShortCode)
         {
             console.log("Set name to ", newShortCode);
             // Add the model to the short_codes

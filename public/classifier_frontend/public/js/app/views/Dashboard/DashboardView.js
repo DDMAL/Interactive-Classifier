@@ -1,6 +1,5 @@
 import _ from "underscore";
 import Marionette from "marionette";
-import Radio from "backbone.radio";
 import GlyphEvents from "events/GlyphEvents";
 import GlyphCollection from "collections/GlyphCollection";
 import ClassTreeView from "views/ClassTree/ClassTreeView";
@@ -14,6 +13,7 @@ import GlyphTableViewModel from "views/GlyphTable/GlyphTableViewModel";
 import ImagePreviewView from "views/ImagePreview/ImagePreviewView";
 import ImagePreviewViewModel from "views/ImagePreview/ImagePreviewViewModel";
 import template from "./dashboard.template.html";
+import RadioChannels from "../../radio/RadioChannels";
 
 export default Marionette.LayoutView.extend({
     template,
@@ -45,14 +45,13 @@ export default Marionette.LayoutView.extend({
 
         // Glyph Editing Events
         var that = this;
-        this.editChannel = Radio.channel("edit");
-        this.listenTo(this.editChannel, GlyphEvents.openGlyphEdit,
+        this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
             function(model)
             {
                 previewView.highlightGlyph(model);
                 that.openGlyphEdit(model);
             });
-        this.listenTo(this.editChannel, GlyphEvents.moveGlyph,
+        this.listenTo(RadioChannels.edit, GlyphEvents.moveGlyph,
             function(glyph,oldShortCode, newShortCode)
             {
                 tableRowCollection.moveGlyph(glyph, oldShortCode, newShortCode);
@@ -65,10 +64,6 @@ export default Marionette.LayoutView.extend({
         this.glyphTreeRegion.show(new ClassTreeView({model: ctvm}));
         // Poll the class tree
         ctvm.fetch();
-        // setInterval(function ()
-        // {
-        //     ctvm.fetch();
-        // }, 20000);
 
         // Show the glyph table
         var glyphTable = new GlyphTableView({
@@ -99,13 +94,6 @@ export default Marionette.LayoutView.extend({
                 }
             });
         });
-    },
-
-    onDestroy: function()
-    {
-        console.log("onDestroy");
-        this.editChannel.stopListening();
-        delete this.editChannel;
     },
 
     openGlyphEdit: function(model)

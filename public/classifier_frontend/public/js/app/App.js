@@ -36,19 +36,19 @@ var App = new Marionette.Application({
 
         // Menuchannel
         var that = this;
-        RadioChannels.menu.on(MainMenuEvents.clickSubmitCorrections,
+        this.listenTo(RadioChannels.menu, MainMenuEvents.clickSubmitCorrections,
             function()
             {
                 that.modals.submitCorrections.open();
             }
         );
-        RadioChannels.menu.on(MainMenuEvents.clickFinalizeCorrections,
+        this.listenTo(RadioChannels.menu, MainMenuEvents.clickFinalizeCorrections,
             function()
             {
                 that.modals.finalizeCorrections.open();
             }
         );
-        RadioChannels.edit.on(GlyphEvents.changeGlyph, function(glyphModel)
+        this.listenTo(RadioChannels.edit, GlyphEvents.changeGlyph, function(glyphModel)
         {
             that.changedGlyphs.add(glyphModel);
         });

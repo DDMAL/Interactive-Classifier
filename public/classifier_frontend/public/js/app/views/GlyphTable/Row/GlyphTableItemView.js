@@ -32,7 +32,7 @@ export default Marionette.ItemView.extend({
         this.listenTo(this.viewModel, "change:active", this.render);
 
         var that = this;
-        RadioChannels.edit.on(GlyphEvents.dragSelect,
+        this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
             function(boundingBox, collection)
             {
                 // If this div's bounding box is within the selection, then we've
@@ -46,7 +46,7 @@ export default Marionette.ItemView.extend({
                 }
             }
         );
-        RadioChannels.edit.on(GlyphEvents.openGlyphEdit, function(model)
+        this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit, function(model)
         {
             if (that.model !== model)
             {
