@@ -110,8 +110,12 @@ var App = new Marionette.Application({
             complete: function (response)
             {
                 console.log("Complete", response);
-                // window.location = 'about:blank';
-                // window.close();
+
+                // Close the window if successful POST
+                if (response.status === 200)
+                {
+                    window.close();
+                }
             }
         });
     },
@@ -122,8 +126,6 @@ var App = new Marionette.Application({
      */
     finalizeAndQuit: function ()
     {
-        console.log("FINALIZE AND QUIT!");
-
         var data = JSON.stringify({
             "complete": true,
             "glyphs": this.changedGlyphs.toJSON()
@@ -140,8 +142,11 @@ var App = new Marionette.Application({
                 console.log("Complete", response);
                 // window.location = 'about:blank';
 
-                // Close the window
-                // window.close();
+                // Close the window if successful POST
+                if (response.status === 200)
+                {
+                    window.close();
+                }
             }
         });
     },
