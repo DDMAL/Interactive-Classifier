@@ -23,12 +23,12 @@ export default Marionette.CompositeView.extend({
 
         menuLinks.add(new MenuLinkViewModel({
             url: "#",
-            text: "Submit Corrections and Re-Classify",
+            text: Strings.menuSubmitLabel,
             clickEvent: MainMenuEvents.clickSubmitCorrections
         }));
         menuLinks.add(new MenuLinkViewModel({
             url: "#",
-            text: "Finalize Classification and Save GameraXML",
+            text: Strings.menuFinalizeLabel,
             clickEvent: MainMenuEvents.clickFinalizeCorrections
         }));
 
