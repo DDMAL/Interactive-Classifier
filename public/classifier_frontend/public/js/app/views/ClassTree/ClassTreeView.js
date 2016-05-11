@@ -1,3 +1,4 @@
+import _ from "underscore";
 import Marionette from "marionette";
 import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
@@ -15,6 +16,27 @@ export default Marionette.LayoutView.extend({
 
     modelEvents: {
         "change": "showSubTree"
+    },
+
+    initialize: function ()
+    {
+        var that = this;
+        RadioChannels.edit.on(GlyphEvents.setGlyphName, function (newShortCode)
+        {
+            console.log("Set name to ", newShortCode);
+            // Add the model to the short_codes
+            var oldShortCodeList = that.model.get("short_codes");
+            var newShortCodeList = _.union(oldShortCodeList, [newShortCode]);
+
+            if (newShortCodeList.length !== oldShortCodeList.length)
+            {
+                console.log("New name!");
+                // Set the new list
+                that.model.set("short_codes", newShortCodeList.sort());
+                // Re-render the view
+                that.showSubTree();
+            }
+        });
     },
 
     onShow: function()
