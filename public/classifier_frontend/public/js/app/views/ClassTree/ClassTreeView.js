@@ -1,7 +1,9 @@
 import Marionette from "marionette";
-import RecursiveUnorderedListView from "views/widgets/RecursiveUnorderedList/RecursiveUnorderedListView";
-import RecursiveUnorderedListViewModel from "views/widgets/RecursiveUnorderedList/RecursiveUnorderedListViewModel";
-import shortCodeArraytoRecursiveTree from "views/widgets/RecursiveUnorderedList/shortCodeArrayToRecursiveTree";
+import RadioChannels from "radio/RadioChannels";
+import GlyphEvents from "events/GlyphEvents";
+import shortCodeArrayToRecursiveTree from "./shortCodeArrayToRecursiveTree";
+import RecursiveUnorderedListView from "./RecursiveUnorderedListView";
+import RecursiveUnorderedListViewModel from "./RecursiveUnorderedListViewModel";
 import template from "./class-tree.template.html";
 
 export default Marionette.LayoutView.extend({
