@@ -16,7 +16,7 @@ import MainMenuEvents from "events/MainMenuEvents";
 import GlyphCollection from "collections/GlyphCollection";
 import ConfirmView from "views/widgets/Confirm/ConfirmView";
 import ConfirmViewModel from "views/widgets/Confirm/ConfirmViewModel";
-import Strings from "./localization/Strings";
+import Strings from "localization/Strings";
 
 var App = new Marionette.Application({
     modals: {},
