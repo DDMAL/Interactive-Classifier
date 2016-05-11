@@ -27,7 +27,7 @@ export default Marionette.LayoutView.extend({
         var shortCodes = this.model.get("short_codes");
         console.log("shortCodes:", shortCodes);
         var mod = new RecursiveUnorderedListViewModel();
-        shortCodeArraytoRecursiveTree(shortCodes, mod);
+        shortCodeArrayToRecursiveTree(shortCodes, mod);
         this.classTreeRegion.show(new RecursiveUnorderedListView({model: mod}));
     }
 });
