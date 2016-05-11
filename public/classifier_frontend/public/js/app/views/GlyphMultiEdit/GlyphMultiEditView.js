@@ -1,5 +1,7 @@
 import Marionette from "marionette";
 import GlyphMultiEditThumbnailList from "./GlyphMultiEditThumbnailList";
+import RadioChannels from "radio/RadioChannels";
+import GlyphEvents from "events/GlyphEvents";
 import template from "views/GlyphMultiEdit/glyph-multi-edit.template.html";
 
 export default Marionette.LayoutView.extend({
@@ -18,6 +20,18 @@ export default Marionette.LayoutView.extend({
         "submit": "onSubmitForm"
     },
 
+    initialize: function ()
+    {
+        var that = this;
+        this.listenTo(RadioChannels.edit, GlyphEvents.clickGlyphName,
+            function(shortCode)
+            {
+                that.ui.classInput.val(shortCode);
+                that.onSubmitForm();
+            }
+        );
+    },
+
     onShow: function()
     {
         this.thumbnailListRegion.show(new GlyphMultiEditThumbnailList({
@@ -27,9 +41,10 @@ export default Marionette.LayoutView.extend({
 
     onSubmitForm: function(event)
     {
-        console.log(this.ui.classInput.val());
-        event.preventDefault();
-        console.log("submitForm", this.ui.classInput.val());
+        if (event)
+        {
+            event.preventDefault();
+        }
         var that = this;
         this.collection.each(function(model)
         {
