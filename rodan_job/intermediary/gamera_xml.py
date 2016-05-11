@@ -27,14 +27,20 @@ class GameraXML:
             height = int(glyph.get("nrows"))
             ulx = int(glyph.get("ulx"))
             uly = int(glyph.get("uly"))
-            name = glyph.find("ids").find("id").get("name")
+            try:
+                name = glyph.find("ids").find("id").get("name")
+            except AttributeError:
+                name = "UNCLASSIFIED"
             run_length_data = glyph.find("data").text.replace('\n', '')
 
             image = RunLengthImage(ulx, uly, width, height, run_length_data)
             image_b64 = image.get_base64_image()
 
             id_state = glyph.find("ids").get("state")
-            confidence = float(glyph.find("ids").find("id").get("confidence"))
+            try:
+                confidence = float(glyph.find("ids").find("id").get("confidence"))
+            except AttributeError:
+                confidence = 0.0
             output.append(
                 {
                     "id": uuid.uuid4().hex,
