@@ -1,5 +1,5 @@
 import Backbone from "backbone";
-
+import _ from "underscore";
 
 var RecursiveUnorderedListViewModel = Backbone.Model.extend({
     defaults: {
@@ -9,13 +9,12 @@ var RecursiveUnorderedListViewModel = Backbone.Model.extend({
 
     getOrAppendChild: function(value)
     {
-        var matchingChild = this.get("children")
-            .find(
-                function(child)
-                {
-                    return child.get("value") === value;
-                }
-            );
+        var children = this.get("children");
+
+        var matchingChild = _.find(
+            children,
+            (child) => child.get("value") === value
+        );
         if (matchingChild)
         {
             return matchingChild;
