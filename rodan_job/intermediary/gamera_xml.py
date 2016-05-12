@@ -65,7 +65,6 @@ class GameraXML:
         # Construct the glyph objects
         self.glyphs = [gamera_image_to_glyph(image) for image in
                        self.gamera_images]
-        print self.glyphs
 
     def get_glyphs(self):
         return self.glyphs
