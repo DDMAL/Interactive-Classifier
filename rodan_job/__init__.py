@@ -1,1 +1,2 @@
 from base import InteractiveClassifier
+from gamera_xml_distributor import GameraXMLDistributor
