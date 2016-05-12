@@ -1,9 +1,8 @@
-import json
 import os
-from shutil import copyfile
+import json
+import gamera.classify
 import gamera.core
 import gamera.gamera_xml
-import gamera.classify
 import gamera.knn
 from rodan.jobs.base import RodanTask
 from rodan.jobs.interactive_classifier.intermediary.gamera_xml import GameraXML, \
