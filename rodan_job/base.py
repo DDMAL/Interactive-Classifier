@@ -4,9 +4,9 @@ import gamera.classify
 import gamera.core
 import gamera.gamera_xml
 import gamera.knn
+from gamera.gamera_xml import glyphs_from_xml
 from rodan.jobs.base import RodanTask
-from rodan.jobs.interactive_classifier.intermediary.gamera_xml import GameraXML, \
-    gamera_xml_to_gamera_image_list
+from rodan.jobs.interactive_classifier.intermediary.gamera_xml import GameraXML
 from rodan.jobs.interactive_classifier.intermediary.run_length_image import \
     RunLengthImage
 from rodan.settings import MEDIA_URL, MEDIA_ROOT
@@ -277,7 +277,7 @@ class InteractiveClassifier(RodanTask):
             features = None
         # Handle importing the optional training classifier
         if "Training Classifier" in inputs:
-            training_database = gamera_xml_to_gamera_image_list(
+            training_database = glyphs_from_xml(
                 inputs['Training Classifier'][0]['resource_path'])
         else:
             training_database = []
