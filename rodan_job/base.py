@@ -153,9 +153,15 @@ def run_import_stage(settings, classifier_path):
 
 def serialize_glyphs_to_json(settings):
     """
-    Serialize the glyphs as JSON and save them in the settings.
+    Serialize the glyphs as a JSON dict grouped by short code
     """
-    settings["glyphs_json"] = json.dumps(settings["glyphs"])
+    output = {}
+    for glyph in settings["glyphs"]:
+        short_code = glyph["short_code"]
+        if short_code not in output:
+            output[short_code] = []
+        output[short_code].append(glyph)
+    return json.dumps(output)
 
 
 def purge_serialized_json(settings):
@@ -288,13 +294,13 @@ class InteractiveClassifier(RodanTask):
         if settings["@state"] == ClassifierStateEnum.IMPORT_XML:
             run_import_stage(settings, classifier_path)
             settings["@state"] = ClassifierStateEnum.CORRECTION
-            serialize_glyphs_to_json(settings)
+            settings["glyphs_json"] = serialize_glyphs_to_json(settings)
             return self.WAITING_FOR_INPUT()
         elif settings["@state"] == ClassifierStateEnum.CORRECTION:
             # Update any changed glyphs
             update_changed_glyphs(settings)
             run_correction_stage(settings, training_database, features)
-            serialize_glyphs_to_json(settings)
+            settings["glyphs_json"] = serialize_glyphs_to_json(settings)
             return self.WAITING_FOR_INPUT()
         else:
             # Update changed glyphs
