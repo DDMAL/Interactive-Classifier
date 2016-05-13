@@ -2,12 +2,9 @@ import Marionette from "marionette";
 import GlyphTableItemView from "views/GlyphTable/Row/GlyphTableItemView";
 import template from "./table-row.template.html";
 
-
 export default Marionette.LayoutView.extend({
     template,
     tagName: "tr",
-    sort: false,
-
     tableViewModel: undefined,
 
     initialize: function (options)
@@ -25,11 +22,14 @@ export default Marionette.LayoutView.extend({
 
     onShow: function ()
     {
+        var that = this;
+        // setTimeout(function ()
+        // {
         var view = new Marionette.CollectionView({
             childView: GlyphTableItemView,
-            collection: this.model.get("glyphs")
+            collection: that.model.get("glyphs")
+            // sort: false
         });
-        var that = this;
         view.childViewOptions = function ()
         {
             return {
@@ -37,6 +37,7 @@ export default Marionette.LayoutView.extend({
             }
         };
 
-        this.elementsRegion.show(view);
+        that.elementsRegion.show(view);
+        // }, 2000);
     }
 })
