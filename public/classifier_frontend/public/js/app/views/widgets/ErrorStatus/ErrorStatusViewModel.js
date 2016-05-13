@@ -8,7 +8,7 @@ export default Backbone.Model.extend({
         text: ""
     },
 
-    error: function(message)
+    error: function (message)
     {
         this.set("status", StatusEnum.error);
         this.set("text", String(message));

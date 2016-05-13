@@ -8,12 +8,12 @@ export default Backbone.Model.extend({
         isCloseable: false
     },
 
-    open: function()
+    open: function ()
     {
         this.trigger("open");
     },
 
-    close: function()
+    close: function ()
     {
         this.trigger("close");
     }

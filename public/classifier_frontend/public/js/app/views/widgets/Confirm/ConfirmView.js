@@ -1,7 +1,6 @@
 import Marionette from "marionette";
 import template from "./confirm.template.html";
 
-
 export default Marionette.ItemView.extend({
     template,
 
@@ -13,7 +12,7 @@ export default Marionette.ItemView.extend({
         "click @ui.button": "onClickButton"
     },
 
-    onClickButton: function()
+    onClickButton: function ()
     {
         // Trigger the button click callback!
         this.model.triggerCallback();

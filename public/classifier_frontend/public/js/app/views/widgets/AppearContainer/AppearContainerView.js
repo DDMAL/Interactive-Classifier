@@ -2,7 +2,6 @@ import Marionette from "marionette";
 import $ from "jquery";
 import template from "./appear-container.template.html";
 
-
 export default Marionette.LayoutView.extend({
     template,
 
@@ -31,7 +30,7 @@ export default Marionette.LayoutView.extend({
     /**
      * Function to call when the view appears
      */
-    onAppear: function()
+    onAppear: function ()
     {
         // We only want it the first time!
         if (this.model.hasAppeared() === false)

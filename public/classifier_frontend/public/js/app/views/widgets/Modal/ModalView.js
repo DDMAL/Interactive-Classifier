@@ -17,7 +17,7 @@ export default Marionette.LayoutView.extend({
         "close": "close"
     },
 
-    onShow: function()
+    onShow: function ()
     {
         console.log(this.model.get("innerView"));
         if (this.model.get("innerView"))
@@ -26,13 +26,13 @@ export default Marionette.LayoutView.extend({
         }
     },
 
-    showInnerView: function()
+    showInnerView: function ()
     {
         console.log("Rendering innerview...");
         this.modalBody.show(this.model.get("innerView"));
     },
 
-    open: function()
+    open: function ()
     {
         console.log(this);
         console.log(this.ui);
@@ -44,7 +44,7 @@ export default Marionette.LayoutView.extend({
         );
     },
 
-    close: function()
+    close: function ()
     {
         this.ui.modal.modal('hide');
     }

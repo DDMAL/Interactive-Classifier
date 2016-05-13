@@ -10,12 +10,12 @@ export default Marionette.ItemView.extend({
         "change:text": "textChanged"
     },
 
-    textChanged: function()
+    textChanged: function ()
     {
         this.render();
     },
 
-    serializeData: function()
+    serializeData: function ()
     {
         var tag = "";
 
