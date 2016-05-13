@@ -39,12 +39,12 @@ export default Marionette.LayoutView.extend({
         });
     },
 
-    onShow: function()
+    onShow: function ()
     {
         this.showSubTree();
     },
 
-    showSubTree: function()
+    showSubTree: function ()
     {
         var shortCodes = this.model.get("short_codes");
         console.log("shortCodes:", shortCodes);

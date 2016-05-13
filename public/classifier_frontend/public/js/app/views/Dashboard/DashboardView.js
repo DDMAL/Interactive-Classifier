@@ -27,7 +27,7 @@ export default Marionette.LayoutView.extend({
         modalTestRegion: ".modal-test"
     },
 
-    onShow: function()
+    onShow: function ()
     {
         // Create the preview window
         var previewView = new ImagePreviewView({
@@ -46,13 +46,13 @@ export default Marionette.LayoutView.extend({
         // Glyph Editing Events
         var that = this;
         this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
-            function(model)
+            function (model)
             {
                 previewView.highlightGlyph(model);
                 that.openGlyphEdit(model);
             });
         this.listenTo(RadioChannels.edit, GlyphEvents.moveGlyph,
-            function(glyph,oldShortCode, newShortCode)
+            function (glyph, oldShortCode, newShortCode)
             {
                 tableRowCollection.moveGlyph(glyph, oldShortCode, newShortCode);
             }
@@ -75,7 +75,7 @@ export default Marionette.LayoutView.extend({
         });
         this.glyphTableRegion.show(glyphTable);
 
-        _.each(this.model.get("glyph_classes"), function(value)
+        _.each(this.model.get("glyph_classes"), function (value)
         {
             var glyphs = new GlyphCollection();
             glyphs.url = "/page/" + that.model.get("id") + "/glyphs/?short_code=" + value;
@@ -96,7 +96,7 @@ export default Marionette.LayoutView.extend({
         });
     },
 
-    openGlyphEdit: function(model)
+    openGlyphEdit: function (model)
     {
         console.log("Open glyphedit!", model);
         this.glyphEditRegion.show(new GlyphEditView({

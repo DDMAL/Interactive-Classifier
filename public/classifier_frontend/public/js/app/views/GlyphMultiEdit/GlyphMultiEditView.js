@@ -24,7 +24,7 @@ export default Marionette.LayoutView.extend({
     {
         var that = this;
         this.listenTo(RadioChannels.edit, GlyphEvents.clickGlyphName,
-            function(shortCode)
+            function (shortCode)
             {
                 that.ui.classInput.val(shortCode);
                 that.onSubmitForm();
@@ -32,21 +32,21 @@ export default Marionette.LayoutView.extend({
         );
     },
 
-    onShow: function()
+    onShow: function ()
     {
         this.thumbnailListRegion.show(new GlyphMultiEditThumbnailList({
             collection: this.collection
         }));
     },
 
-    onSubmitForm: function(event)
+    onSubmitForm: function (event)
     {
         if (event)
         {
             event.preventDefault();
         }
         var that = this;
-        this.collection.each(function(model)
+        this.collection.each(function (model)
         {
             model.changeClass(that.ui.classInput.val());
         });

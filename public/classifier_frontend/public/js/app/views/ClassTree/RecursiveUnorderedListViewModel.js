@@ -7,7 +7,7 @@ var RecursiveUnorderedListViewModel = Backbone.Model.extend({
         children: []
     },
 
-    getOrAppendChild: function(value)
+    getOrAppendChild: function (value)
     {
         var children = this.get("children");
 

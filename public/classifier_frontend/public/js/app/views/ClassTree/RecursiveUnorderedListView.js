@@ -3,7 +3,6 @@ import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
 import template from "./recursive-unordered-list.template.html";
 
-
 export default Marionette.ItemView.extend({
     template,
 
@@ -11,7 +10,7 @@ export default Marionette.ItemView.extend({
         "click .short-code": "onClickNode"
     },
 
-    onShow: function()
+    onShow: function ()
     {
         this.$el.html(this.constructListHtml(this.model, ""));
     },
@@ -31,7 +30,8 @@ export default Marionette.ItemView.extend({
      * @param {string} parentValue
      * @returns {string}
      */
-    constructListHtml: function (node, parentValue) {
+    constructListHtml: function (node, parentValue)
+    {
         var output = "";
 
         var value = node.get("value"),

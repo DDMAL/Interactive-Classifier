@@ -5,7 +5,7 @@ export default Marionette.ItemView.extend({
     template,
     tagName: "li",
 
-    serializeData: function()
+    serializeData: function ()
     {
         return {
             image_file: this.model.getAbsoluteImageFile()

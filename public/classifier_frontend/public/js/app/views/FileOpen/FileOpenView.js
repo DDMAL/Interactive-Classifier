@@ -8,7 +8,7 @@ export default Marionette.CollectionView.extend({
 
     tagName: 'table class="table table-striped table-hover table-condensed"',
 
-    initialize: function()
+    initialize: function ()
     {
         this.collection = new Backbone.Collection();
         this.collection.url = "/classifiers/";

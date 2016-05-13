@@ -21,13 +21,13 @@ export default Marionette.LayoutView.extend({
         "click .edit-button": "goToEdit"
     },
 
-    goToEdit: function(event)
+    goToEdit: function (event)
     {
         event.preventDefault();
         App.appRouter.routeToPage(this.model.get("url"));
     },
 
-    onShow: function()
+    onShow: function ()
     {
         var nameCollection = this.model.getCollection("name_set", NameCollection, Name);
         var imageCollection;

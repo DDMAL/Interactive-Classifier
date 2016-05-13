@@ -15,7 +15,7 @@ export default Marionette.ItemView.extend({
         "click @ui.button": "onClick"
     },
 
-    onClick: function(event)
+    onClick: function (event)
     {
         event.preventDefault();
         // Grab the page model's url

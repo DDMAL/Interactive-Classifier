@@ -27,7 +27,7 @@ export default Marionette.LayoutView.extend({
         "submit": "createGlyphButtonCallback"
     },
 
-    initialize: function(options)
+    initialize: function (options)
     {
         // Assign the collection which contains the created glyphs
         this.createdCollection = options.createdCollection;
@@ -35,13 +35,13 @@ export default Marionette.LayoutView.extend({
         this.errorStatusViewModel = new ErrorStatusViewModel();
     },
 
-    onShow: function()
+    onShow: function ()
     {
         console.log("show createglyphview:", this.ui.statusDiv);
         this.getRegion("statusDiv").show(new ErrorStatusView({model: this.errorStatusViewModel}));
     },
 
-    createGlyphButtonCallback: function(event)
+    createGlyphButtonCallback: function (event)
     {
         // Prevent the event from redirecting the page
         event.preventDefault();
@@ -52,7 +52,7 @@ export default Marionette.LayoutView.extend({
         var that = this;
         newGlyph.save(undefined,
             {
-                success: function()
+                success: function ()
                 {
                     that.errorStatusViewModel.success('Glyph "<a href="'
                         + newGlyph.get("url") + '">'
@@ -63,7 +63,7 @@ export default Marionette.LayoutView.extend({
                     // Empty the short code field
                     that.ui.shortCodeField.val('');
                 },
-                error: function(model, event)
+                error: function (model, event)
                 {
                     that.errorStatusViewModel.error('Error saving glyph. - ' + event.responseText);
                     //that.ui.statusDiv.find("p").fadeOut(5000);

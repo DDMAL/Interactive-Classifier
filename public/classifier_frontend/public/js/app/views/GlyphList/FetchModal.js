@@ -1,7 +1,7 @@
 import UploadProgressModalView from "views/GlyphList/UploadProgressModalView";
 
 export default UploadProgressModalView.extend({
-    initialize: function(options)
+    initialize: function (options)
     {
         this.title = options.title;
         this.text = options.text;
@@ -10,11 +10,11 @@ export default UploadProgressModalView.extend({
         // Bind the events
         var that = this;
         console.log("Event bindings");
-        this.collection.on("open-modal", function()
+        this.collection.on("open-modal", function ()
         {
             that.open();
         });
-        this.collection.on("sync", function()
+        this.collection.on("sync", function ()
         {
             that.close();
         });

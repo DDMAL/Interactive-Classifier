@@ -1,10 +1,8 @@
-
-
-export default function(shortCodes, root)
+export default function (shortCodes, root)
 {
     // Split up the shortcodes by periods
     var splitShortCodes = shortCodes.map(
-        function(shortCode)
+        function (shortCode)
         {
             return shortCode.split('.');
         }

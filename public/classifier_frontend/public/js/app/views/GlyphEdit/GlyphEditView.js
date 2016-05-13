@@ -19,11 +19,11 @@ export default Marionette.ItemView.extend({
         "change": "render"
     },
 
-    initialize: function()
+    initialize: function ()
     {
         var that = this;
         this.listenTo(RadioChannels.edit, GlyphEvents.clickGlyphName,
-            function(shortCode)
+            function (shortCode)
             {
                 that.ui.classInput.val(shortCode);
                 that.onSubmitForm();
@@ -37,7 +37,7 @@ export default Marionette.ItemView.extend({
         this.ui.classInput.focus();
     },
 
-    onSubmitForm: function(event)
+    onSubmitForm: function (event)
     {
         if (event)
         {

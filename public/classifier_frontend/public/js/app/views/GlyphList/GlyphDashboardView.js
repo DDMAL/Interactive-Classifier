@@ -18,7 +18,7 @@ export default Marionette.LayoutView.extend({
         glyphListFetchModalRegion: ".glyph-list-fetch-modal-region"
     },
 
-    onShow: function()
+    onShow: function ()
     {
         var glyphCollection = new GlyphCollection({url: "/classifier/glyphs/"});
         var glyphFetchModal = new FetchModal(

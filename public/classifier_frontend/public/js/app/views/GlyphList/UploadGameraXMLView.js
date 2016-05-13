@@ -28,7 +28,7 @@ export default Marionette.LayoutView.extend({
         modalRegion: ".upload-modal"
     },
 
-    initialize: function(options)
+    initialize: function (options)
     {
         this.createdCollection = options.createdCollection;
         // Build the progress modal
@@ -43,12 +43,12 @@ export default Marionette.LayoutView.extend({
      *
      * @param idNum Glyph ID int,
      */
-    setGlyphId: function(idNum)
+    setGlyphId: function (idNum)
     {
         this.glyphId = getAbsoluteGlyphUrl(parseInt(idNum));
     },
 
-    onShow: function()
+    onShow: function ()
     {
         // Show the modal
         this.modalRegion.show(this.modalView);
@@ -71,22 +71,22 @@ export default Marionette.LayoutView.extend({
         );
         // Set up the callbacks
         var that = this;
-        this.dropzoneObject.on("processing", function()
+        this.dropzoneObject.on("processing", function ()
         {
             that.modalView.open();
         });
-        this.dropzoneObject.on("uploadprogress", function(file, percent, bytes)
+        this.dropzoneObject.on("uploadprogress", function (file, percent, bytes)
         {
             console.log(file, percent, bytes);
             //that.modalView.setPercent(percent);
         });
-        this.dropzoneObject.on("complete", function()
+        this.dropzoneObject.on("complete", function ()
         {
             that.onSuccess();
         });
     },
 
-    onSuccess: function()
+    onSuccess: function ()
     {
         this.modalView.close();
         // Fetch modal

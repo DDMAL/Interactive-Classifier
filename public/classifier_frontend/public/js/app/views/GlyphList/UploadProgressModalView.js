@@ -13,7 +13,7 @@ export default Marionette.ItemView.extend({
         "percentBar": ".progress-bar"
     },
 
-    initialize: function(options)
+    initialize: function (options)
     {
         this.title = options.title;
         this.text = options.text;
@@ -24,13 +24,13 @@ export default Marionette.ItemView.extend({
      *
      * @param newPercent
      */
-    setPercent: function(newPercent)
+    setPercent: function (newPercent)
     {
         this.percent = parseInt(newPercent, 10);
         this.ui.percentBar.html(this.percent + "\%");
     },
 
-    serializeData: function()
+    serializeData: function ()
     {
         return {
             title: this.title,
@@ -38,7 +38,7 @@ export default Marionette.ItemView.extend({
         };
     },
 
-    open: function()
+    open: function ()
     {
         console.log(this);
         console.log(this.ui);
@@ -50,7 +50,7 @@ export default Marionette.ItemView.extend({
         );
     },
 
-    close: function()
+    close: function ()
     {
         this.ui.modal.modal('hide');
     }
