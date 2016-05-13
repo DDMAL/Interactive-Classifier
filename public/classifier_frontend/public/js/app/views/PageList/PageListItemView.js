@@ -21,7 +21,7 @@ export default Marionette.LayoutView.extend({
         "click @ui.editButton": "onClickEditButton"
     },
 
-    onShow: function()
+    onShow: function ()
     {
         var mv = new PageStatsViewModel();
         mv.url = "/page/" + this.model.get("id") + "/stats/";
@@ -33,7 +33,7 @@ export default Marionette.LayoutView.extend({
         mv.fetch();
     },
 
-    onClickEditButton: function(event)
+    onClickEditButton: function (event)
     {
         event.preventDefault();
 

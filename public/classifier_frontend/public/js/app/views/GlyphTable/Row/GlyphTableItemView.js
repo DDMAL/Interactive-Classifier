@@ -5,7 +5,6 @@ import RadioChannels from "radio/RadioChannels";
 import template from "./table-glyph.template.html";
 import Geometry from "utils/Geometry";
 
-
 export default Marionette.ItemView.extend({
     template,
     viewModel: undefined,
@@ -33,7 +32,7 @@ export default Marionette.ItemView.extend({
 
         var that = this;
         this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
-            function(boundingBox, collection)
+            function (boundingBox, collection)
             {
                 // If this div's bounding box is within the selection, then we've
                 // gotta add the model to the multi selection collection.
@@ -41,12 +40,14 @@ export default Marionette.ItemView.extend({
                 {
                     collection.add(that.model);
                     that.viewModel.activate();
-                } else {
+                }
+                else
+                {
                     that.viewModel.deactivate();
                 }
             }
         );
-        this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit, function(model)
+        this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit, function (model)
         {
             if (that.model !== model)
             {
@@ -55,7 +56,7 @@ export default Marionette.ItemView.extend({
         });
     },
 
-    onClickGlyph: function(event)
+    onClickGlyph: function (event)
     {
         event.preventDefault();
         RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, this.model, this.viewModel);
@@ -73,7 +74,8 @@ export default Marionette.ItemView.extend({
 
         // Figure out which background color will be used
         data.cssTag = "";
-        if (this.model.get("id_state_manual") === true) {
+        if (this.model.get("id_state_manual") === true)
+        {
             data.cssTag = "bg-success";
         }
         else

@@ -28,14 +28,14 @@ export default Marionette.CollectionView.extend({
         var prevViewModelSet = [];
         var clearPrevViewModels = function ()
         {
-            _.each(prevViewModelSet, function(vm)
+            _.each(prevViewModelSet, function (vm)
             {
                 vm.deactivate();
             });
         };
 
         this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
-            function(model, viewModel)
+            function (model, viewModel)
             {
                 clearPrevViewModels();
                 // Activate the view so that it turns blue
@@ -105,10 +105,10 @@ export default Marionette.CollectionView.extend({
         }
     },
 
-    getAllGlypItemViews: function()
+    getAllGlypItemViews: function ()
     {
         var collection = [];
-        this.children.each(function(view)
+        this.children.each(function (view)
         {
             collection.push(view.model.get("glyphs"));
         });
@@ -125,7 +125,7 @@ export default Marionette.CollectionView.extend({
         this.selectionBox.style.visibility = "hidden";
 
         var that = this;
-        $(document).mousemove(function(event)
+        $(document).mousemove(function (event)
         {
             if (that.isMouseDown === true)
             {
@@ -145,10 +145,5 @@ export default Marionette.CollectionView.extend({
                 }
             }
         });
-    },
-
-    onDestroy: function ()
-    {
-        this.seelectionBox.remove();
     }
 });

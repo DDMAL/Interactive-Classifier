@@ -2,7 +2,6 @@ import Backbone from "backbone";
 import GlyphTableRowViewModel from "views/GlyphTable/Row/GlyphTableRowViewModel";
 import GlyphCollection from "collections/GlyphCollection";
 
-
 export default Backbone.Collection.extend({
     model: GlyphTableRowViewModel,
 
@@ -46,5 +45,5 @@ export default Backbone.Collection.extend({
                 glyphs: new GlyphCollection([glyph])
             });
         }
-    }    
+    }
 });

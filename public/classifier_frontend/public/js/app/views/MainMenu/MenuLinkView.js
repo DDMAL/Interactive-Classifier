@@ -16,13 +16,13 @@ export default Marionette.LayoutView.extend({
         dropDownRegion: ".dropdown-menu"
     },
 
-    onClick: function(event)
+    onClick: function (event)
     {
         event.preventDefault();
         Radio.trigger("menu", this.model.get("clickEvent"));
     },
 
-    onShow: function()
+    onShow: function ()
     {
         if (this.model.get("subLinks"))
         {
