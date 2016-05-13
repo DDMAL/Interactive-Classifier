@@ -9,7 +9,6 @@ import ModalViewModel from "views/widgets/Modal/ModalViewModel";
 import ModalCollectionView from "views/widgets/Modal/ModalCollectionView";
 import LoadingScreenView from "views/widgets/LoadingScreen/LoadingScreenView";
 import LoadingScreenViewModel from "views/widgets/LoadingScreen/LoadingScreenViewModel";
-import Page from "models/Page";
 import GlyphEvents from "events/GlyphEvents";
 import ModalEvents from "events/ModalEvents";
 import MainMenuEvents from "events/MainMenuEvents";
@@ -17,94 +16,90 @@ import GlyphCollection from "collections/GlyphCollection";
 import ConfirmView from "views/widgets/Confirm/ConfirmView";
 import ConfirmViewModel from "views/widgets/Confirm/ConfirmViewModel";
 import Strings from "localization/Strings";
+import Timer from "./utils/Timer";
 
 var App = new Marionette.Application({
     modals: {},
     modalCollection: undefined,
     behaviors: {},
-
     changedGlyphs: new GlyphCollection(),
 
     onBeforeStart: function ()
-    {
-        // Instantiate the root view
+    { /* Instantiate the root view*/
         this.rootView = new RootView();
         this.rootView.navigation.show(new MenuView());
-
-        // Create the modals
+        /* Create the modals*/
         this.initializeModals();
-
-        // Menuchannel
+        /* Menuchannel*/
         var that = this;
-        this.listenTo(RadioChannels.menu, MainMenuEvents.clickSubmitCorrections,
-            function()
-            {
-                that.modals.submitCorrections.open();
-            }
-        );
-        this.listenTo(RadioChannels.menu, MainMenuEvents.clickFinalizeCorrections,
-            function()
-            {
-                that.modals.finalizeCorrections.open();
-            }
-        );
-        this.listenTo(RadioChannels.edit, GlyphEvents.changeGlyph, function(glyphModel)
+        this.listenTo(RadioChannels.menu, MainMenuEvents.clickSubmitCorrections, function ()
+        {
+            that.modals.submitCorrections.open();
+        });
+        this.listenTo(RadioChannels.menu, MainMenuEvents.clickFinalizeCorrections, function ()
+        {
+            that.modals.finalizeCorrections.open();
+        });
+        this.listenTo(RadioChannels.edit, GlyphEvents.changeGlyph, function (glyphModel)
         {
             that.changedGlyphs.add(glyphModel);
         });
-
         this.modals.loading.open();
     },
 
     onStart: function ()
     {
         console.log("onStart!");
+        var timer = new Timer("App.js onStart");
+
+        var pageElement = $("#page");
+        var glyphsElement = $("#glyphs");
+
+        timer.tick();
+
+        /* Extract the page image URL*/
+        var binaryPageImage = pageElement.attr("data-page");
+        var glyphDictionary = JSON.parse(glyphsElement.attr("data-glyphs"));
+
+        timer.tick();
+
+        console.log(binaryPageImage);
+
+        // /* Delete the data elements from the dom*/
+        pageElement.remove();
+        glyphsElement.remove();
+
+        timer.tick();
+
+        /* Open the view to edit the page*/
+        this.editPage(glyphDictionary, binaryPageImage);
+
+        timer.tick();
+    },
+
+    editPage: function (glyphDictionary, imagePath)
+    {
+        var timer = new Timer("App.js editPage");
+        var view = new RodanDashBoardView({
+            model: new Backbone.Model({
+                binaryImage: imagePath,
+                glyphDictionary: glyphDictionary
+            })
+        });
+        timer.tick();
 
         var that = this;
-        setTimeout(
-            function () {
-                var pageElement = $("#page");
-                var glyphsElement = $("#glyphs");
-
-                // Extract the page image URL
-                var binaryPageImage = pageElement.attr("data-page");
-                var glyphs = JSON.parse(glyphsElement.attr("data-glyphs"));
-
-                // Delete the data elements from the dom
-                pageElement.remove();
-                glyphsElement.remove();
-
-                var glyphCollection = new GlyphCollection(glyphs);
-                // Open the view to edit the page
-                that.editPage(glyphCollection, binaryPageImage);
-            },
-            1000
-        );
+        setTimeout(function ()
+        {
+            that.rootView.container.show(view);
+            that.modals.loading.close();
+        }, 1000);
     },
 
-    editPage: function(glyphCollection, image_path)
+    /** Submit corrections back to Rodan and run another round of gamera classification. */ submitCorrections: function ()
     {
-        var page = new Page({
-            binary_image: image_path
-        });
-
-        this.rootView.container.show(new RodanDashBoardView({
-            model: page,
-            collection: glyphCollection
-        }));
-        this.modals.loading.close();
-    },
-
-    /**
-     * Submit corrections back to Rodan and run another round of gamera classification.
-     */
-    submitCorrections: function ()
-    {
-        var data = JSON.stringify({
-            "glyphs": this.changedGlyphs.toJSON()
-        });
-
-        // Submit the corrections and close the window
+        var data = JSON.stringify({"glyphs": this.changedGlyphs.toJSON()});
+        /* Submit the corrections and close the window*/
         $.ajax({
             url: '',
             type: 'POST',
@@ -113,8 +108,7 @@ var App = new Marionette.Application({
             complete: function (response)
             {
                 console.log("Complete", response);
-
-                // Close the window if successful POST
+                /* Close the window if successful POST*/
                 if (response.status === 200)
                 {
                     window.close();
@@ -123,18 +117,13 @@ var App = new Marionette.Application({
         });
     },
 
-    /**
-     * Submit corrections back to Rodan.  If there are any corrections, run Gamera
-     * and quit.  Otherwise, just quit.
-     */
-    finalizeAndQuit: function ()
+    /** Submit corrections back to Rodan.  If there are any corrections, run Gamera and quit.  Otherwise, just quit. */ finalizeAndQuit: function ()
     {
         var data = JSON.stringify({
             "complete": true,
             "glyphs": this.changedGlyphs.toJSON()
         });
-
-        // Submit the corrections and close the window
+        /* Submit the corrections and close the window*/
         $.ajax({
             url: '',
             type: 'POST',
@@ -143,8 +132,7 @@ var App = new Marionette.Application({
             complete: function (response)
             {
                 console.log("Complete", response);
-
-                // Close the window if successful POST
+                /* Close the window if successful POST*/
                 if (response.status === 200)
                 {
                     window.close();
@@ -153,16 +141,13 @@ var App = new Marionette.Application({
         });
     },
 
-    initializeModals: function()
+    initializeModals: function ()
     {
         var that = this;
-
         this.modalCollection = new Backbone.Collection();
 
         // Prepare the modal collection
-        this.rootView.modal.show(new ModalCollectionView({
-            collection: this.modalCollection
-        }));
+        this.rootView.modal.show(new ModalCollectionView({collection: this.modalCollection}));
 
         // Loading modal
         this.modals.loading = new ModalViewModel({
@@ -222,11 +207,11 @@ var App = new Marionette.Application({
     /**
      * Close all open modal windows!
      */
-    closeAllModals: function()
+    closeAllModals: function ()
     {
         // Make sure all the modals are closed
         this.modalCollection.each(
-            function(modal)
+            function (modal)
             {
                 modal.close();
             }
