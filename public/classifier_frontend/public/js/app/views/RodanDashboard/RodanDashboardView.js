@@ -1,26 +1,18 @@
 import _ from "underscore";
 import Marionette from "marionette";
 import GlyphEvents from "events/GlyphEvents";
-
 import GlyphCollection from "collections/GlyphCollection";
-
 import ClassTreeView from "views/ClassTree/ClassTreeView";
 import ClassTreeViewModel from "views/ClassTree/ClassTreeViewModel";
-
 import GlyphEditView from "views/GlyphEdit/GlyphEditView";
 import GlyphMultiEditView from "../GlyphMultiEdit/GlyphMultiEditView";
-
-
 import GlyphTableView from "views/GlyphTable/GlyphTableView";
 import GlyphTableRowViewModel from "../GlyphTable/Row/GlyphTableRowViewModel";
 import GlyphTableViewModel from "../GlyphTable/GlyphTableViewModel";
 import GlyphTableRowCollection from "views/GlyphTable/Row/GlyphTableRowCollection";
-
 import ImagePreviewView from "../ImagePreview/ImagePreviewView";
 import ImagePreviewViewModel from "../ImagePreview/ImagePreviewViewModel";
-
 import RadioChannels from "../../radio/RadioChannels";
-
 import template from "./rodan-dashboard.template.html";
 
 export default Marionette.LayoutView.extend({
