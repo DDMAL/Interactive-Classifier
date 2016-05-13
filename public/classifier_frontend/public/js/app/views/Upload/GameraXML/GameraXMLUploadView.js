@@ -8,7 +8,6 @@ import ErrorStatusViewModel from "views/widgets/ErrorStatus/ErrorStatusViewModel
 import StatusEnum from "views/widgets/ErrorStatus/StatusEnum";
 import template from "./gamera-upload.template.html"
 
-
 export default Marionette.LayoutView.extend({
     template,
 
@@ -25,7 +24,7 @@ export default Marionette.LayoutView.extend({
         statusRegion: ".status-region"
     },
 
-    onSubmit: function(event)
+    onSubmit: function (event)
     {
         event.preventDefault();
         this.ui.button.attr("disabled", "disabled");
@@ -46,29 +45,27 @@ export default Marionette.LayoutView.extend({
                     'X-CSRFToken': getCookie('csrftoken'),
                     "test": "test"
                 },
-                success:
-                    function(event, event2)
-                    {
-                        console.log(event, event2);
-                        that.ui.button.removeAttr("disabled");
-                        that.statusRegion.show(new ErrorStatusView({
-                            model: new ErrorStatusViewModel({
-                                status: StatusEnum.success,
-                                text: that.model.get("successMessage")
-                            })
-                        }))
-                    },
-                error:
-                    function()
-                    {
-                        that.ui.button.removeAttr("disabled");
-                        that.statusRegion.show(new ErrorStatusView({
-                            model: new ErrorStatusViewModel({
-                                status: StatusEnum.error,
-                                text: that.model.get("errorMessage")
-                            })
-                        }))
-                    }
+                success: function (event, event2)
+                {
+                    console.log(event, event2);
+                    that.ui.button.removeAttr("disabled");
+                    that.statusRegion.show(new ErrorStatusView({
+                        model: new ErrorStatusViewModel({
+                            status: StatusEnum.success,
+                            text: that.model.get("successMessage")
+                        })
+                    }))
+                },
+                error: function ()
+                {
+                    that.ui.button.removeAttr("disabled");
+                    that.statusRegion.show(new ErrorStatusView({
+                        model: new ErrorStatusViewModel({
+                            status: StatusEnum.error,
+                            text: that.model.get("errorMessage")
+                        })
+                    }))
+                }
             }
         );
     }
