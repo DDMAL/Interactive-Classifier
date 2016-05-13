@@ -21,7 +21,9 @@ var NavigationManagerClass = Marionette.Object.extend({
         var titleSettings = _.defaults(options, {title: null});
 
         if (titleSettings.navbarTitle === undefined)
+        {
             titleSettings.navbarTitle = titleSettings.title;
+        }
 
         this.titling.set(titleSettings);
     }
