@@ -1,4 +1,3 @@
-
 export default {
     /**
      * Given a short code, remove illegal characters.
@@ -6,7 +5,7 @@ export default {
      * @param input
      * @returns {*}
      */
-    sanitizeShortCode: function(input)
+    sanitizeShortCode: function (input)
     {
         // Lowercase
         input = input.toLowerCase();
@@ -26,7 +25,7 @@ export default {
      * @param char
      * @returns {string}
      */
-    trimCharacter: function(string, char)
+    trimCharacter: function (string, char)
     {
         if (!string || string.length < 1)
         {

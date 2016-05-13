@@ -11,7 +11,7 @@ export default Backbone.Model.extend({
         string: ""
     },
 
-    initialize: function(options)
+    initialize: function (options)
     {
         if (options !== undefined && options.url !== undefined)
         {
@@ -24,7 +24,7 @@ export default Backbone.Model.extend({
      *
      * @param id
      */
-    setGlyph: function(id)
+    setGlyph: function (id)
     {
         this.set("glyph", getAbsoluteGlyphUrl(id));
     },
@@ -32,7 +32,7 @@ export default Backbone.Model.extend({
     /**
      * Set the model url to its url attribute.
      */
-    transferUrl: function()
+    transferUrl: function ()
     {
         this.url = this.get("url");
     }

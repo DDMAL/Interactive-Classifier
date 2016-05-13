@@ -15,7 +15,7 @@ export default {
 
     menuSubmitLabel: "Submit Corrections and Re-Classify",
     menuFinalizeLabel: "Finalize Classification and Save GameraXML",
-    
+
     loadingPage: "Loading Page...",
     submitCorrections: "Submit Corrections...",
     finalizeCorrections: "Finalize Corrections..."

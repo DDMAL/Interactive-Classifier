@@ -15,9 +15,13 @@ App.on('start', function ()
     // If this is not the root page of the application, display additional
     // titling besides "Cantus Ultimus"
     if (titleElem && window.location.pathname !== '/')
+    {
         NavigationManager.registerPage({navbarTitle: titleElem.textContent});
+    }
     else
+    {
         NavigationManager.registerPage({});
+    }
 });
 
 App.start();

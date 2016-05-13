@@ -16,7 +16,7 @@ export default Backbone.Model.extend({
         folio_name: ""
     },
 
-    initialize: function(options)
+    initialize: function (options)
     {
         if (options !== undefined && options.url !== undefined)
         {
@@ -29,7 +29,7 @@ export default Backbone.Model.extend({
      *
      * @returns {string}
      */
-    getAbsoluteImageFile: function()
+    getAbsoluteImageFile: function ()
     {
         var external_image = this.get("external_image");
         if (external_image)
@@ -42,12 +42,12 @@ export default Backbone.Model.extend({
         }
     },
 
-    getAbsoluteThumbnail: function()
+    getAbsoluteThumbnail: function ()
     {
         return GlobalVars.STATIC_URL + this.get("thumbnail");
     },
 
-    getCantusUrl: function()
+    getCantusUrl: function ()
     {
         var folioName = this.get("folio_name");
         if (!folioName || folioName === null || folioName === "")

@@ -31,9 +31,9 @@ var App = new Marionette.Application({
         // Get the CRSF token
         this.csrftoken = getCookie('csrftoken');
         var oldSync = Backbone.sync;
-        Backbone.sync = function(method, model, options)
+        Backbone.sync = function (method, model, options)
         {
-            options.beforeSend = function(xhr)
+            options.beforeSend = function (xhr)
             {
                 xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
             };
@@ -50,7 +50,7 @@ var App = new Marionette.Application({
         var that = this;
         var menuChannel = Radio.channel("menu");
         menuChannel.on(MainMenuEvents.clickFileOpen,
-            function()
+            function ()
             {
                 that.modals.fileOpen.open();
             }
@@ -58,20 +58,20 @@ var App = new Marionette.Application({
 
         // Global UI channel
         RadioChannels.globalUI.on(GlobalUIEvents.openGameraXMLImportWindow,
-            function()
+            function ()
             {
                 that.modals.gameraImport.open();
             }
         );
         RadioChannels.globalUI.on(GlobalUIEvents.openImageImportWindow,
-            function()
+            function ()
             {
                 that.modals.imageImport.open();
             }
         );
     },
 
-    initializeModals: function()
+    initializeModals: function ()
     {
         this.modalCollection = new Backbone.Collection();
 
@@ -166,28 +166,28 @@ var App = new Marionette.Application({
     /**
      * Close all open modal windows!
      */
-    closeAllModals: function()
+    closeAllModals: function ()
     {
         // Make sure all the modals are closed
         this.modalCollection.each(
-            function(modal)
+            function (modal)
             {
                 modal.close();
             }
         )
     },
 
-    showNavigation: function(view)
+    showNavigation: function (view)
     {
         this.rootView.navigation.show(view);
     },
 
-    home: function()
+    home: function ()
     {
         this.rootView.container.show(new WelcomeView());
     },
 
-    editPage: function(id)
+    editPage: function (id)
     {
         // Send out an event to close all of the open modals before starting
         // the page load process
@@ -201,7 +201,7 @@ var App = new Marionette.Application({
         var that = this;
         page.fetch(
             {
-                "success": function()
+                "success": function ()
                 {
                     that.rootView.container.show(new DashBoardView({model: page}));
                     that.modals.loading.close();
@@ -212,11 +212,11 @@ var App = new Marionette.Application({
         // Menuchannel
         var menuChannel = Radio.channel("menu");
         menuChannel.on(MainMenuEvents.clickClassifierGuessAll,
-            function()
+            function ()
             {
                 that.modals.guessAll.open();
 
-                page.guessAll(function()
+                page.guessAll(function ()
                 {
                     that.modals.guessAll.close();
                     that.editPage(page.get("id"));
@@ -224,11 +224,11 @@ var App = new Marionette.Application({
             }
         );
         menuChannel.on(MainMenuEvents.clickClassifierResetAll,
-            function()
+            function ()
             {
                 that.modals.resetAll.open();
 
-                page.resetAll(function()
+                page.resetAll(function ()
                 {
                     that.modals.resetAll.close();
                     that.editPage(page.get("id"));
@@ -236,7 +236,7 @@ var App = new Marionette.Application({
             }
         );
     },
-    
+
     editClassifier: function (id)
     {
         // Close any open modals
@@ -262,11 +262,11 @@ var App = new Marionette.Application({
     }
 });
 
-App.on('initialize:before', function()
+App.on('initialize:before', function ()
 {
     // options.anotherThing = true; // Add more data to your options
 });
-App.on('initialize:after', function()
+App.on('initialize:after', function ()
 {
 });
 

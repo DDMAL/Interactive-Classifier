@@ -9,7 +9,7 @@ export default Backbone.Model.extend({
         nomenclature_name: ""
     },
 
-    initialize: function(options)
+    initialize: function (options)
     {
         this.url = String(options.url);
     }

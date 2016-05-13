@@ -4,7 +4,7 @@ import GlobalVars from "config/GlobalVars";
 export default Backbone.Model.extend({
     urlRoot: GlobalVars.SITE_URL + "name-nomenclature-membership/",
 
-    initialize: function(options)
+    initialize: function (options)
     {
         this.url = String(options.url);
     },

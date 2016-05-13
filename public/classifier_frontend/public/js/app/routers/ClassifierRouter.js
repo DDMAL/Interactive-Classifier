@@ -2,19 +2,18 @@ import Marionette from "marionette";
 import App from "App";
 
 export default Marionette.AppRouter.extend({
-    routes:
-    {
+    routes: {
         "": "home",
         "page/:id/": "editPage",
         "classifier/:id/": "editClassifier"
     },
 
-    home: function()
+    home: function ()
     {
         App.home();
     },
 
-    editPage: function(id)
+    editPage: function (id)
     {
         App.editPage(id);
     },
