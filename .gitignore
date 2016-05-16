@@ -67,11 +67,11 @@ target/
 
 /public/.env
 
-/public/classifier_frontend/node_modules
+/frontend/node_modules
 
 .DS_Store
 media/
 public/static/
 
 /public/gamera
-public/classifier_frontend/public/node_modules
+frontend/public/node_modules
