@@ -3,6 +3,7 @@
     "extends": "eslint:recommended",
 
     "rules": {
+        "camelcase": 0,
         "no-bitwise": 2,
         "eqeqeq": 2,
         "no-console": 0,
