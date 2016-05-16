@@ -74,3 +74,4 @@ media/
 public/static/
 
 /public/gamera
+public/classifier_frontend/public/node_modules
