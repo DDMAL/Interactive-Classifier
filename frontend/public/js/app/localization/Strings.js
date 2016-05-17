@@ -23,5 +23,4 @@ export default {
         dimensions: "Dimensions",
         glyphPreview: "Glyph Preview"
     }
-
 };
