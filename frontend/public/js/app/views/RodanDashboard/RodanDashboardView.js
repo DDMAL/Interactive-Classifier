@@ -13,6 +13,7 @@ import GlyphTableRowCollection from "views/GlyphTable/Row/GlyphTableRowCollectio
 import ImagePreviewView from "../ImagePreview/ImagePreviewView";
 import ImagePreviewViewModel from "../ImagePreview/ImagePreviewViewModel";
 import RadioChannels from "../../radio/RadioChannels";
+import Strings from "localization/Strings";
 import template from "./rodan-dashboard.template.html";
 import Timer from "../../utils/Timer";
 
@@ -132,5 +133,14 @@ export default Marionette.LayoutView.extend({
         this.glyphEditRegion.show(new GlyphMultiEditView({
             collection: collection
         }));
+    },
+
+    serializeData: function ()
+    {
+        return {
+            classesHeader: Strings.classes,
+            editGlyphLabel: Strings.editGlyphLabel,
+            editGlyphDescription: Strings.editGlyphDescription
+        }
     }
 });

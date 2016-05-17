@@ -7,5 +7,21 @@ export default {
     menuFinalizeLabel: "Finalize Classification and Save GameraXML",
     loadingPage: "Loading Page...",
     submitCorrections: "Submit Corrections...",
-    finalizeCorrections: "Finalize Corrections..."
+    finalizeCorrections: "Finalize Corrections...",
+    classes: "Classes",
+    editGlyphLabel: "Edit Glyph",
+    editGlyphDescription: "Click on a Glyph to edit it.",
+    // Strings for GlyphEditview
+    editGlyph: {
+        update: "Update",
+        updateAllSelected: "Update All Selected",
+        connectedComponent: "Connected Components",
+        classLabel: "Class",
+        manualID: "Manual ID",
+        confidence: "Confidence",
+        position: "Position",
+        dimensions: "Dimensions",
+        glyphPreview: "Glyph Preview"
+    }
+
 };

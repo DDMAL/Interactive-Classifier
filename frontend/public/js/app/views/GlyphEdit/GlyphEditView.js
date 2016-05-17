@@ -1,6 +1,7 @@
 import Marionette from "marionette";
 import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
+import Strings from "localization/Strings";
 import template from "./glyph-edit.template.html";
 
 export default Marionette.ItemView.extend({
@@ -44,5 +45,15 @@ export default Marionette.ItemView.extend({
             event.preventDefault();
         }
         this.model.changeClass(this.ui.classInput.val());
+    },
+
+    serializeData: function ()
+    {
+        // Get the model fields
+        var output = this.model.toJSON();
+        // Add strings for the localized GUI.
+        output.gui = Strings.editGlyph;
+        console.log(output.gui);
+        return output;
     }
 });
