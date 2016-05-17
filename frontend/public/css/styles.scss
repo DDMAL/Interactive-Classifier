@@ -20,8 +20,10 @@ $brand-info:            #5bc0de;
 $brand-warning: #e9df50;
 $brand-danger:          #F04124;
 
+$brand-selection: #4b9fff;
+
 //** Global textual link color.
-$link-color:            $brand-primary;
+$link-color:            $brand-selection;
 $link-hover-color:      darken($link-color, 15%);
 
 // Color used for a lot of borders in the Bootstrap things
@@ -595,4 +597,99 @@ html.js {
 }
 .bg-warning {
     background: desaturate(lighten($brand-warning, 10%), 10%);
+}
+
+.glyph-image-container {
+    float: left;
+}
+
+.glyph-image-outline {
+    padding: 5px;
+    border: 1px solid #aaaaaa;
+}
+
+.glyph-image {
+    width: 100%;
+    min-height:50px
+}
+
+#left {
+    float: left;
+    width: 25%;
+    height: 100%;
+    overflow-y: scroll;
+    background-color: #efefef;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding-top: 50px;
+}
+#left1 {
+    float: left;
+    width: 25%;
+    height: 50%;
+    overflow-y: scroll;
+    background-color: #efefef;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding-top: 50px;
+}
+#left2 {
+    float: left;
+    width: 25%;
+    height: 50%;
+    overflow-y: scroll;
+    background-color: #efefef;
+    position: absolute;
+    border-top: 1px solid #444444;
+    bottom: 0;
+    left: 0;
+}
+
+#right {
+    float: left;
+    overflow-y: scroll;
+    height: 100%;
+    width: 75%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding-top: 50px;
+    border-left: 1px solid #444444;
+}
+#right1 {
+    float: left;
+    overflow-y: scroll;
+    height: 66%;
+    width: 75%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding-top: 50px;
+    border-left: 1px solid #444444;
+}
+#right2 {
+    float: left;
+    overflow-x: scroll;
+    overflow-y: scroll;
+    height: 33%;
+    width: 75%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border-top: 1px solid #444444;
+    border-left: 1px solid #444444;
+}
+
+.preview-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.preview-highlight {
+    background: #ff0000;
+    opacity: 0.5;
+    position: absolute;
 }
