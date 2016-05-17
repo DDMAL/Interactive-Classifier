@@ -206,7 +206,7 @@ gulp.task('bundle:css', function ()
 
 gulp.task('clean:css', function (done)
 {
-    del('../../static/css/', {force: true}, function (err)
+    del('../rodan_job/static/css/', {force: true}, function (err)
     {
         if (err)
             done(err);
