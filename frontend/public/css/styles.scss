@@ -17,7 +17,7 @@ $gray-lighter:           lighten(#000, 93.5%); // #eee
 $brand-primary:         #c2342e;
 $brand-success:         #43ac6a;
 $brand-info:            #5bc0de;
-$brand-warning:         #E99002;
+$brand-warning: #e9df50;
 $brand-danger:          #F04124;
 
 //** Global textual link color.
@@ -627,4 +627,13 @@ html.js {
         text-overflow: ellipsis;
         word-wrap: break-word;
     }
+}
+
+// Interactive Classifier Custom Classes
+
+.bg-success {
+    background: lighten($brand-success, 10%);
+}
+.bg-warning {
+    background: desaturate(lighten($brand-warning, 10%), 10%);
 }
