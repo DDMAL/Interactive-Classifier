@@ -2,6 +2,7 @@ import Marionette from "marionette";
 import GlyphMultiEditThumbnailList from "./GlyphMultiEditThumbnailList";
 import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
+import Strings from "localization/Strings";
 import template from "views/GlyphMultiEdit/glyph-multi-edit.template.html";
 
 export default Marionette.LayoutView.extend({
@@ -50,5 +51,12 @@ export default Marionette.LayoutView.extend({
         {
             model.changeClass(that.ui.classInput.val());
         });
+    },
+
+    serializeData: function()
+    {
+        let output = {};
+        output.gui = Strings.glyphMultiEdit;
+        return output;
     }
 });

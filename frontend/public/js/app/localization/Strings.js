@@ -14,7 +14,6 @@ export default {
     // Strings for GlyphEditview
     editGlyph: {
         update: "Update",
-        updateAllSelected: "Update All Selected",
         connectedComponent: "Connected Components",
         classLabel: "Class",
         manualID: "Manual ID",
@@ -22,5 +21,8 @@ export default {
         position: "Position",
         dimensions: "Dimensions",
         glyphPreview: "Glyph Preview"
+    },
+    glyphMultiEdit: {
+        updateAllSelected: "Update All Selected"
     }
 };
