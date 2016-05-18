@@ -54,12 +54,16 @@ var App = new Marionette.Application({
 
         var pageElement = $("#page");
         var glyphsElement = $("#glyphs");
+        var shortCodesElement = $("#shortCodes");
 
         timer.tick();
 
         /* Extract the page image URL*/
         var binaryPageImage = pageElement.attr("data-page");
         var glyphDictionary = JSON.parse(glyphsElement.attr("data-glyphs"));
+        var shortCodes = JSON.parse(shortCodesElement.attr("data-short-codes"));
+
+        console.log(shortCodes);
 
         timer.tick();
 
@@ -68,22 +72,24 @@ var App = new Marionette.Application({
         // /* Delete the data elements from the dom*/
         pageElement.remove();
         glyphsElement.remove();
+        shortCodesElement.remove();
 
         timer.tick();
 
         /* Open the view to edit the page*/
-        this.editPage(glyphDictionary, binaryPageImage);
+        this.editPage(glyphDictionary, binaryPageImage, shortCodes);
 
         timer.tick();
     },
 
-    editPage: function (glyphDictionary, imagePath)
+    editPage: function (glyphDictionary, imagePath, shortCodes)
     {
         var timer = new Timer("App.js editPage");
         var view = new RodanDashBoardView({
             model: new Backbone.Model({
                 binaryImage: imagePath,
-                glyphDictionary: glyphDictionary
+                glyphDictionary: glyphDictionary,
+                shortCodes: shortCodes
             })
         });
         timer.tick();
