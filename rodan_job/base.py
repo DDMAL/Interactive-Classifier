@@ -167,6 +167,17 @@ def serialize_glyphs_to_json(settings):
     return json.dumps(output)
 
 
+def serialize_short_codes_to_json(settings, training_database):
+    name_set = set()
+    # Add the training data short codes
+    for image in training_database:
+        name_set.add(image.get_main_id())
+    # Add the current glyph short codes
+    for glyph in settings['glyphs']:
+        name_set.add(glyph['short_code'])
+    return json.dumps(sorted(list(name_set)))
+
+
 def purge_serialized_json(settings):
     """
     Remove the cached JSON from the settings
@@ -274,7 +285,8 @@ class InteractiveClassifier(RodanTask):
         data = {
             'glyphs': settings['glyphs_json'],
             'binary_image_path': media_file_path_to_public_url(
-                staffless_image_path)
+                staffless_image_path),
+            'short_codes': settings['short_codes_json']
         }
         return 'interfaces/interactive_classifier.html', data
 
@@ -300,12 +312,17 @@ class InteractiveClassifier(RodanTask):
         if settings['@state'] == ClassifierStateEnum.IMPORT_XML:
             run_import_stage(settings, classifier_path)
             settings['@state'] = ClassifierStateEnum.CORRECTION
+            settings['short_codes_json'] = serialize_short_codes_to_json(
+                settings, training_database)
             settings['glyphs_json'] = serialize_glyphs_to_json(settings)
             return self.WAITING_FOR_INPUT()
         elif settings['@state'] == ClassifierStateEnum.CORRECTION:
             # Update any changed glyphs
             update_changed_glyphs(settings)
             run_correction_stage(settings, training_database, features)
+            settings['short_codes_json'] = serialize_short_codes_to_json(
+                settings, training_database)
+            print(settings['short_codes_json'])
             settings['glyphs_json'] = serialize_glyphs_to_json(settings)
             return self.WAITING_FOR_INPUT()
         else:

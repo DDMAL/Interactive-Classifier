@@ -77,7 +77,7 @@ export default Marionette.LayoutView.extend({
         timer.tick();
 
         var glyphDictionary = this.model.get("glyphDictionary");
-        var shortCodes = _.keys(glyphDictionary).sort();
+        var shortCodes = this.model.get("shortCodes");
 
         // Show the tree
         this.glyphTreeRegion.show(new ClassTreeView({
