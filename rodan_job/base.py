@@ -141,7 +141,10 @@ def run_correction_stage(settings, training_database, features_file_path):
             # Save the classification back into memory
             result, confidence = cknn.guess_glyph_automatic(gamera_glyph)
             glyph['short_code'] = result[0][1]
-            glyph['confidence'] = confidence[0]
+            if confidence:
+                glyph['confidence'] = confidence[0]
+            else:
+                glyph['confidence'] = 0
     return cknn
 
 
