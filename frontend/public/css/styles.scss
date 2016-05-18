@@ -599,6 +599,14 @@ html.js {
     background: desaturate(lighten($brand-warning, 10%), 10%);
 }
 
+.close {
+    color: #000000;
+
+    :hover {
+        color: $brand-primary;
+    }
+}
+
 .glyph-image-container {
     float: left;
 }
