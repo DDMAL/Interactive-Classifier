@@ -8,37 +8,37 @@ $screen-lg-min: 1200px;
 $grid-float-breakpoint: $screen-sm-min;
 
 // Colors
-$gray-darker:            lighten(#000, 13.5%); // #222
-$gray-dark:              lighten(#000, 20%);   // #333
-$gray:                   #6f6f6f; // #555
-$gray-light:             lighten(#000, 60%);   // #999
-$gray-lighter:           lighten(#000, 93.5%); // #eee
+$gray-darker: lighten(#000, 13.5%); // #222
+$gray-dark: lighten(#000, 20%); // #333
+$gray: #6f6f6f; // #555
+$gray-light: lighten(#000, 60%); // #999
+$gray-lighter: lighten(#000, 93.5%); // #eee
 
-$brand-primary:         #c2342e;
-$brand-success:         #43ac6a;
-$brand-info:            #5bc0de;
+$brand-primary: #c2342e;
+$brand-success: #43ac6a;
+$brand-info: #5bc0de;
 $brand-warning: #e9df50;
-$brand-danger:          #F04124;
+$brand-danger: #F04124;
 
 $brand-selection: #4b9fff;
 
 //** Global textual link color.
-$link-color:            $brand-selection;
-$link-hover-color:      darken($link-color, 15%);
+$link-color: $brand-selection;
+$link-hover-color: darken($link-color, 15%);
 
 // Color used for a lot of borders in the Bootstrap things
 $border-color: #ddd;
 
-$zindex-navbar:            1000;
-$zindex-dropdown:          1000;
-$zindex-popover:           1010;
-$zindex-tooltip:           1030;
-$zindex-navbar-fixed:      1030;
-$zindex-modal-background:  1040;
-$zindex-modal:             1050;
+$zindex-navbar: 1000;
+$zindex-dropdown: 1000;
+$zindex-popover: 1010;
+$zindex-tooltip: 1030;
+$zindex-navbar-fixed: 1030;
+$zindex-modal-background: 1040;
+$zindex-modal: 1050;
 
-$zindex-diva-fullscreen:   $zindex-modal;
-$zindex-diva-canvas:       $zindex-diva-fullscreen + 5;
+$zindex-diva-fullscreen: $zindex-modal;
+$zindex-diva-canvas: $zindex-diva-fullscreen + 5;
 
 @import "sidenav";
 
@@ -123,7 +123,6 @@ pre.preformatted-text {
         border-top: 0;
     }
 }
-
 
 .full-result-record {
     .content-enter,
@@ -372,6 +371,7 @@ body.propagate-height {
 .diva-outer.diva-fullscreen {
     z-index: $zindex-diva-fullscreen;
 }
+
 .diva-popup, .diva-tools.diva-fullscreen-tools {
     z-index: $zindex-diva-fullscreen + 1;
 }
@@ -379,22 +379,26 @@ body.propagate-height {
 #diva-canvas-backdrop {
     z-index: $zindex-diva-canvas;
 }
+
 #diva-canvas-wrapper {
     z-index: $zindex-diva-canvas + 1;
 }
+
 #diva-canvas {
     z-index: $zindex-diva-canvas + 2;
 }
+
 #diva-canvas-tools {
     z-index: $zindex-diva-canvas + 3;
 }
+
 #diva-canvas-toolbar div {
     z-index: $zindex-diva-canvas + 4;
 }
+
 .canvas-throbber {
     z-index: $zindex-diva-canvas + 5;
 }
-
 
 .search-input {
     padding-left: 15px;
@@ -421,7 +425,6 @@ body.propagate-height {
         max-width: 300px;
     }
 }
-
 
 #menu-sidenav {
     .sidenav a {
@@ -509,7 +512,7 @@ body.propagate-height {
 
     // Margin equal to $navbar-padding-horizontal
     margin-right: 0;
-    margin-left: 15px;//FIXME: use variable
+    margin-left: 15px; //FIXME: use variable
 
     padding-top: 11px;
     padding-bottom: 11px;
@@ -595,6 +598,7 @@ html.js {
 .bg-success {
     background: lighten($brand-success, 10%);
 }
+
 .bg-warning {
     background: desaturate(lighten($brand-warning, 10%), 10%);
 }
@@ -618,7 +622,7 @@ html.js {
 
 .glyph-image {
     width: 100%;
-    min-height:50px
+    min-height: 50px
 }
 
 #left {
@@ -632,6 +636,7 @@ html.js {
     left: 0;
     padding-top: 50px;
 }
+
 #left1 {
     float: left;
     width: 25%;
@@ -643,6 +648,7 @@ html.js {
     left: 0;
     padding-top: 50px;
 }
+
 #left2 {
     float: left;
     width: 25%;
@@ -666,6 +672,7 @@ html.js {
     padding-top: 50px;
     border-left: 1px solid #444444;
 }
+
 #right1 {
     float: left;
     overflow-y: scroll;
@@ -677,6 +684,7 @@ html.js {
     padding-top: 50px;
     border-left: 1px solid #444444;
 }
+
 #right2 {
     float: left;
     overflow-x: scroll;
