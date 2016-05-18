@@ -164,6 +164,10 @@ def serialize_glyphs_to_json(settings):
         if short_code not in output:
             output[short_code] = []
         output[short_code].append(glyph)
+    # Sort the glyphs by confidence
+    for short_code in output.keys():
+        output[short_code] = sorted(output[short_code],
+                                    key=lambda glyph: glyph["confidence"])
     return json.dumps(output)
 
 
