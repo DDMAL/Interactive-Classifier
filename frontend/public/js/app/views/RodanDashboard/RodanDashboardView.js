@@ -34,11 +34,7 @@ export default Marionette.LayoutView.extend({
         // Create the preview window
         this.previewView = new ImagePreviewView({
             model: new ImagePreviewViewModel({
-                backgroundImage: this.model.get("binaryImage"),
-                width: 500,
-                height: 500
-                // width: this.model.get("width"),
-                // height: this.model.get("height")
+                backgroundImage: this.model.get("binaryImage")
             })
         });
 
