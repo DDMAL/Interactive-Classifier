@@ -17,6 +17,11 @@
     <div id="root-modal"></div>
 </div>
 
+<script type="application/javascript">
+    var worker = new Worker("js/authentication-worker.js");
+    worker.postMessage([window.location.href.split("/").slice(0, -2).join("/") + "/acquire/"]);
+</script>
+
 <!--Load scripts last-->
 <script src="https://code.jquery.com/jquery-2.2.3.min.js"
         integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="
