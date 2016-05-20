@@ -5,17 +5,17 @@ import GlyphCollection from "collections/GlyphCollection";
 import ClassTreeView from "views/ClassTree/ClassTreeView";
 import ClassTreeViewModel from "views/ClassTree/ClassTreeViewModel";
 import GlyphEditView from "views/GlyphEdit/GlyphEditView";
-import GlyphMultiEditView from "../GlyphMultiEdit/GlyphMultiEditView";
+import GlyphMultiEditView from "views/GlyphMultiEdit/GlyphMultiEditView";
 import GlyphTableView from "views/GlyphTable/GlyphTableView";
-import GlyphTableRowViewModel from "../GlyphTable/Row/GlyphTableRowViewModel";
-import GlyphTableViewModel from "../GlyphTable/GlyphTableViewModel";
+import GlyphTableRowViewModel from "views/GlyphTable/Row/GlyphTableRowViewModel";
+import GlyphTableViewModel from "views/GlyphTable/GlyphTableViewModel";
 import GlyphTableRowCollection from "views/GlyphTable/Row/GlyphTableRowCollection";
-import ImagePreviewView from "../ImagePreview/ImagePreviewView";
-import ImagePreviewViewModel from "../ImagePreview/ImagePreviewViewModel";
-import RadioChannels from "../../radio/RadioChannels";
+import ImagePreviewView from "views/ImagePreview/ImagePreviewView";
+import ImagePreviewViewModel from "views/ImagePreview/ImagePreviewViewModel";
+import RadioChannels from "radio/RadioChannels";
 import Strings from "localization/Strings";
+import Timer from "utils/Timer";
 import template from "./rodan-dashboard.template.html";
-import Timer from "../../utils/Timer";
 
 export default Marionette.LayoutView.extend({
     template,
