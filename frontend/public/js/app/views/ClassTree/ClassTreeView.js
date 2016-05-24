@@ -23,7 +23,6 @@ export default Marionette.LayoutView.extend({
         var that = this;
         this.listenTo(RadioChannels.edit, GlyphEvents.setGlyphName, function (newShortCode)
         {
-            console.log("Set name to ", newShortCode);
             // Add the model to the short_codes
             var oldShortCodeList = that.model.get("short_codes");
             var newShortCodeList = _.union(oldShortCodeList, [newShortCode]);
@@ -47,7 +46,6 @@ export default Marionette.LayoutView.extend({
     showSubTree: function ()
     {
         var shortCodes = this.model.get("short_codes");
-        console.log("shortCodes:", shortCodes);
         var mod = new RecursiveUnorderedListViewModel();
         shortCodeArrayToRecursiveTree(shortCodes, mod);
         this.classTreeRegion.show(new RecursiveUnorderedListView({model: mod}));
