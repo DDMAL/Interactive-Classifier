@@ -59,6 +59,6 @@ setInterval(function ()
         authenticate(authenticationEndpoint);
         console.log(tick(), authenticationEndpoint);
     }
-}, 5000);
+}, 3000);
 
 
