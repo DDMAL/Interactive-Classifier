@@ -1,16 +1,15 @@
 console.log("Starting worker!");
 
 var authenticationEndpoint = undefined;
+var prevTime = undefined;
 
 /**
  * Authenticate the application with the server.
  */
 authenticate = function (endpoint)
 {
-    console.log(endpoint);
-
     var request = new XMLHttpRequest();
-    request.open("POST", authenticationEndpoint, false);
+    request.open("POST", endpoint, false);
     request.setRequestHeader("Content-type", "application/json");
     request.setRequestHeader("Accept", "application/json");
     request.send();
@@ -30,6 +29,27 @@ onmessage = function (e)
 };
 
 /**
+ * Get the number of miliseconds since the last time tick() was called;
+ *
+ * @returns {number}
+ */
+tick = function ()
+{
+    var duration;
+    if (prevTime)
+    {
+        duration = new Date().getTime() - prevTime;
+    }
+    else
+    {
+        duration = 0;
+    }
+
+    prevTime = new Date().getTime();
+    return duration;
+};
+
+/**
  * Authenticate every 5 seconds!
  */
 setInterval(function ()
@@ -37,5 +57,8 @@ setInterval(function ()
     if (authenticationEndpoint)
     {
         authenticate(authenticationEndpoint);
+        console.log(tick(), authenticationEndpoint);
     }
 }, 5000);
+
+
