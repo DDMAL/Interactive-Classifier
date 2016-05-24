@@ -34,13 +34,19 @@ export default Marionette.CollectionView.extend({
             });
         };
 
+        var that = this;
         this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
             function (model, viewModel)
             {
                 clearPrevViewModels();
                 // Activate the view so that it turns blue
                 viewModel.activate();
-                prevViewModelSet = [viewModel]
+                prevViewModelSet = [viewModel];
+
+                // Clear the internal collection
+                var collection = that.model.get("selection");
+                collection.reset();
+                collection.add(model);
             }
         );
     },
@@ -84,12 +90,21 @@ export default Marionette.CollectionView.extend({
 
                 // Empty the previous selection
                 var collection = this.model.get("selection");
-                collection.reset();
+
+                // If the user holds shift, then this selection is an additional selection
+                var isAdditional = event.shiftKey === true;
+                console.log(isAdditional);
+
+                if (!isAdditional)
+                {
+                    collection.reset();
+                }
 
                 RadioChannels.edit.trigger(
                     GlyphEvents.dragSelect,
                     boundingBox,
-                    collection
+                    collection,
+                    isAdditional // If the shift key is held, then it's an "additional" selection!
                 );
             }
         }

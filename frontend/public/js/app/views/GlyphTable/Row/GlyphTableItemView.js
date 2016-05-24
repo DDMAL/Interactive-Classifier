@@ -32,8 +32,9 @@ export default Marionette.ItemView.extend({
 
         var that = this;
         this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
-            function (boundingBox, collection)
+            function (boundingBox, collection, additional)
             {
+                console.log("Additional:", additional);
                 // If this div's bounding box is within the selection, then we've
                 // gotta add the model to the multi selection collection.
                 if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
@@ -41,8 +42,9 @@ export default Marionette.ItemView.extend({
                     collection.add(that.model);
                     that.viewModel.activate();
                 }
-                else
+                else if (!additional)
                 {
+                    // If it's additional, then we don't deactivate!
                     that.viewModel.deactivate();
                 }
             }
@@ -59,7 +61,15 @@ export default Marionette.ItemView.extend({
     onClickGlyph: function (event)
     {
         event.preventDefault();
-        RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, this.model, this.viewModel);
+        console.log(event);
+        if (event.shiftKey)
+        {
+            // RadioChannels.edit.trigger(GlyphEvents.dragSelect, this.model);
+        }
+        else
+        {
+            RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, this.model, this.viewModel);
+        }
     },
 
     serializeData: function ()
@@ -108,4 +118,16 @@ export default Marionette.ItemView.extend({
     {
         return this.el.getBoundingClientRect();
     }
+    
+    // render: function ()
+    // {
+    //     // Get the index of this particular glyph within the row
+    //     var index = this.model.collection.indexOf(this.model);
+    //
+    //     var that = this;
+    //     setTimeout(function ()
+    //     {
+    //         Marionette.ItemView.prototype.render.call(that);
+    //     }, 100 * index);
+    // }
 });
