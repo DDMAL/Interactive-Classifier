@@ -78,7 +78,6 @@ var App = new Marionette.Application({
 
         /* Open the view to edit the page*/
         this.editPage(glyphDictionary, binaryPageImage, shortCodes);
-
         timer.tick();
     },
 
@@ -99,7 +98,7 @@ var App = new Marionette.Application({
         {
             that.rootView.container.show(view);
             that.modals.loading.close();
-        }, 1000);
+        }, 2000);
     },
 
     /** Submit corrections back to Rodan and run another round of gamera classification. */ submitCorrections: function ()
