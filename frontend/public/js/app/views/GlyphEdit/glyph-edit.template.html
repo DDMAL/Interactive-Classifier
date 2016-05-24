@@ -1,34 +1,34 @@
 <div class="row">
     <div class="col-xs-6 col-md-3">
-        <h4><%= gui.connectedComponent %></h4>
-        <img src="data:image/png;base64,<%= image_b64 %>" alt="<%= gui.glyphPreview %>" class="img-thumbnail">
+        <h4><%- gui.connectedComponent %></h4>
+        <img src="data:image/png;base64,<%- image_b64 %>" alt="<%- gui.glyphPreview %>" class="img-thumbnail">
     </div>
     <div class="col-xs-6 col-md-9">
         <table class="table table-hover">
             <tr>
-                <td><%= gui.classLabel %></td>
+                <td><%- gui.classLabel %></td>
                 <td>
                     <form class="form-inline">
-                        <input type="text" class="form-control" value="<%= short_code %>" title="glyph-class" onfocus="this.value = this.value;">
-                        <button type="submit" class="btn btn-default"><%= gui.update %></button>
+                        <input type="text" class="form-control" value="<%- short_code %>" title="glyph-class" onfocus="this.value = this.value;">
+                        <button type="submit" class="btn btn-default"><%- gui.update %></button>
                     </form>
                 </td>
             </tr>
             <tr>
-                <td><%= gui.manualID %></td>
-                <td><%= id_state_manual %></td>
+                <td><%- gui.manualID %></td>
+                <td><%- id_state_manual %></td>
             </tr>
             <tr>
-                <td><%= gui.confidence %></td>
-                <td><%= confidence %></td>
+                <td><%- gui.confidence %></td>
+                <td><%- confidence %></td>
             </tr>
             <tr>
-                <td><%= gui.position %></td>
-                <td>(<%= ulx %>, <%= ulx %>)</td>
+                <td><%- gui.position %></td>
+                <td>(<%- ulx %>, <%- ulx %>)</td>
             </tr>
             <tr>
-                <td><%= gui.dimensions %></td>
-                <td>(<%= ncols %>, <%= nrows %>)</td>
+                <td><%- gui.dimensions %></td>
+                <td>(<%- ncols %>, <%- nrows %>)</td>
             </tr>
         </table>
     </div>
