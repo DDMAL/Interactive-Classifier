@@ -53,7 +53,7 @@ export default Marionette.LayoutView.extend({
         });
     },
 
-    serializeData: function()
+    serializeData: function ()
     {
         let output = {};
         output.gui = Strings.glyphMultiEdit;
