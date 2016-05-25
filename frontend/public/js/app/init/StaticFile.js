@@ -4,7 +4,6 @@ import "underscore";
 import "backbone";
 import "marionette";
 import "bootstrap";
-
 import App from "App";
 import NavigationManager from "singletons/NavigationManager";
 

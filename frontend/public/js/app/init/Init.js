@@ -4,7 +4,6 @@ import "underscore";
 import "marionette";
 import "bootstrap";
 import "modernizr";
-
 import Backbone from "backbone";
 import App from "App";
 
