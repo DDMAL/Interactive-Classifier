@@ -65,21 +65,30 @@ export default Marionette.ItemView.extend({
     {
         event.preventDefault();
 
-        this.viewModel.activate();
-
         console.log(event);
         if (event.shiftKey)
         {
+            // If the glyph is already active, then deactivate it.
+            // If the glyph is not already active, then activate it.
+            if (this.viewModel.isActive())
+            {
+                this.viewModel.deactivate();
+                RadioChannels.edit.trigger(GlyphEvents.deselectGlyph, this.model);
+            }
+            else
+            {
+                this.viewModel.activate();
+                RadioChannels.edit.trigger(GlyphEvents.selectGlyph, this.model);
+            }
             RadioChannels.edit.trigger(GlyphEvents.dragSelect);
         }
         else
         {
+            this.viewModel.activate();
             RadioChannels.edit.trigger(GlyphEvents.deselectAllGlyphs);
+            RadioChannels.edit.trigger(GlyphEvents.selectGlyph, this.model);
             RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, this.model, this.viewModel);
         }
-
-        // Select the glyph
-        RadioChannels.edit.trigger(GlyphEvents.selectGlyph, this.model);
     },
 
     serializeData: function ()
