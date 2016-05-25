@@ -101,7 +101,10 @@ var App = new Marionette.Application({
         }, 2000);
     },
 
-    /** Submit corrections back to Rodan and run another round of gamera classification. */ submitCorrections: function ()
+    /**
+     *  Submit corrections back to Rodan and run another round of gamera classification.
+     */
+    submitCorrections: function ()
     {
         var data = JSON.stringify({"glyphs": this.changedGlyphs.toJSON()});
         /* Submit the corrections and close the window*/
@@ -122,7 +125,11 @@ var App = new Marionette.Application({
         });
     },
 
-    /** Submit corrections back to Rodan.  If there are any corrections, run Gamera and quit.  Otherwise, just quit. */ finalizeAndQuit: function ()
+    /**
+     * Submit corrections back to Rodan.  If there are any corrections, run Gamera and quit.  Otherwise, just quit.
+     *
+     */
+    finalizeAndQuit: function ()
     {
         var data = JSON.stringify({
             "complete": true,
