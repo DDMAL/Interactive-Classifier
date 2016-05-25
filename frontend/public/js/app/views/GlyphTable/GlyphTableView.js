@@ -52,10 +52,8 @@ export default Marionette.CollectionView.extend({
 
     onMouseUp: function (event)
     {
-        console.log("onMouseUp()");
         if (this.isMouseDown === true)
         {
-            // console.log(event);
             this.isMouseDown = false;
             var x = event.clientX,
                 y = event.clientY;
