@@ -2,10 +2,10 @@
  * Provide general, global configuration for Backbone and Marionette.
  */
 
-import _ from 'underscore';
-import App from 'App';
-import Backbone from 'backbone';
-import Marionette from 'marionette';
+import _ from "underscore";
+import App from "App";
+import Backbone from "backbone";
+import Marionette from "marionette";
 
 // Marionette inspector
 if (window.__agent)
