@@ -7,12 +7,6 @@ import "modernizr";
 
 import Backbone from "backbone";
 import App from "App";
-import ClassifierRouter from "routers/ClassifierRouter";
-
-App.on('before:start', function ()
-{
-    this.appRouter = new ClassifierRouter();
-});
 
 App.on('start', function ()
 {
