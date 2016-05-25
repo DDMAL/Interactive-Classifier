@@ -76,7 +76,6 @@ export default Marionette.CollectionView.extend({
 
                 // If the user holds shift, then this selection is an additional selection
                 var isAdditional = event.shiftKey === true;
-                console.log(isAdditional);
 
                 if (!isAdditional)
                 {
