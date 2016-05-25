@@ -1,4 +1,5 @@
 import _ from "underscore";
+import Backbone from "backbone";
 import Marionette from "marionette";
 import GlyphEvents from "events/GlyphEvents";
 import GlyphCollection from "collections/GlyphCollection";
@@ -41,8 +42,29 @@ export default Marionette.LayoutView.extend({
         // Construct the glyph table data structure
         this.tableRowCollection = new GlyphTableRowCollection();
 
-        // Glyph Editing Events
+        // Selected Glyphs
+        this.selectedGlyphs = new Backbone.Collection();
         var that = this;
+        this.listenTo(RadioChannels.edit, GlyphEvents.selectGlyph,
+            function (glyph)
+            {
+                that.selectedGlyphs.add(glyph);
+            }
+        );
+        this.listenTo(RadioChannels.edit, GlyphEvents.deselectGlyph,
+            function (glyph)
+            {
+                that.selectedGlyphs.remove(glyph);
+            }
+        );
+        this.listenTo(RadioChannels.edit, GlyphEvents.deselectAllGlyphs,
+            function ()
+            {
+                that.selectedGlyphs.reset();
+            }
+        );
+
+        // Glyph Editing Events
         this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
             function (model)
             {
@@ -56,9 +78,9 @@ export default Marionette.LayoutView.extend({
             }
         );
         this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
-            function (boundingBox, collection)
+            function ()
             {
-                that.openMultiGlyphEdit(collection);
+                that.openMultiGlyphEdit(that.selectedGlyphs);
             }
         );
     },

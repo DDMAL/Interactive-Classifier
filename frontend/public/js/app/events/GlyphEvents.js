@@ -5,5 +5,10 @@ export default {
     changeGlyph: "change:glyph",
     dragSelect: "open:multiEdit",
     setGlyphName: "change:glyph:name",
-    clickGlyphName: "click:glyph:name"
+    clickGlyphName: "click:glyph:name",
+
+    // Events for glyph selection
+    selectGlyph: "glyph:select",
+    deselectGlyph: "glyph:deselect",
+    deselectAllGlyphs: "glyph:deselect:all"
 }

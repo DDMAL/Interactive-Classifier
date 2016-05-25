@@ -22,20 +22,6 @@ export default Marionette.CollectionView.extend({
         "mousedown": "onMouseDown"
     },
 
-    initialize: function ()
-    {
-        var that = this;
-        this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
-            function (model)
-            {
-                // Clear the internal collection
-                var collection = that.model.get("selection");
-                collection.reset();
-                collection.add(model);
-            }
-        );
-    },
-
     onMouseDown: function (event)
     {
         event.preventDefault();
@@ -54,6 +40,7 @@ export default Marionette.CollectionView.extend({
     {
         if (this.isMouseDown === true)
         {
+            console.log("MouseUp!");
             this.isMouseDown = false;
             var x = event.clientX,
                 y = event.clientY;
@@ -71,21 +58,17 @@ export default Marionette.CollectionView.extend({
                     bottom: Math.max(that.mouseDownY, y)
                 };
 
-                // Empty the previous selection
-                var collection = this.model.get("selection");
-
                 // If the user holds shift, then this selection is an additional selection
                 var isAdditional = event.shiftKey === true;
 
                 if (!isAdditional)
                 {
-                    collection.reset();
+                    RadioChannels.edit.trigger(GlyphEvents.deselectAllGlyphs);
                 }
 
                 RadioChannels.edit.trigger(
                     GlyphEvents.dragSelect,
                     boundingBox,
-                    collection,
                     isAdditional // If the shift key is held, then it's an "additional" selection!
                 );
             }

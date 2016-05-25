@@ -32,19 +32,23 @@ export default Marionette.ItemView.extend({
 
         var that = this;
         this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
-            function (boundingBox, collection, additional)
+            function (boundingBox, additional)
             {
-                // If this div's bounding box is within the selection, then we've
-                // gotta add the model to the multi selection collection.
-                if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
+                if (boundingBox)
                 {
-                    collection.add(that.model);
-                    that.viewModel.activate();
-                }
-                else if (!additional)
-                {
-                    // If it's additional, then we don't deactivate!
-                    that.viewModel.deactivate();
+                    // If this div's bounding box is within the selection, then we've
+                    // gotta add the model to the multi selection collection.
+                    if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
+                    {
+                        // Add this glyph to the collection
+                        RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
+                        that.viewModel.activate();
+                    }
+                    else if (!additional)
+                    {
+                        // If it's additional, then we don't deactivate!
+                        that.viewModel.deactivate();
+                    }
                 }
             }
         );
@@ -66,12 +70,16 @@ export default Marionette.ItemView.extend({
         console.log(event);
         if (event.shiftKey)
         {
-            // RadioChannels.edit.trigger(GlyphEvents.dragSelect, this.model);
+            RadioChannels.edit.trigger(GlyphEvents.dragSelect);
         }
         else
         {
+            RadioChannels.edit.trigger(GlyphEvents.deselectAllGlyphs);
             RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, this.model, this.viewModel);
         }
+
+        // Select the glyph
+        RadioChannels.edit.trigger(GlyphEvents.selectGlyph, this.model);
     },
 
     serializeData: function ()
@@ -94,8 +102,6 @@ export default Marionette.ItemView.extend({
         {
             data.cssTag = "bg-warning";
         }
-
-        data.spriteSheetUrl = this.tableViewModel.get("spriteSheetUrl");
         return data;
     },
 
@@ -108,16 +114,4 @@ export default Marionette.ItemView.extend({
     {
         return this.el.getBoundingClientRect();
     }
-
-    // render: function ()
-    // {
-    //     // Get the index of this particular glyph within the row
-    //     var index = this.model.collection.indexOf(this.model);
-    //
-    //     var that = this;
-    //     setTimeout(function ()
-    //     {
-    //         Marionette.ItemView.prototype.render.call(that);
-    //     }, 100 * index);
-    // }
 });
