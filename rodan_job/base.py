@@ -14,7 +14,7 @@ from rodan.settings import MEDIA_URL, MEDIA_ROOT
 
 class ClassifierStateEnum:
     IMPORT_XML = 0
-    CORRECTION = 1
+    CLASSIFYING = 1
     EXPORT_XML = 2
 
 
@@ -318,12 +318,12 @@ class InteractiveClassifier(RodanTask):
             settings['glyphs'] = []
         if settings['@state'] == ClassifierStateEnum.IMPORT_XML:
             run_import_stage(settings, classifier_path)
-            settings['@state'] = ClassifierStateEnum.CORRECTION
+            settings['@state'] = ClassifierStateEnum.CLASSIFYING
             settings['short_codes_json'] = serialize_short_codes_to_json(
                 settings, training_database)
             settings['glyphs_json'] = serialize_glyphs_to_json(settings)
             return self.WAITING_FOR_INPUT()
-        elif settings['@state'] == ClassifierStateEnum.CORRECTION:
+        elif settings['@state'] == ClassifierStateEnum.CLASSIFYING:
             # Update any changed glyphs
             update_changed_glyphs(settings)
             run_correction_stage(settings, training_database, features)
