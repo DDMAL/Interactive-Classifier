@@ -34,7 +34,6 @@ export default Marionette.ItemView.extend({
         this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
             function (boundingBox, collection, additional)
             {
-                console.log("Additional:", additional);
                 // If this div's bounding box is within the selection, then we've
                 // gotta add the model to the multi selection collection.
                 if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
@@ -109,7 +108,7 @@ export default Marionette.ItemView.extend({
     {
         return this.el.getBoundingClientRect();
     }
-    
+
     // render: function ()
     // {
     //     // Get the index of this particular glyph within the row
