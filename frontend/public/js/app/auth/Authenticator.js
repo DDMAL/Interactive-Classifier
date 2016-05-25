@@ -40,7 +40,7 @@ export default class Authenticator {
             {
                 var responseData = JSON.parse(response.responseText);
                 // Save the working url
-                that._postUrl = responseData["working_url"];
+                that._workingUrl = responseData["working_url"];
             }
         });
     }
@@ -52,9 +52,9 @@ export default class Authenticator {
      *
      * @returns {string}
      */
-    getPostUrl()
+    getWorkingUrl()
     {
-        return this._postUrl;
+        return this._workingUrl;
     }
 
     /**

@@ -119,7 +119,7 @@ var App = new Marionette.Application({
         var data = JSON.stringify({"glyphs": this.changedGlyphs.toJSON()});
         // Submit the corrections and close the window
         $.ajax({
-            url: this.authenticator.getPostUrl(),
+            url: this.authenticator.getWorkingUrl(),
             type: 'POST',
             data: data,
             contentType: 'application/json',
@@ -147,7 +147,7 @@ var App = new Marionette.Application({
         });
         /* Submit the corrections and close the window*/
         $.ajax({
-            url: this.authenticator.getPostUrl(),
+            url: this.authenticator.getWorkingUrl(),
             type: 'POST',
             data: data,
             contentType: 'application/json',
