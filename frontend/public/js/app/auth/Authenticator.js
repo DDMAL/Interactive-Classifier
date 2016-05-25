@@ -17,7 +17,6 @@ export default class Authenticator {
         var that = this;
         this._timer = setInterval(function ()
         {
-            console.log("TIMER!");
             that.authenticate();
         }, this._time);
     }
