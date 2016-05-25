@@ -78,13 +78,6 @@ export default Marionette.CollectionView.extend({
         this.selectionBox.style.visibility = "hidden";
     },
 
-    childViewOptions: function ()
-    {
-        return {
-            tableViewModel: this.model
-        }
-    },
-
     getAllGlypItemViews: function ()
     {
         var collection = [];

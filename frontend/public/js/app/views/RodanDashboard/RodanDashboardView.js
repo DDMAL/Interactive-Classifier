@@ -9,7 +9,6 @@ import GlyphEditView from "views/GlyphEdit/GlyphEditView";
 import GlyphMultiEditView from "views/GlyphMultiEdit/GlyphMultiEditView";
 import GlyphTableView from "views/GlyphTable/GlyphTableView";
 import GlyphTableRowViewModel from "views/GlyphTable/Row/GlyphTableRowViewModel";
-import GlyphTableViewModel from "views/GlyphTable/GlyphTableViewModel";
 import GlyphTableRowCollection from "views/GlyphTable/Row/GlyphTableRowCollection";
 import ImagePreviewView from "views/ImagePreview/ImagePreviewView";
 import ImagePreviewViewModel from "views/ImagePreview/ImagePreviewViewModel";
@@ -128,11 +127,7 @@ export default Marionette.LayoutView.extend({
         timer.tick();
 
         this.glyphTableRegion.show(new GlyphTableView({
-            collection: this.tableRowCollection,
-            // Let the collection know what the sprite sheet will be
-            model: new GlyphTableViewModel({
-                spriteSheetUrl: this.model.get("binaryImage")
-            })
+            collection: this.tableRowCollection
         }));
 
         timer.tick("final");
