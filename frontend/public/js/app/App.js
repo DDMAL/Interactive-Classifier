@@ -16,7 +16,8 @@ import GlyphCollection from "collections/GlyphCollection";
 import ConfirmView from "views/widgets/Confirm/ConfirmView";
 import ConfirmViewModel from "views/widgets/Confirm/ConfirmViewModel";
 import Strings from "localization/Strings";
-import Timer from "./utils/Timer";
+import Timer from "utils/Timer";
+import Authenticator from "auth/Authenticator";
 
 var App = new Marionette.Application({
     modals: {},
@@ -24,12 +25,21 @@ var App = new Marionette.Application({
     behaviors: {},
     changedGlyphs: new GlyphCollection(),
 
+    initialize: function ()
+    {
+        this.authenticator = new Authenticator();
+        this.authenticator.startTimedAuthentication();
+    },
+
     onBeforeStart: function ()
-    { /* Instantiate the root view*/
+    {
+        //Instantiate the root view
         this.rootView = new RootView();
         this.rootView.navigation.show(new MenuView());
+
         /* Create the modals*/
         this.initializeModals();
+
         /* Menuchannel*/
         var that = this;
         this.listenTo(RadioChannels.menu, MainMenuEvents.clickSubmitCorrections, function ()
@@ -107,9 +117,9 @@ var App = new Marionette.Application({
     submitCorrections: function ()
     {
         var data = JSON.stringify({"glyphs": this.changedGlyphs.toJSON()});
-        /* Submit the corrections and close the window*/
+        // Submit the corrections and close the window
         $.ajax({
-            url: '',
+            url: this.authenticator.getPostUrl(),
             type: 'POST',
             data: data,
             contentType: 'application/json',
@@ -137,7 +147,7 @@ var App = new Marionette.Application({
         });
         /* Submit the corrections and close the window*/
         $.ajax({
-            url: '',
+            url: this.authenticator.getPostUrl(),
             type: 'POST',
             data: data,
             contentType: 'application/json',
@@ -155,7 +165,6 @@ var App = new Marionette.Application({
 
     initializeModals: function ()
     {
-        var that = this;
         this.modalCollection = new Backbone.Collection();
 
         // Prepare the modal collection
@@ -173,6 +182,7 @@ var App = new Marionette.Application({
         });
         this.modalCollection.add(this.modals.loading);
 
+        var that = this;
         // Submit Corrections modal
         this.modals.submitCorrections = new ModalViewModel({
             title: Strings.submitCorrections,
