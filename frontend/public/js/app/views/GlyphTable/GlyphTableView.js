@@ -1,4 +1,3 @@
-import _ from "underscore";
 import $ from "jquery";
 import Marionette from "marionette";
 import GlyphTableRowView from "views/GlyphTable/Row/GlyphTableRowView";
@@ -25,24 +24,10 @@ export default Marionette.CollectionView.extend({
 
     initialize: function ()
     {
-        var prevViewModelSet = [];
-        var clearPrevViewModels = function ()
-        {
-            _.each(prevViewModelSet, function (vm)
-            {
-                vm.deactivate();
-            });
-        };
-
         var that = this;
         this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
-            function (model, viewModel)
+            function (model)
             {
-                clearPrevViewModels();
-                // Activate the view so that it turns blue
-                viewModel.activate();
-                prevViewModelSet = [viewModel];
-
                 // Clear the internal collection
                 var collection = that.model.get("selection");
                 collection.reset();

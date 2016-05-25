@@ -61,6 +61,9 @@ export default Marionette.ItemView.extend({
     onClickGlyph: function (event)
     {
         event.preventDefault();
+
+        this.viewModel.activate();
+
         console.log(event);
         if (event.shiftKey)
         {
@@ -95,18 +98,6 @@ export default Marionette.ItemView.extend({
 
         data.spriteSheetUrl = this.tableViewModel.get("spriteSheetUrl");
         return data;
-    },
-
-    activate: function ()
-    {
-        this.isActive = true;
-        this.render();
-    },
-
-    deactivate: function ()
-    {
-        this.isActive = false;
-        this.render();
     },
 
     /**
