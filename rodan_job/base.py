@@ -304,11 +304,13 @@ class InteractiveClassifier(RodanTask):
 
         # Execute import state, classifying state, or output state
         if settings['@state'] == ClassifierStateEnum.IMPORT_XML:
+            # IMPORT_XML Stage
             settings['glyphs'] = GameraXML(classifier_path).get_glyphs()
             settings['@state'] = ClassifierStateEnum.CLASSIFYING
             serialize_data(settings, training_database)
             return self.WAITING_FOR_INPUT()
         elif settings['@state'] == ClassifierStateEnum.CLASSIFYING:
+            # CLASSIFYING STAGE
             # Update any changed glyphs
             update_changed_glyphs(settings)
             run_correction_stage(settings['glyphs'],
@@ -317,6 +319,7 @@ class InteractiveClassifier(RodanTask):
             serialize_data(settings, training_database)
             return self.WAITING_FOR_INPUT()
         else:
+            # EXPORT_XML STAGE
             # Update changed glyphs
             update_changed_glyphs(settings)
             # Do one final classification before quitting
