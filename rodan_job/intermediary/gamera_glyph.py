@@ -1,6 +1,4 @@
 import uuid
-import json
-
 from rodan.jobs.interactive_classifier.intermediary.run_length_image import \
     RunLengthImage
 
@@ -40,8 +38,8 @@ class GameraGlyph(object):
         self.get_gamera_image().classify_manual(self._short_code)
         self._id_state_manual = True
 
-    def is_id(self, id):
-        return self._id == id
+    def is_id(self, id_name):
+        return self._id == id_name
 
     def classify_automatic(self, short_code, confidence):
         self._short_code = str(short_code)
@@ -61,14 +59,3 @@ class GameraGlyph(object):
             "id_state_manual": self.is_manual_id(),
             "confidence": self._confidence
         }
-
-
-def gamera_glyph_list_to_json(glyph_list):
-    """
-    Serialize a list of gamera glyphs to JSON.
-    """
-    print "SERIALIZING!"
-    glyph_dicts = [g.to_dict() for g in glyph_list]
-    output = json.dumps(glyph_dicts)
-    print output
-    return output
