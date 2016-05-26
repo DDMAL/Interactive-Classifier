@@ -104,16 +104,16 @@ def prepare_classifier(training_database, glyphs, features_file_path):
     return classifier
 
 
-def run_correction_stage(settings, training_database, features_file_path):
+def run_correction_stage(glyphs, training_database, features_file_path):
     """
     Run the automatic correction stage of the Rodan job.
     """
     # Train a classifier
     cknn = prepare_classifier(training_database,
-                              settings['glyphs'],
+                              glyphs,
                               features_file_path)
     # The automatic classifications
-    for glyph in settings['glyphs']:
+    for glyph in glyphs:
         if not glyph['id_state_manual']:
             # It's a glyph to be classified
             gamera_glyph = RunLengthImage(
@@ -135,21 +135,12 @@ def run_correction_stage(settings, training_database, features_file_path):
     return cknn
 
 
-def run_import_stage(settings, classifier_path):
-    """
-    Extract glyphs from the GameraXML file at the classifier_path and save them
-    to the settings dictionary.
-    """
-    # Extract the glyphs from the Gamera XML file
-    settings['glyphs'] = GameraXML(classifier_path).get_glyphs()
-
-
-def serialize_glyphs_to_json(settings):
+def serialize_glyphs_to_json(glyphs):
     """
     Serialize the glyphs as a JSON dict grouped by short code
     """
     output = {}
-    for glyph in settings['glyphs']:
+    for glyph in glyphs:
         short_code = glyph['short_code']
         if short_code not in output:
             output[short_code] = []
@@ -157,26 +148,31 @@ def serialize_glyphs_to_json(settings):
     # Sort the glyphs by confidence
     for short_code in output.keys():
         output[short_code] = sorted(output[short_code],
-                                    key=lambda glyph: glyph["confidence"])
+                                    key=lambda g: g["confidence"])
     return json.dumps(output)
 
 
-def serialize_short_codes_to_json(settings, training_database):
+def serialize_short_codes_to_json(glyphs, training_database):
+    """
+    Get JSON representing the list of all class names in the classifier.
+    """
     name_set = set()
     # Add the training data short codes
     for image in training_database:
         name_set.add(image.get_main_id())
     # Add the current glyph short codes
-    for glyph in settings['glyphs']:
+    for glyph in glyphs:
         name_set.add(glyph['short_code'])
     return json.dumps(sorted(list(name_set)))
 
 
-def purge_serialized_json(settings):
+def serialize_data(settings, training_database):
     """
-    Remove the cached JSON from the settings
+    Serialize the short codes and glyphs to JSON and store them in settings.
     """
-    settings['glyphs_json'] = None
+    settings['short_codes_json'] = serialize_short_codes_to_json(
+        settings['glyphs'], training_database)
+    settings['glyphs_json'] = serialize_glyphs_to_json(settings['glyphs'])
 
 
 def update_changed_glyphs(settings):
@@ -293,41 +289,45 @@ class InteractiveClassifier(RodanTask):
                 'resource_path']
         else:
             features = None
+
         # Handle importing the optional training classifier
         if 'GameraXML - Training Data' in inputs:
             training_database = glyphs_from_xml(
                 inputs['GameraXML - Training Data'][0]['resource_path'])
         else:
             training_database = []
+
         # Set the initial state
         if '@state' not in settings:
             settings['@state'] = ClassifierStateEnum.IMPORT_XML
             settings['glyphs'] = []
+
+        # Execute import state, classifying state, or output state
         if settings['@state'] == ClassifierStateEnum.IMPORT_XML:
-            run_import_stage(settings, classifier_path)
+            settings['glyphs'] = GameraXML(classifier_path).get_glyphs()
             settings['@state'] = ClassifierStateEnum.CLASSIFYING
-            settings['short_codes_json'] = serialize_short_codes_to_json(
-                settings, training_database)
-            settings['glyphs_json'] = serialize_glyphs_to_json(settings)
+            serialize_data(settings, training_database)
             return self.WAITING_FOR_INPUT()
         elif settings['@state'] == ClassifierStateEnum.CLASSIFYING:
             # Update any changed glyphs
             update_changed_glyphs(settings)
-            run_correction_stage(settings, training_database, features)
-            settings['short_codes_json'] = serialize_short_codes_to_json(
-                settings, training_database)
-            print(settings['short_codes_json'])
-            settings['glyphs_json'] = serialize_glyphs_to_json(settings)
+            run_correction_stage(settings['glyphs'],
+                                 training_database,
+                                 features)
+            serialize_data(settings, training_database)
             return self.WAITING_FOR_INPUT()
         else:
             # Update changed glyphs
             update_changed_glyphs(settings)
             # Do one final classification before quitting
-            cknn = run_correction_stage(settings, training_database, features)
+            cknn = run_correction_stage(settings['glyphs'],
+                                        training_database,
+                                        features)
             # No more corrections are required.  We can now output the data
             run_output_stage(cknn, settings['glyphs'], outputs)
-            # Remove the JSON string from the database
-            purge_serialized_json(settings)
+            # Remove the cached JSON from the settings
+            settings['glyphs_json'] = None
+            settings['short_codes_json'] = None
 
     def validate_my_user_input(self, inputs, settings, user_input):
         if 'complete' in user_input:
