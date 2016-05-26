@@ -45,19 +45,7 @@ def get_manual_glyphs(glyphs):
     return training_glyphs
 
 
-def output_training_data(cknn, output_path):
-    """
-    Save the training data to disk so that it can be used again in a future
-    classification project.
-
-    The output is a GameraXML file that contains only the manually
-    classified glyphs which are used as training data.
-    """
-    # Save the training database
-    cknn.to_xml_filename(output_path)
-
-
-def output_corrected_data(cknn, glyphs, output_path):
+def output_corrected_glyphs(cknn, glyphs, output_path):
     """
     Output the corrected data to disk.  This includes both the manually
     corrected and the automatically corrected glyphs.
@@ -87,15 +75,14 @@ def run_output_stage(cknn, glyphs, outputs):
     """
     The job is complete, so save the results to disk.
     """
-    print('Running output stage!')
     output_training_classifier_path = outputs['GameraXML - Training Data'][0][
         'resource_path']
     output_classified_data_path = outputs['GameraXML - Classified Glyphs'][0][
         'resource_path']
-    # Save the outputs to disk
-    output_training_data(cknn, output_training_classifier_path)
-    output_corrected_data(cknn, glyphs, output_classified_data_path)
-    print('Complete!')
+    # Save the training data to disk
+    cknn.to_xml_filename(output_training_classifier_path)
+    # Save the rest of the glyphs
+    output_corrected_glyphs(cknn, glyphs, output_classified_data_path)
 
 
 def prepare_classifier(training_database, glyphs, features_file_path):
