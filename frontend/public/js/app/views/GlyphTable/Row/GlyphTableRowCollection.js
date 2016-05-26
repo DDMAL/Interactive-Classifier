@@ -5,19 +5,19 @@ import GlyphCollection from "collections/GlyphCollection";
 export default Backbone.Collection.extend({
     model: GlyphTableRowViewModel,
 
-    comparator: "short_code",
+    comparator: "class_name",
 
     /**
      * Move a glyph from one table row to another.
      *
      * @param glyph
-     * @param oldShortCode
-     * @param newShortCode
+     * @param oldClassName
+     * @param newClassName
      */
-    moveGlyph: function (glyph, oldShortCode, newShortCode)
+    moveGlyph: function (glyph, oldClassName, newClassName)
     {
         var oldRow = this.findWhere({
-            short_code: oldShortCode
+            class_name: oldClassName
         });
         oldRow.get("glyphs").remove(glyph);
 
@@ -27,9 +27,9 @@ export default Backbone.Collection.extend({
             this.remove(oldRow);
         }
 
-        // Add to the new shortcode collection
+        // Add to the new class name collection
         var newRow = this.findWhere({
-            short_code: newShortCode
+            class_name: newClassName
         });
 
         if (newRow)
@@ -41,7 +41,7 @@ export default Backbone.Collection.extend({
         {
             // There is no row, so we add a new row
             this.add({
-                short_code: newShortCode,
+                class_name: newClassName,
                 glyphs: new GlyphCollection([glyph])
             });
         }

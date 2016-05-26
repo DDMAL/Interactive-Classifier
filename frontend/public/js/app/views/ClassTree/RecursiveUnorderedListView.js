@@ -7,7 +7,7 @@ export default Marionette.ItemView.extend({
     template,
 
     events: {
-        "click .short-code": "onClickNode"
+        "click .class-name": "onClickNode"
     },
 
     onShow: function ()
@@ -20,8 +20,8 @@ export default Marionette.ItemView.extend({
         event.preventDefault();
 
         // Extract the name from the HTML5 data attribute.
-        var shortCode = event.target.dataset.name;
-        RadioChannels.edit.trigger(GlyphEvents.clickGlyphName, shortCode);
+        var className = event.target.dataset.name;
+        RadioChannels.edit.trigger(GlyphEvents.clickGlyphName, className);
     },
 
     /**
@@ -40,7 +40,7 @@ export default Marionette.ItemView.extend({
         if (value)
         {
             // Build this level of the recursion
-            output = '<li><a href="#" data-name="' + parentValue + value + '" class="short-code">' + value + "</a>";
+            output = '<li><a href="#" data-name="' + parentValue + value + '" class="class-name">' + value + "</a>";
         }
 
         // Recursively construct the children

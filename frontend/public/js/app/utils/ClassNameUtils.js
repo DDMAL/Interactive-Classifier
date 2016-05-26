@@ -1,11 +1,11 @@
 export default {
     /**
-     * Given a short code, remove illegal characters.
+     * Given a class name, remove illegal characters.
      *
      * @param input
      * @returns {*}
      */
-    sanitizeShortCode: function (input)
+    sanitizeClassName: function (input)
     {
         // Lowercase
         input = input.toLowerCase();

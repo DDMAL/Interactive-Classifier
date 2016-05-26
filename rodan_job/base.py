@@ -40,7 +40,7 @@ def get_manual_glyphs(glyphs):
                 glyph['image']
             ).get_gamera_image()
             # It's a training glyph!
-            gamera_image.classify_manual(glyph['short_code'])
+            gamera_image.classify_manual(glyph['class_name'])
             training_glyphs.append(gamera_image)
     return training_glyphs
 
@@ -60,7 +60,7 @@ def output_corrected_glyphs(cknn, glyphs, output_path):
             glyph['image']
         ).get_gamera_image()
         if glyph['id_state_manual']:
-            gamera_image.classify_manual(glyph['short_code'])
+            gamera_image.classify_manual(glyph['class_name'])
         else:
             cknn.classify_glyph_automatic(gamera_image)
         output_images.append(gamera_image)
@@ -127,7 +127,7 @@ def run_correction_stage(glyphs, training_database, features_file_path):
             cknn.classify_glyph_automatic(gamera_glyph)
             # Save the classification back into memory
             result, confidence = cknn.guess_glyph_automatic(gamera_glyph)
-            glyph['short_code'] = result[0][1]
+            glyph['class_name'] = result[0][1]
             if confidence:
                 glyph['confidence'] = confidence[0]
             else:
@@ -141,18 +141,18 @@ def serialize_glyphs_to_json(glyphs):
     """
     output = {}
     for glyph in glyphs:
-        short_code = glyph['short_code']
-        if short_code not in output:
-            output[short_code] = []
-        output[short_code].append(glyph)
+        class_name = glyph['class_name']
+        if class_name not in output:
+            output[class_name] = []
+        output[class_name].append(glyph)
     # Sort the glyphs by confidence
-    for short_code in output.keys():
-        output[short_code] = sorted(output[short_code],
+    for class_name in output.keys():
+        output[class_name] = sorted(output[class_name],
                                     key=lambda g: g["confidence"])
     return json.dumps(output)
 
 
-def serialize_short_codes_to_json(glyphs, training_database):
+def serialize_class_names_to_json(glyphs, training_database):
     """
     Get JSON representing the list of all class names in the classifier.
     """
@@ -162,7 +162,7 @@ def serialize_short_codes_to_json(glyphs, training_database):
         name_set.add(image.get_main_id())
     # Add the current glyph short codes
     for glyph in glyphs:
-        name_set.add(glyph['short_code'])
+        name_set.add(glyph['class_name'])
     return json.dumps(sorted(list(name_set)))
 
 
@@ -170,7 +170,7 @@ def serialize_data(settings, training_database):
     """
     Serialize the short codes and glyphs to JSON and store them in settings.
     """
-    settings['short_codes_json'] = serialize_short_codes_to_json(
+    settings['class_names_json'] = serialize_class_names_to_json(
         settings['glyphs'], training_database)
     settings['glyphs_json'] = serialize_glyphs_to_json(settings['glyphs'])
 
@@ -194,7 +194,7 @@ def update_changed_glyphs(settings):
                 changed_glyph = changed_glyph_hash[key]
                 # Update the Glyph proper
                 glyph['id_state_manual'] = changed_glyph['id_state_manual']
-                glyph['short_code'] = changed_glyph['short_code']
+                glyph['class_name'] = changed_glyph['class_name']
                 glyph['confidence'] = changed_glyph['confidence']
                 # Pop the changed glyph from the hash
                 changed_glyph_hash.pop(key, None)
@@ -276,7 +276,7 @@ class InteractiveClassifier(RodanTask):
             'glyphs': settings['glyphs_json'],
             'binary_image_path': media_file_path_to_public_url(
                 staffless_image_path),
-            'short_codes': settings['short_codes_json']
+            'class_names': settings['class_names_json']
         }
         return 'interfaces/interactive_classifier.html', data
 
@@ -327,7 +327,7 @@ class InteractiveClassifier(RodanTask):
             run_output_stage(cknn, settings['glyphs'], outputs)
             # Remove the cached JSON from the settings
             settings['glyphs_json'] = None
-            settings['short_codes_json'] = None
+            settings['class_names_json'] = None
 
     def validate_my_user_input(self, inputs, settings, user_input):
         if 'complete' in user_input:

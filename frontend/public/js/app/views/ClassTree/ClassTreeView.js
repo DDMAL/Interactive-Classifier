@@ -2,7 +2,7 @@ import _ from "underscore";
 import Marionette from "marionette";
 import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
-import shortCodeArrayToRecursiveTree from "./shortCodeArrayToRecursiveTree";
+import classNameArrayToRecursiveTree from "./classNameArrayToRecursiveTree";
 import RecursiveUnorderedListView from "./RecursiveUnorderedListView";
 import RecursiveUnorderedListViewModel from "./RecursiveUnorderedListViewModel";
 import template from "./class-tree.template.html";
@@ -21,17 +21,17 @@ export default Marionette.LayoutView.extend({
     initialize: function ()
     {
         var that = this;
-        this.listenTo(RadioChannels.edit, GlyphEvents.setGlyphName, function (newShortCode)
+        this.listenTo(RadioChannels.edit, GlyphEvents.setGlyphName, function (newClassName)
         {
-            // Add the model to the short_codes
-            var oldShortCodeList = that.model.get("short_codes");
-            var newShortCodeList = _.union(oldShortCodeList, [newShortCode]);
+            // Add the model to the class_names
+            var oldClassNameList = that.model.get("class_names");
+            var newClassNameList = _.union(oldClassNameList, [newClassName]);
 
-            if (newShortCodeList.length !== oldShortCodeList.length)
+            if (newClassNameList.length !== oldClassNameList.length)
             {
                 console.log("New name!");
                 // Set the new list
-                that.model.set("short_codes", newShortCodeList.sort());
+                that.model.set("class_names", newClassNameList.sort());
                 // Re-render the view
                 that.showSubTree();
             }
@@ -45,9 +45,9 @@ export default Marionette.LayoutView.extend({
 
     showSubTree: function ()
     {
-        var shortCodes = this.model.get("short_codes");
+        var classNames = this.model.get("class_names");
         var mod = new RecursiveUnorderedListViewModel();
-        shortCodeArrayToRecursiveTree(shortCodes, mod);
+        classNameArrayToRecursiveTree(classNames, mod);
         this.classTreeRegion.show(new RecursiveUnorderedListView({model: mod}));
     }
 });

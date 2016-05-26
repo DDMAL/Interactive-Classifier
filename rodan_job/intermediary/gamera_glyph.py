@@ -4,10 +4,10 @@ from rodan.jobs.interactive_classifier.intermediary.run_length_image import \
 
 
 class GameraGlyph(object):
-    def __init__(self, short_code, rle_image, ncols, nrows, ulx, uly,
+    def __init__(self, class_name, rle_image, ncols, nrows, ulx, uly,
                  id_state_manual, confidence):
         self._id = uuid.uuid4().hex
-        self._short_code = short_code
+        self._class_name = class_name
         self._image = rle_image
         self._ncols = ncols
         self._nrows = nrows
@@ -24,7 +24,7 @@ class GameraGlyph(object):
         self._image_b64 = self._run_length_image.get_base64_image()
         self._gamera_image = self._run_length_image.get_gamera_image()
         if self.is_manual_id():
-            self._gamera_image.classify_manual(self._short_code)
+            self._gamera_image.classify_manual(self._class_name)
 
     def is_manual_id(self):
         return self._id_state_manual is True
@@ -32,24 +32,24 @@ class GameraGlyph(object):
     def get_gamera_image(self):
         return self._gamera_image
 
-    def classify_manual(self, short_code):
-        self._short_code = str(short_code)
+    def classify_manual(self, class_name):
+        self._class_name = str(class_name)
         self._confidence = 1.0
-        self.get_gamera_image().classify_manual(self._short_code)
+        self.get_gamera_image().classify_manual(self._class_name)
         self._id_state_manual = True
 
     def is_id(self, id_name):
         return self._id == id_name
 
-    def classify_automatic(self, short_code, confidence):
-        self._short_code = str(short_code)
+    def classify_automatic(self, class_name, confidence):
+        self._class_name = str(class_name)
         self._confidence = confidence
         self._id_state_manual = False
 
     def to_dict(self):
         return {
             "id": self._id,
-            "short_code": self._short_code,
+            "class_name": self._class_name,
             "image": self._image,
             "image_b64": self._image_b64,
             "ncols": self._ncols,

@@ -24,9 +24,9 @@ export default Marionette.ItemView.extend({
     {
         var that = this;
         this.listenTo(RadioChannels.edit, GlyphEvents.clickGlyphName,
-            function (shortCode)
+            function (className)
             {
-                that.ui.classInput.val(shortCode);
+                that.ui.classInput.val(className);
                 that.onSubmitForm();
             }
         );

@@ -2,7 +2,7 @@ import Backbone from "backbone";
 
 export default Backbone.Model.extend({
     defaults: {
-        short_code: "",
+        class_name: "",
         glyphs: undefined
     }
 });

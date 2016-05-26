@@ -59,46 +59,41 @@ var App = new Marionette.Application({
 
     onStart: function ()
     {
-        console.log("onStart!");
         var timer = new Timer("App.js onStart");
 
         var pageElement = $("#page");
         var glyphsElement = $("#glyphs");
-        var shortCodesElement = $("#shortCodes");
+        var classNamesElement = $("#classNames");
 
         timer.tick();
 
         /* Extract the page image URL*/
         var binaryPageImage = pageElement.attr("data-page");
         var glyphDictionary = JSON.parse(glyphsElement.attr("data-glyphs"));
-        var shortCodes = JSON.parse(shortCodesElement.attr("data-short-codes"));
-
-        console.log(shortCodes);
+        var classNames = JSON.parse(classNamesElement.attr("data-class-names"));
 
         timer.tick();
 
-        console.log(binaryPageImage);
-
-        // /* Delete the data elements from the dom*/
+        // Delete the data elements from the dom
         pageElement.remove();
         glyphsElement.remove();
-        shortCodesElement.remove();
+        classNamesElement.remove();
 
         timer.tick();
 
         /* Open the view to edit the page*/
-        this.editPage(glyphDictionary, binaryPageImage, shortCodes);
+        this.editPage(glyphDictionary, binaryPageImage, classNames);
         timer.tick();
     },
 
-    editPage: function (glyphDictionary, imagePath, shortCodes)
+    editPage: function (glyphDictionary, imagePath, classNames)
     {
         var timer = new Timer("App.js editPage");
         var view = new RodanDashBoardView({
             model: new Backbone.Model({
                 binaryImage: imagePath,
                 glyphDictionary: glyphDictionary,
-                shortCodes: shortCodes
+                classNames: classNames
             })
         });
         timer.tick();
@@ -125,7 +120,6 @@ var App = new Marionette.Application({
             contentType: 'application/json',
             complete: function (response)
             {
-                console.log("Complete", response);
                 /* Close the window if successful POST*/
                 if (response.status === 200)
                 {
@@ -153,7 +147,6 @@ var App = new Marionette.Application({
             contentType: 'application/json',
             complete: function (response)
             {
-                console.log("Complete", response);
                 /* Close the window if successful POST*/
                 if (response.status === 200)
                 {

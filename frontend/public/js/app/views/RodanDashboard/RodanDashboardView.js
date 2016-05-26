@@ -71,9 +71,9 @@ export default Marionette.LayoutView.extend({
                 that.openGlyphEdit(model);
             });
         this.listenTo(RadioChannels.edit, GlyphEvents.moveGlyph,
-            function (glyph, oldShortCode, newShortCode)
+            function (glyph, oldClassName, newClassName)
             {
-                that.tableRowCollection.moveGlyph(glyph, oldShortCode, newShortCode);
+                that.tableRowCollection.moveGlyph(glyph, oldClassName, newClassName);
             }
         );
         this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
@@ -94,12 +94,12 @@ export default Marionette.LayoutView.extend({
         timer.tick();
 
         var glyphDictionary = this.model.get("glyphDictionary");
-        var shortCodes = this.model.get("shortCodes");
+        var classNames = this.model.get("classNames");
 
         // Show the tree
         this.glyphTreeRegion.show(new ClassTreeView({
             model: new ClassTreeViewModel({
-                short_codes: shortCodes
+                class_names: classNames
             })
         }));
 
@@ -107,19 +107,19 @@ export default Marionette.LayoutView.extend({
 
         var glyphCollections = {};
         // Separate the glyphs by their class
-        for (var i = 0; i < shortCodes.length; i++)
+        for (var i = 0; i < classNames.length; i++)
         {
-            glyphCollections[shortCodes[i]] = new GlyphCollection(glyphDictionary[shortCodes[i]]);
+            glyphCollections[classNames[i]] = new GlyphCollection(glyphDictionary[classNames[i]]);
         }
 
         timer.tick("pre-final render");
 
         var that = this;
-        _.each(shortCodes, function (shortCode)
+        _.each(classNames, function (className)
         {
             var row = new GlyphTableRowViewModel({
-                short_code: shortCode,
-                glyphs: glyphCollections[shortCode]
+                class_name: className,
+                glyphs: glyphCollections[className]
             });
             that.tableRowCollection.add(row);
         });

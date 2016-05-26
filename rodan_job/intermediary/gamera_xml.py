@@ -13,7 +13,7 @@ def construct_glyph_dict(name, image_run_length, image_b64, width,
     """
     return {
         "id": uuid.uuid4().hex,
-        "short_code": name,
+        "class_name": name,
         "image": image_run_length,
         "image_b64": image_b64,
         "ncols": width,
