@@ -199,7 +199,8 @@ var App = new Marionette.Application({
             isCloseable: true,
             innerView: new ConfirmView({
                 model: new ConfirmViewModel({
-                    text: Strings.finalizeWarning,
+                    text: Strings.finalizeText,
+                    warning: Strings.finalizeWarning,
                     callback: function ()
                     {
                         // Once the user confirms, submit the corrections.
