@@ -30,7 +30,7 @@ def get_manual_glyphs(glyphs):
     # Prepare the training glyphs
     training_glyphs = []
     for glyph in glyphs:
-        if glyph['id_state_manual'] == True:
+        if glyph['id_state_manual']:
             # Get the gamera image
             gamera_image = RunLengthImage(
                 glyph['ulx'],
