@@ -11,7 +11,7 @@ class BinaryPixelEnum:
     BLACK = 1
 
 
-class RunLengthImage():
+class RunLengthImage:
     ulx = None
     uly = None
     width = None
@@ -25,7 +25,7 @@ class RunLengthImage():
         self.width = width
         self.height = height
         # Turn run-length data into list of ints
-        self.run_length_data = map(lambda x: int(x), run_length_data.split())
+        self.run_length_data = map(lambda d: int(d), run_length_data.split())
         # Build an empty pixel matrix
         self.pixel_matrix = [[BinaryPixelEnum.WHITE for x in range(self.height)]
                              for y in range(self.width)]
@@ -70,20 +70,21 @@ class RunLengthImage():
         """
         Create a PIL image using the cached pixel matrix.
         """
-        image = PILImage.new("RGBA", (self.width, self.height), (255,255,255,0))
+        image = PILImage.new("RGBA", (self.width, self.height),
+                             (255, 255, 255, 0))
         draw = ImageDraw.Draw(image)
         for x in range(self.width):
             for y in range(self.height):
                 if self.pixel_matrix[x][y] == BinaryPixelEnum.BLACK:
-                    draw.point((x,y), fill="black")
+                    draw.point((x, y), fill="black")
         del draw
         return image
 
     def get_base64_image(self):
         pil_image = self.get_pil_image()
-        buffer = cStringIO.StringIO()
-        pil_image.save(buffer, format="PNG")
-        return base64.b64encode(buffer.getvalue())
+        string_buffer = cStringIO.StringIO()
+        pil_image.save(string_buffer, format="PNG")
+        return base64.b64encode(string_buffer.getvalue())
 
     def get_gamera_image(self):
         # Image has to be encoded Dense and not RLE.  If RLE, will seg fault
@@ -95,9 +96,9 @@ class RunLengthImage():
         for x in range(self.width):
             for y in range(self.height):
                 if self.pixel_matrix[x][y] == BinaryPixelEnum.BLACK:
-                    image.set((x,y), 1)
+                    image.set((x, y), 1)
                 else:
-                    image.set((x,y), 0)
+                    image.set((x, y), 0)
         return image
 
     def __unicode__(self):
