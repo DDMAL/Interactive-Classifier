@@ -19,6 +19,9 @@ import Strings from "localization/Strings";
 import Timer from "utils/Timer";
 import Authenticator from "auth/Authenticator";
 
+/**
+ * App is the Interactive Classifier application.
+ */
 var App = new Marionette.Application({
     modals: {},
     modalCollection: undefined,
@@ -27,10 +30,14 @@ var App = new Marionette.Application({
 
     initialize: function ()
     {
+        // Authenticator object is used to maintain token authentication with the Rodan web server.
         this.authenticator = new Authenticator();
         this.authenticator.startTimedAuthentication();
     },
 
+    /**
+     * This function runs before the application starts.  It instantiates the RootView and sets up radio listeners.
+     */
     onBeforeStart: function ()
     {
         //Instantiate the root view
@@ -57,8 +64,18 @@ var App = new Marionette.Application({
         this.modals.loading.open();
     },
 
+    /**
+     * This function runs when the application starts.
+     *
+     * The function extracts glyph data, class names, and preview image path data from the HTML page.  The function
+     * then deletes those elements.
+     *
+     * Next, we initialize the RodanDashboardView.  We wait two seconds (so that the loading screen modal can
+     * successfully open) and then render the view.
+     */
     onStart: function ()
     {
+        // Timer that we will use for profiling
         var timer = new Timer("App.js onStart");
 
         var pageElement = $("#page");
@@ -67,7 +84,7 @@ var App = new Marionette.Application({
 
         timer.tick();
 
-        /* Extract the page image URL*/
+        // Extract the page image URL
         var binaryPageImage = pageElement.attr("data-page");
         var glyphDictionary = JSON.parse(glyphsElement.attr("data-glyphs"));
         var classNames = JSON.parse(classNamesElement.attr("data-class-names"));
@@ -150,6 +167,9 @@ var App = new Marionette.Application({
         });
     },
 
+    /**
+     * Initialize all of the modals used in the application.
+     */
     initializeModals: function ()
     {
         this.modalCollection = new Backbone.Collection();
