@@ -1,3 +1,9 @@
+/**
+ * This object contains all of the strings to be used in HTML templates.
+ *
+ * In the future, we could really easily localize the application by restructuring this object as a string factory
+ * that produces strings for the chosen language.
+ */
 export default {
     siteTitle: "Interactive Classifier",
     submissionWarning: "Your manual corrections will be sent back to Rodan for another round of Gamera classification.  Once the classification is complete, you can make more manual corrections.",

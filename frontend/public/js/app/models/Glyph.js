@@ -3,6 +3,9 @@ import GlyphEvents from "events/GlyphEvents";
 import RadioChannels from "radio/RadioChannels";
 import ClassNameUtils from "utils/ClassNameUtils";
 
+/**
+ * A Glyph object within the interactive classifier.
+ */
 export default Backbone.Model.extend({
 
     defaults: {

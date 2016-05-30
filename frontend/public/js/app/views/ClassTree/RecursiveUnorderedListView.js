@@ -3,6 +3,9 @@ import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
 import template from "./recursive-unordered-list.template.html";
 
+/**
+ * This view is a recursive unordered list.  This view is the main component of the ClassTreeView.
+ */
 export default Marionette.ItemView.extend({
     template,
 
@@ -15,6 +18,12 @@ export default Marionette.ItemView.extend({
         this.$el.html(this.constructListHtml(this.model, ""));
     },
 
+    /**
+     * Clicking one of the class names in the tree fires an event.  This event causes the currently selected glyphs to
+     * be assigned the name.
+     *
+     * @param event
+     */
     onClickNode: function (event)
     {
         event.preventDefault();
@@ -25,6 +34,7 @@ export default Marionette.ItemView.extend({
     },
 
     /**
+     * Construct an html <ul> element recursively.
      *
      * @param {RecursiveUnorderedListViewModel} node
      * @param {string} parentValue

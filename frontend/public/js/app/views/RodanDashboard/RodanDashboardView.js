@@ -17,6 +17,10 @@ import Strings from "localization/Strings";
 import Timer from "utils/Timer";
 import template from "./rodan-dashboard.template.html";
 
+/**
+ * This view is the main "dashboard" of the application.  This view handles most of the glyph editing functionality
+ * and determines which editing views the user can see.
+ */
 export default Marionette.LayoutView.extend({
     template,
 

@@ -1,6 +1,9 @@
 import Backbone from "backbone";
 import _ from "underscore";
 
+/**
+ * ViewModel for RecursiveUnorderedListView.  This model is the node of a tree.
+ */
 var RecursiveUnorderedListViewModel = Backbone.Model.extend({
     defaults: {
         value: undefined,

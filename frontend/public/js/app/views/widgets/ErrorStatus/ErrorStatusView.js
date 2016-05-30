@@ -2,6 +2,9 @@ import Marionette from "marionette";
 import StatusEnum from "views/widgets/ErrorStatus/StatusEnum";
 import template from "./error-status.template.html";
 
+/**
+ * A view which displays some error status to the user.
+ */
 export default Marionette.ItemView.extend({
     template,
 

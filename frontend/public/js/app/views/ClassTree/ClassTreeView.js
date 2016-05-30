@@ -7,6 +7,10 @@ import RecursiveUnorderedListView from "./RecursiveUnorderedListView";
 import RecursiveUnorderedListViewModel from "./RecursiveUnorderedListViewModel";
 import template from "./class-tree.template.html";
 
+/**
+ * This view is the list of class names in the top-left corner of the Interactive Classifier GUI.  This view should
+ * update itself whenever a new class name is created.
+ */
 export default Marionette.LayoutView.extend({
     template,
 
@@ -18,6 +22,9 @@ export default Marionette.LayoutView.extend({
         "change": "showSubTree"
     },
 
+    /**
+     * Set up the event listener to handle re-rendering the view whenever a new Glyph class name is created.
+     */
     initialize: function ()
     {
         var that = this;
@@ -43,6 +50,9 @@ export default Marionette.LayoutView.extend({
         this.showSubTree();
     },
 
+    /**
+     * Show the tree of class names.
+     */
     showSubTree: function ()
     {
         var classNames = this.model.get("class_names");
