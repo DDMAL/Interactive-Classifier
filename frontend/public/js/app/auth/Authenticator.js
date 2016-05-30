@@ -1,5 +1,10 @@
 import $ from "jquery";
 
+/**
+ * This class maintains a runjob.working_user_expiry Rodan token throughout its lifetime.
+ *
+ * For more information, see https://github.com/DDMAL/Interactive-Classifier/wiki/Token-Authentication.
+ */
 export default class Authenticator {
     constructor()
     {
