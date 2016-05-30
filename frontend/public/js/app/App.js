@@ -81,21 +81,15 @@ var App = new Marionette.Application({
 
         timer.tick();
 
-        /* Open the view to edit the page*/
-        this.editPage(glyphDictionary, binaryPageImage, classNames);
-        timer.tick();
-    },
-
-    editPage: function (glyphDictionary, imagePath, classNames)
-    {
-        var timer = new Timer("App.js editPage");
+        // Open the view to edit the page
         var view = new RodanDashboardView({
             model: new Backbone.Model({
-                binaryImage: imagePath,
+                binaryImage: binaryPageImage,
                 glyphDictionary: glyphDictionary,
                 classNames: classNames
             })
         });
+
         timer.tick();
 
         var that = this;
