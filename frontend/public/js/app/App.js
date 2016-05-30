@@ -4,7 +4,7 @@ import RadioChannels from "radio/RadioChannels";
 import Marionette from "marionette";
 import RootView from "views/Root/RootView";
 import MenuView from "views/MainMenu/MenuView";
-import RodanDashBoardView from "views/RodanDashboard/RodanDashboardView";
+import RodanDashboardView from "views/RodanDashboard/RodanDashboardView";
 import ModalViewModel from "views/widgets/Modal/ModalViewModel";
 import ModalCollectionView from "views/widgets/Modal/ModalCollectionView";
 import LoadingScreenView from "views/widgets/LoadingScreen/LoadingScreenView";
@@ -89,7 +89,7 @@ var App = new Marionette.Application({
     editPage: function (glyphDictionary, imagePath, classNames)
     {
         var timer = new Timer("App.js editPage");
-        var view = new RodanDashBoardView({
+        var view = new RodanDashboardView({
             model: new Backbone.Model({
                 binaryImage: imagePath,
                 glyphDictionary: glyphDictionary,
