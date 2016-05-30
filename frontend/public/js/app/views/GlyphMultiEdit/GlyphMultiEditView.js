@@ -16,8 +16,7 @@ export default Marionette.LayoutView.extend({
     },
 
     ui: {
-        classInput: 'input[title="glyph-class"]',
-        manualConfirmButton: '.manual-confirm-button'
+        classInput: 'input[title="glyph-class"]'
     },
 
     events: {
