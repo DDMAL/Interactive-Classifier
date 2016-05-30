@@ -7,6 +7,9 @@ import MainMenuEvents from "events/MainMenuEvents";
 import Strings from "localization/Strings";
 import template from "./main-menu.template.html";
 
+/**
+ * The main menu which renders at the top of the window.
+ */
 export default Marionette.CompositeView.extend({
     template,
     childView: MenuLinkView,
