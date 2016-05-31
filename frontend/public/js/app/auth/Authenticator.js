@@ -1,11 +1,19 @@
 import $ from "jquery";
 
 /**
- * This class maintains a runjob.working_user_expiry Rodan token throughout its lifetime.
+ * This class maintains a `runjob.working_user_expiry` Rodan token throughout its lifetime.
  *
- * For more information, see https://github.com/DDMAL/Interactive-Classifier/wiki/Token-Authentication.
+ * For more information, see {@link https://github.com/DDMAL/Interactive-Classifier/wiki/Token-Authentication}.
+ *
+ * @class Authenticator
  */
 export default class Authenticator {
+    /**
+     * Grabs the authentication URL from the page URL and sets the timeout
+     * to 5000 miliseconds.
+     *
+     * @constructs
+     */
     constructor()
     {
         // This will be the URL that we hit to authenticate.
@@ -54,7 +62,7 @@ export default class Authenticator {
      * we make a post request to when we want to complete the interactive
      * portion of the interactive job.
      *
-     * @returns {string}
+     * @returns {string} - The "working" URL on the server for the job.
      */
     getWorkingUrl()
     {
@@ -64,7 +72,7 @@ export default class Authenticator {
     /**
      * Get the authentication url.
      *
-     * @returns {string}
+     * @returns {string} - The authentication URL.
      */
     static getAuthUrl()
     {

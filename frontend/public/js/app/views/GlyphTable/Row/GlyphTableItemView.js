@@ -5,16 +5,11 @@ import RadioChannels from "radio/RadioChannels";
 import template from "./table-glyph.template.html";
 import Geometry from "utils/Geometry";
 
-/**
- * This view is a single Glyph item in the glyph table.  This is the childView
- * for the GlyphTableRowView collection view.
- *
- * This view triggers the events that occur when the user clicks on the glyph.
- *
- * This view also automatically checks if the glyph collides with the
- * selectionBox lasso.
- */
-export default Marionette.ItemView.extend({
+export default Marionette.ItemView.extend(
+    /**
+     * @lends GlyphTableItemView.prototype
+     */
+    {
     template,
     viewModel: undefined,
     tableViewModel: undefined,
@@ -31,9 +26,20 @@ export default Marionette.ItemView.extend({
     },
 
     /**
-     * 
+     * @class GlyphTableItemView
+     *
+     * This view is a single Glyph item in the glyph table.  This is the childView
+     * for the GlyphTableRowView collection view.
+     *
+     * This view triggers the events that occur when the user clicks on the glyph.
+     *
+     * This view also automatically checks if the glyph collides with the
+     * selectionBox lasso.
+     *
+     * Constructor up events for comparing glyph dimensions against selectionBox lasso.
      *
      * @param options
+     * @constructs
      */
     initialize: function (options)
     {

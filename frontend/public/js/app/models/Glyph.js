@@ -5,8 +5,14 @@ import ClassNameUtils from "utils/ClassNameUtils";
 
 /**
  * A Glyph object within the interactive classifier.
+ *
+ * @class Glyph
  */
-export default Backbone.Model.extend({
+export default Backbone.Model.extend(
+    /**
+     * @lends Glyph.prototype
+     */
+    {
 
     defaults: {
         id: 0,
@@ -27,10 +33,13 @@ export default Backbone.Model.extend({
      * This method fires events that might change the location where the
      * glyph is being rendered on the glyph table.
      *
-     * @param newClassName
+     * @param {string} newClassName - The new name for the class.
      */
     changeClass: function (newClassName)
     {
+        // Make sure it's a string
+        newClassName = String(newClassName);
+
         var oldClassName = this.get("class_name");
 
         // do the sanitization step

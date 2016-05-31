@@ -4,9 +4,17 @@ import GlyphEvents from "events/GlyphEvents";
 import template from "./recursive-unordered-list.template.html";
 
 /**
+ * @class RecursiveUnorderedListView
+ *
  * This view is a recursive unordered list.  This view is the main component of the ClassTreeView.
+ *
+ * @constructor
  */
-export default Marionette.ItemView.extend({
+export default Marionette.ItemView.extend(
+    /**
+     * @lends RecursiveUnorderedListView.prototype
+     */
+    {
     template,
 
     events: {

@@ -17,11 +17,11 @@ import Strings from "localization/Strings";
 import Timer from "utils/Timer";
 import template from "./rodan-dashboard.template.html";
 
-/**
- * This view is the main "dashboard" of the application.  This view handles most of the glyph editing functionality
- * and determines which editing views the user can see.
- */
-export default Marionette.LayoutView.extend({
+export default Marionette.LayoutView.extend(
+    /**
+     * @lends RodanDashboardView.prototype
+     */
+    {
     template,
 
     regions: {
@@ -33,6 +33,15 @@ export default Marionette.LayoutView.extend({
         modalTestRegion: ".modal-test"
     },
 
+    /**
+     * @class RodanDashboardView
+     *
+     * This view is the main "dashboard" of the application.  This view handles
+     * most of the glyph editing functionality and determines which editing
+     * views the user can see.
+     *
+     * @constructs
+     */
     initialize: function ()
     {
         // Create the preview window
@@ -140,7 +149,7 @@ export default Marionette.LayoutView.extend({
     /**
      * Open the GlyphEditView for editing a particular glyph.
      *
-     * @param model A Glyph model.
+     * @param {Glyph} model - A Glyph model.
      */
     openGlyphEdit: function (model)
     {
@@ -154,7 +163,7 @@ export default Marionette.LayoutView.extend({
      * Open the GlyphMultiEditView for editing a particular collection of
      * Glyph models.
      *
-     * @param collection
+     * @param {GlyphCollection} collection - Collection of glyphs to edit.
      */
     openMultiGlyphEdit: function (collection)
     {

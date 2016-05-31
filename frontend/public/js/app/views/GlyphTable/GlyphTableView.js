@@ -5,6 +5,8 @@ import GlyphEvents from "events/GlyphEvents";
 import RadioChannels from "radio/RadioChannels";
 
 /**
+ * @class GlyphTableView
+ *
  * This view is the main GUI where all of the glyphs are and ordanized by class.
  *
  * This view also handles logic for selecting glyphs to be edited.  Right now,
@@ -25,8 +27,13 @@ import RadioChannels from "radio/RadioChannels";
  *  but it is the individual GlyphTableItemViews which determine whether or not
  *  they have been selected.
  *
+ *  @constructs GlyphTableView
  */
-export default Marionette.CollectionView.extend({
+export default Marionette.CollectionView.extend(
+/**
+ * @lends GlyphTableView.prototype
+  */
+{
     tagName: 'table',
     className: "table table-hover",
     childView: GlyphTableRowView,

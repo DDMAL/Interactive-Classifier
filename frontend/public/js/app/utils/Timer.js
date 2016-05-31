@@ -7,7 +7,7 @@ export default class Timer {
      * Construct the Timer and set the initial time.  All future ticks will measure time elapsed since this function
      * was called.
      *
-     * @param name
+     * @param {string} name - The name for the timer.
      */
     constructor(name)
     {
@@ -19,7 +19,7 @@ export default class Timer {
     /**
      * Print the miliseconds elapsed since Timer was initialized.
      *
-     * @param name Optional name to attach to the tick log.
+     * @param {string} name - Optional name to attach to the tick log.
      */
     tick(name)
     {

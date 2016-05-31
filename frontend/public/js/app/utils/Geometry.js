@@ -1,10 +1,16 @@
 export default {
 
     /**
+     * A box with dimensions.
+     *
+     * @typedef {{left: number, right: number, top: number, bottom: number}} BoundingBox
+     */
+
+    /**
      * Test if two rectangles overlap.
      *
-     * @param rectangleA
-     * @param rectangleB
+     * @param {BoundingBox} rectangleA
+     * @param {BoundingBox} rectangleB
      * @returns {boolean}
      */
     rectangleOverlap: function (rectangleA, rectangleB)

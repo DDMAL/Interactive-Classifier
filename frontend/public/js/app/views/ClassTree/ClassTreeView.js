@@ -7,11 +7,11 @@ import RecursiveUnorderedListView from "./RecursiveUnorderedListView";
 import RecursiveUnorderedListViewModel from "./RecursiveUnorderedListViewModel";
 import template from "./class-tree.template.html";
 
+export default Marionette.LayoutView.extend(
 /**
- * This view is the list of class names in the top-left corner of the Interactive Classifier GUI.  This view should
- * update itself whenever a new class name is created.
+ * @lends ClassTreeView.prototype
  */
-export default Marionette.LayoutView.extend({
+{
     template,
 
     regions: {
@@ -23,10 +23,17 @@ export default Marionette.LayoutView.extend({
     },
 
     /**
-     * Set up the event listener to handle re-rendering the view whenever a new Glyph class name is created.
+     * @class ClassTreeView
+     *
+     * This view is the list of class names in the top-left corner of the Interactive Classifier GUI.  This view should
+     * update itself whenever a new class name is created.
+     *
+     * @constructs
      */
     initialize: function ()
     {
+        // Set up the event listener to handle re-rendering the view whenever
+        // a new Glyph class name is created.
         var that = this;
         this.listenTo(RadioChannels.edit, GlyphEvents.setGlyphName, function (newClassName)
         {
@@ -60,4 +67,5 @@ export default Marionette.LayoutView.extend({
         classNameArrayToRecursiveTree(classNames, mod);
         this.classTreeRegion.show(new RecursiveUnorderedListView({model: mod}));
     }
-});
+}
+);

@@ -2,11 +2,19 @@ import Marionette from "marionette";
 import template from "./image-preview.template.html";
 
 /**
+ * @class ImagePreviewView
+ *
  * This view displays the preview of the entire document page at the bottom right of the window.
  *
  * Calling highlightGlyph() draws a red highlight box over a particular glyph on the page.
+ *
+ * @constructs ImagePreviewView
  */
-export default Marionette.ItemView.extend({
+export default Marionette.ItemView.extend(
+    /**
+     * @lends ImagePreviewView.prototype
+     */
+    {
     template,
 
     ui: {
@@ -16,7 +24,7 @@ export default Marionette.ItemView.extend({
     /**
      * Draw a highlight box over a particular Glyph model that is on the page.
      *
-     * @param glyph A Glyph model.
+     * @param {Glyph} glyph - A Glyph model.
      */
     highlightGlyph: function (glyph)
     {

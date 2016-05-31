@@ -19,15 +19,23 @@ import Strings from "localization/Strings";
 import Timer from "utils/Timer";
 import Authenticator from "auth/Authenticator";
 
-/**
- * App is the Interactive Classifier application.
- */
-var App = new Marionette.Application({
+var App = Marionette.Application.extend(
+    /**
+     * @lends App.prototype
+     */
+    {
     modals: {},
     modalCollection: undefined,
     behaviors: {},
     changedGlyphs: new GlyphCollection(),
 
+    /**
+     * @class App
+     *
+     * App is the Interactive Classifier application.
+     *
+     * @constructs App
+     */
     initialize: function ()
     {
         // Authenticator object is used to maintain token authentication with the Rodan web server.
@@ -249,4 +257,4 @@ var App = new Marionette.Application({
     }
 });
 
-export default App;
+export default new App();

@@ -2,14 +2,27 @@ import Backbone from "backbone";
 import _ from "underscore";
 
 /**
+ * @class RecursiveUnorderedListViewModel
+ *
  * ViewModel for RecursiveUnorderedListView.  This model is the node of a tree.
  */
-var RecursiveUnorderedListViewModel = Backbone.Model.extend({
+var RecursiveUnorderedListViewModel = Backbone.Model.extend(
+    /**
+     * @lends RecursiveUnorderedListViewModel.prototype
+     */
+    {
     defaults: {
         value: undefined,
         children: []
     },
 
+    /**
+     * If a value is already a child, then get its node.  Otherwise, append a
+     * new node and get that.
+     *
+     * @param value
+     * @returns {RecursiveUnorderedListViewModel} - The node with the value.
+     */
     getOrAppendChild: function (value)
     {
         var children = this.get("children");

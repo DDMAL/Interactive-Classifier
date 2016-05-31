@@ -1,3 +1,6 @@
+/**
+ * Events for selecting, moving glyphs, etc.
+ */
 export default {
     openGlyphEdit: "open:glyphEdit",
     clickGlyph: "click:glyph",

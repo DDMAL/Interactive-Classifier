@@ -4,11 +4,11 @@ import GlyphEvents from "events/GlyphEvents";
 import Strings from "localization/Strings";
 import template from "./glyph-edit.template.html";
 
+export default Marionette.ItemView.extend(
 /**
- * This view is created when a user clicks on an individual glyph.  This view allows the user to set the class name of
- * that glyph.
+ * @lends GlyphEditView.prototype
  */
-export default Marionette.ItemView.extend({
+{
     template,
 
     ui: {
@@ -25,11 +25,18 @@ export default Marionette.ItemView.extend({
     },
 
     /**
-     * Set up an event listener.  When a user clicks on a class name in the ClassTreeView, this view form becomes
-     * populated with that name and the form is submitted.
+     * @class GlyphEditView
+     *
+     * This view is created when a user clicks on an individual glyph.  This view allows the user to set the class name of
+     * that glyph.
+     *
+     * @constructs
      */
     initialize: function ()
     {
+        // Set up an event listener.  When a user clicks on a class name in the
+        // ClassTreeView, this view form becomes populated with that name and
+        // the form is submitted.
         var that = this;
         this.listenTo(RadioChannels.edit, GlyphEvents.clickGlyphName,
             function (className)

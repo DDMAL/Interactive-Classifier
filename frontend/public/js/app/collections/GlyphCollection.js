@@ -3,8 +3,14 @@ import Glyph from "models/Glyph";
 
 /**
  * A collection of Glyph models.
+ *
+ * @class GlyphCollection
  */
-export default Backbone.Collection.extend({
+export default Backbone.Collection.extend(
+/**
+ * @lends GlyphCollection.prototype
+ */
+{
     model: Glyph,
 
     /**

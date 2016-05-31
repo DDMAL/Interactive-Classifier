@@ -6,8 +6,14 @@ import template from "./modal.template.html";
  * body of the modal.  So, you can fill the modal with anything that you want.
  *
  * The inner view is a property of the ModalViewModel.
+ *
+ * @class ModalView
  */
-export default Marionette.LayoutView.extend({
+export default Marionette.LayoutView.extend(
+    /**
+     * @lends ModalView.prototype
+     */
+    {
     template,
 
     ui: {

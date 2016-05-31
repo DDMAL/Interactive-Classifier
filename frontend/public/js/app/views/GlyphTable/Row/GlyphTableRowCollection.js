@@ -2,7 +2,18 @@ import Backbone from "backbone";
 import GlyphTableRowViewModel from "views/GlyphTable/Row/GlyphTableRowViewModel";
 import GlyphCollection from "collections/GlyphCollection";
 
-export default Backbone.Collection.extend({
+/**
+ * @class GlyphTableRowCollection
+ *
+ * This is a special kind of collection used in the rows of the GlyphTable.
+ *
+ * @constructs GlyphTableRowCollection
+ */
+export default Backbone.Collection.extend(
+/**
+ * @lends GlyphTableRowCollection.prototype
+ */
+{
     model: GlyphTableRowViewModel,
 
     comparator: "class_name",
@@ -10,9 +21,9 @@ export default Backbone.Collection.extend({
     /**
      * Move a glyph from one table row to another.
      *
-     * @param glyph
-     * @param oldClassName
-     * @param newClassName
+     * @param {Glyph} glyph - Glyph model.
+     * @param {string} oldClassName - The glyph's old class name.
+     * @param {string} newClassName - The glyph's new class name.
      */
     moveGlyph: function (glyph, oldClassName, newClassName)
     {

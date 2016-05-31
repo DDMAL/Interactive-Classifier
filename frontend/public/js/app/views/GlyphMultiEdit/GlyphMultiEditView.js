@@ -5,10 +5,11 @@ import GlyphEvents from "events/GlyphEvents";
 import Strings from "localization/Strings";
 import template from "views/GlyphMultiEdit/glyph-multi-edit.template.html";
 
+export default Marionette.LayoutView.extend(
 /**
- * This is the view that allows the user to set the class name of multiple Glyph models at the same time.
+ * @lends GlyphMultiEditView.prototype
  */
-export default Marionette.LayoutView.extend({
+    {
     template,
 
     regions: {
@@ -24,11 +25,18 @@ export default Marionette.LayoutView.extend({
     },
 
     /**
-     * Set up an event listener so that when the user clicks on a class name in the ClassTreeView, this view
-     * automatically populates its form with that class name and submits the form.
+     * @class GlyphMultiEditView
+     *
+     * This is the view that allows the user to set the class name of multiple
+     * Glyph models at the same time.
+     *
+     * @constructs
      */
     initialize: function ()
     {
+        // Set up an event listener so that when the user clicks on a class name
+        // in the ClassTreeView, this view automatically populates its form with
+        // that class name and submits the form.
         var that = this;
         this.listenTo(RadioChannels.edit, GlyphEvents.clickGlyphName,
             function (className)

@@ -1,22 +1,30 @@
 import Backbone from "backbone";
 
-export default Backbone.Model.extend({
-    defaults: {
-        active: false
-    },
-
-    isActive: function ()
+/**
+ * @class GlyphTableItemViewModel
+ */
+export default Backbone.Model.extend(
+    /**
+     * @lends GlyphTableItemViewModel.prototype
+     */
     {
-        return this.get("active") === true;
-    },
+        defaults: {
+            active: false
+        },
 
-    activate: function ()
-    {
-        this.set("active", true);
-    },
+        isActive: function ()
+        {
+            return this.get("active") === true;
+        },
 
-    deactivate: function ()
-    {
-        this.set("active", false);
+        activate: function ()
+        {
+            this.set("active", true);
+        },
+
+        deactivate: function ()
+        {
+            this.set("active", false);
+        }
     }
-});
+);
