@@ -26,7 +26,8 @@ var sources = {
     appJS: ['public/js/app/**/*.js', '!public/js/app/**/*.spec.js', 'public/modernizr-config.json'],
     buildJS: ['./*.js'],
     templates: ['public/js/app/**/*.template.html'],
-    css: ['public/css/**/*{.css,.scss}']
+    css: ['public/css/**/*{.css,.scss}'],
+    jsdocDest: "../docs/jsdoc"
 };
 
 sources.clientJS = ['public/node_modules'].concat(sources.appJS).concat(sources.templates);
@@ -139,9 +140,30 @@ Build JSDocs
  */
 gulp.task('build:jsdoc', function(cb)
 {
-    var config = require('./jsdoc.json');
+    // Clean the old jsdocs
+    runSequence("clean:jsdoc");
+
+    var config = {
+        "opts": {
+            "template": "templates/default",
+            "destination": sources.jsdocDest
+        },
+        "plugins": ["plugins/markdown"]
+    };
+
     gulp.src(sources.appJS, {read: false})
         .pipe(jsdoc(config, cb));
+});
+
+gulp.task('clean:jsdoc', function (done)
+{
+    del(sources.jsdocDest, {force: true}, function (err)
+    {
+        if (err)
+            done(err);
+        else
+            done();
+    });
 });
 
 gulp.task('build:modernizr', function (cb)

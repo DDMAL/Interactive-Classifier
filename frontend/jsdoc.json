@@ -1,7 +1,0 @@
-{
-    "opts": {
-        "template": "templates/default",
-        "destination": "../docs/jsdoc"
-    },
-    "plugins": ["plugins/markdown"]
-}
