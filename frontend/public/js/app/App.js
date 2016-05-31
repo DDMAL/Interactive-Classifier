@@ -24,237 +24,237 @@ var App = Marionette.Application.extend(
      * @lends App.prototype
      */
     {
-    modals: {},
-    modalCollection: undefined,
-    behaviors: {},
-    changedGlyphs: new GlyphCollection(),
+        modals: {},
+        modalCollection: undefined,
+        behaviors: {},
+        changedGlyphs: new GlyphCollection(),
 
-    /**
-     * @class App
-     *
-     * App is the Interactive Classifier application.
-     *
-     * @constructs App
-     */
-    initialize: function ()
-    {
-        // Authenticator object is used to maintain token authentication with the Rodan web server.
-        this.authenticator = new Authenticator();
-        this.authenticator.startTimedAuthentication();
-    },
-
-    /**
-     * This function runs before the application starts.  It instantiates the RootView and sets up radio listeners.
-     */
-    onBeforeStart: function ()
-    {
-        //Instantiate the root view
-        this.rootView = new RootView();
-        this.rootView.navigation.show(new MenuView());
-
-        /* Create the modals*/
-        this.initializeModals();
-
-        /* Menuchannel*/
-        var that = this;
-        this.listenTo(RadioChannels.menu, MainMenuEvents.clickSubmitCorrections, function ()
+        /**
+         * @class App
+         *
+         * App is the Interactive Classifier application.
+         *
+         * @constructs App
+         */
+        initialize: function ()
         {
-            that.modals.submitCorrections.open();
-        });
-        this.listenTo(RadioChannels.menu, MainMenuEvents.clickFinalizeCorrections, function ()
+            // Authenticator object is used to maintain token authentication with the Rodan web server.
+            this.authenticator = new Authenticator();
+            this.authenticator.startTimedAuthentication();
+        },
+
+        /**
+         * This function runs before the application starts.  It instantiates the RootView and sets up radio listeners.
+         */
+        onBeforeStart: function ()
         {
-            that.modals.finalizeCorrections.open();
-        });
-        this.listenTo(RadioChannels.edit, GlyphEvents.changeGlyph, function (glyphModel)
-        {
-            that.changedGlyphs.add(glyphModel);
-        });
-        this.modals.loading.open();
-    },
+            //Instantiate the root view
+            this.rootView = new RootView();
+            this.rootView.navigation.show(new MenuView());
 
-    /**
-     * This function runs when the application starts.
-     *
-     * The function extracts glyph data, class names, and preview image path data from the HTML page.  The function
-     * then deletes those elements.
-     *
-     * Next, we initialize the RodanDashboardView.  We wait two seconds (so that the loading screen modal can
-     * successfully open) and then render the view.
-     */
-    onStart: function ()
-    {
-        // Timer that we will use for profiling
-        var timer = new Timer("App.js onStart");
+            /* Create the modals*/
+            this.initializeModals();
 
-        var pageElement = $("#page");
-        var glyphsElement = $("#glyphs");
-        var classNamesElement = $("#classNames");
-
-        timer.tick();
-
-        // Extract the page image URL
-        var binaryPageImage = pageElement.attr("data-page");
-        var glyphDictionary = JSON.parse(glyphsElement.attr("data-glyphs"));
-        var classNames = JSON.parse(classNamesElement.attr("data-class-names"));
-
-        timer.tick();
-
-        // Delete the data elements from the dom
-        pageElement.remove();
-        glyphsElement.remove();
-        classNamesElement.remove();
-
-        timer.tick();
-
-        // Open the view to edit the page
-        var view = new RodanDashboardView({
-            model: new Backbone.Model({
-                binaryImage: binaryPageImage,
-                glyphDictionary: glyphDictionary,
-                classNames: classNames
-            })
-        });
-
-        timer.tick();
-
-        var that = this;
-        setTimeout(function ()
-        {
-            that.rootView.container.show(view);
-            that.modals.loading.close();
-        }, 2000);
-    },
-
-    /**
-     *  Submit corrections back to Rodan and run another round of gamera classification.
-     */
-    submitCorrections: function ()
-    {
-        var data = JSON.stringify({"glyphs": this.changedGlyphs.toJSON()});
-        // Submit the corrections and close the window
-        $.ajax({
-            url: this.authenticator.getWorkingUrl(),
-            type: 'POST',
-            data: data,
-            contentType: 'application/json',
-            complete: function (response)
+            /* Menuchannel*/
+            var that = this;
+            this.listenTo(RadioChannels.menu, MainMenuEvents.clickSubmitCorrections, function ()
             {
-                /* Close the window if successful POST*/
-                if (response.status === 200)
+                that.modals.submitCorrections.open();
+            });
+            this.listenTo(RadioChannels.menu, MainMenuEvents.clickFinalizeCorrections, function ()
+            {
+                that.modals.finalizeCorrections.open();
+            });
+            this.listenTo(RadioChannels.edit, GlyphEvents.changeGlyph, function (glyphModel)
+            {
+                that.changedGlyphs.add(glyphModel);
+            });
+            this.modals.loading.open();
+        },
+
+        /**
+         * This function runs when the application starts.
+         *
+         * The function extracts glyph data, class names, and preview image path data from the HTML page.  The function
+         * then deletes those elements.
+         *
+         * Next, we initialize the RodanDashboardView.  We wait two seconds (so that the loading screen modal can
+         * successfully open) and then render the view.
+         */
+        onStart: function ()
+        {
+            // Timer that we will use for profiling
+            var timer = new Timer("App.js onStart");
+
+            var pageElement = $("#page");
+            var glyphsElement = $("#glyphs");
+            var classNamesElement = $("#classNames");
+
+            timer.tick();
+
+            // Extract the page image URL
+            var binaryPageImage = pageElement.attr("data-page");
+            var glyphDictionary = JSON.parse(glyphsElement.attr("data-glyphs"));
+            var classNames = JSON.parse(classNamesElement.attr("data-class-names"));
+
+            timer.tick();
+
+            // Delete the data elements from the dom
+            pageElement.remove();
+            glyphsElement.remove();
+            classNamesElement.remove();
+
+            timer.tick();
+
+            // Open the view to edit the page
+            var view = new RodanDashboardView({
+                model: new Backbone.Model({
+                    binaryImage: binaryPageImage,
+                    glyphDictionary: glyphDictionary,
+                    classNames: classNames
+                })
+            });
+
+            timer.tick();
+
+            var that = this;
+            setTimeout(function ()
+            {
+                that.rootView.container.show(view);
+                that.modals.loading.close();
+            }, 2000);
+        },
+
+        /**
+         *  Submit corrections back to Rodan and run another round of gamera classification.
+         */
+        submitCorrections: function ()
+        {
+            var data = JSON.stringify({"glyphs": this.changedGlyphs.toJSON()});
+            // Submit the corrections and close the window
+            $.ajax({
+                url: this.authenticator.getWorkingUrl(),
+                type: 'POST',
+                data: data,
+                contentType: 'application/json',
+                complete: function (response)
                 {
-                    window.close();
+                    /* Close the window if successful POST*/
+                    if (response.status === 200)
+                    {
+                        window.close();
+                    }
                 }
-            }
-        });
-    },
+            });
+        },
 
-    /**
-     * Submit corrections back to Rodan.  If there are any corrections, run Gamera and quit.  Otherwise, just quit.
-     *
-     */
-    finalizeAndQuit: function ()
-    {
-        var data = JSON.stringify({
-            "complete": true,
-            "glyphs": this.changedGlyphs.toJSON()
-        });
-        /* Submit the corrections and close the window*/
-        $.ajax({
-            url: this.authenticator.getWorkingUrl(),
-            type: 'POST',
-            data: data,
-            contentType: 'application/json',
-            complete: function (response)
-            {
-                /* Close the window if successful POST*/
-                if (response.status === 200)
+        /**
+         * Submit corrections back to Rodan.  If there are any corrections, run Gamera and quit.  Otherwise, just quit.
+         *
+         */
+        finalizeAndQuit: function ()
+        {
+            var data = JSON.stringify({
+                "complete": true,
+                "glyphs": this.changedGlyphs.toJSON()
+            });
+            /* Submit the corrections and close the window*/
+            $.ajax({
+                url: this.authenticator.getWorkingUrl(),
+                type: 'POST',
+                data: data,
+                contentType: 'application/json',
+                complete: function (response)
                 {
-                    window.close();
+                    /* Close the window if successful POST*/
+                    if (response.status === 200)
+                    {
+                        window.close();
+                    }
                 }
-            }
-        });
-    },
+            });
+        },
 
-    /**
-     * Initialize all of the modals used in the application.
-     */
-    initializeModals: function ()
-    {
-        this.modalCollection = new Backbone.Collection();
+        /**
+         * Initialize all of the modals used in the application.
+         */
+        initializeModals: function ()
+        {
+            this.modalCollection = new Backbone.Collection();
 
-        // Prepare the modal collection
-        this.rootView.modal.show(new ModalCollectionView({collection: this.modalCollection}));
+            // Prepare the modal collection
+            this.rootView.modal.show(new ModalCollectionView({collection: this.modalCollection}));
 
-        // Loading modal
-        this.modals.loading = new ModalViewModel({
-            title: Strings.loadingPage,
-            isCloseable: false,
-            innerView: new LoadingScreenView({
-                model: new LoadingScreenViewModel({
-                    text: Strings.loadingGlyphs
+            // Loading modal
+            this.modals.loading = new ModalViewModel({
+                title: Strings.loadingPage,
+                isCloseable: false,
+                innerView: new LoadingScreenView({
+                    model: new LoadingScreenViewModel({
+                        text: Strings.loadingGlyphs
+                    })
                 })
-            })
-        });
-        this.modalCollection.add(this.modals.loading);
+            });
+            this.modalCollection.add(this.modals.loading);
 
-        var that = this;
-        // Submit Corrections modal
-        this.modals.submitCorrections = new ModalViewModel({
-            title: Strings.submitCorrections,
-            isCloseable: true,
-            innerView: new ConfirmView({
-                model: new ConfirmViewModel({
-                    text: Strings.submissionWarning,
-                    callback: function ()
-                    {
-                        // Once the user confirms, submit the corrections.
-                        that.submitCorrections();
-                    }
+            var that = this;
+            // Submit Corrections modal
+            this.modals.submitCorrections = new ModalViewModel({
+                title: Strings.submitCorrections,
+                isCloseable: true,
+                innerView: new ConfirmView({
+                    model: new ConfirmViewModel({
+                        text: Strings.submissionWarning,
+                        callback: function ()
+                        {
+                            // Once the user confirms, submit the corrections.
+                            that.submitCorrections();
+                        }
+                    })
                 })
-            })
-        });
-        this.modalCollection.add(this.modals.submitCorrections);
+            });
+            this.modalCollection.add(this.modals.submitCorrections);
 
-        // Finalize Corrections modal
-        this.modals.finalizeCorrections = new ModalViewModel({
-            title: Strings.finalizeCorrections,
-            isCloseable: true,
-            innerView: new ConfirmView({
-                model: new ConfirmViewModel({
-                    text: Strings.finalizeText,
-                    warning: Strings.finalizeWarning,
-                    callback: function ()
-                    {
-                        // Once the user confirms, submit the corrections.
-                        that.finalizeAndQuit();
-                    }
+            // Finalize Corrections modal
+            this.modals.finalizeCorrections = new ModalViewModel({
+                title: Strings.finalizeCorrections,
+                isCloseable: true,
+                innerView: new ConfirmView({
+                    model: new ConfirmViewModel({
+                        text: Strings.finalizeText,
+                        warning: Strings.finalizeWarning,
+                        callback: function ()
+                        {
+                            // Once the user confirms, submit the corrections.
+                            that.finalizeAndQuit();
+                        }
+                    })
                 })
-            })
-        });
-        this.modalCollection.add(this.modals.finalizeCorrections);
+            });
+            this.modalCollection.add(this.modals.finalizeCorrections);
 
-        // Listen to the "closeAll" channel
-        RadioChannels.modal.on(ModalEvents.closeAll,
-            function ()
-            {
-                that.closeAllModals();
-            }
-        );
-    },
+            // Listen to the "closeAll" channel
+            RadioChannels.modal.on(ModalEvents.closeAll,
+                function ()
+                {
+                    that.closeAllModals();
+                }
+            );
+        },
 
-    /**
-     * Close all open modal windows!
-     */
-    closeAllModals: function ()
-    {
-        // Make sure all the modals are closed
-        this.modalCollection.each(
-            function (modal)
-            {
-                modal.close();
-            }
-        )
-    }
-});
+        /**
+         * Close all open modal windows!
+         */
+        closeAllModals: function ()
+        {
+            // Make sure all the modals are closed
+            this.modalCollection.each(
+                function (modal)
+                {
+                    modal.close();
+                }
+            )
+        }
+    });
 
 export default new App();

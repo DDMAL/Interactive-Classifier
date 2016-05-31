@@ -14,50 +14,59 @@ export default Marionette.LayoutView.extend(
      * @lends ModalView.prototype
      */
     {
-    template,
+        template,
 
-    ui: {
-        modal: ".modal"
-    },
+        ui: {
+            modal: ".modal"
+        },
 
-    regions: {
-        modalBody: ".modal-body"
-    },
+        regions: {
+            modalBody: ".modal-body"
+        },
 
-    modelEvents: {
-        "open": "open",
-        "close": "close"
-    },
+        modelEvents: {
+            "open": "open",
+            "close": "close"
+        },
 
-    onShow: function ()
-    {
-        console.log(this.model.get("innerView"));
-        if (this.model.get("innerView"))
+        onShow: function ()
         {
-            this.showInnerView();
-        }
-    },
-
-    showInnerView: function ()
-    {
-        console.log("Rendering innerview...");
-        this.modalBody.show(this.model.get("innerView"));
-    },
-
-    open: function ()
-    {
-        console.log(this);
-        console.log(this.ui);
-        this.ui.modal.modal(
+            console.log(this.model.get("innerView"));
+            if (this.model.get("innerView"))
             {
-                backdrop: 'static',
-                keyboard: false
+                this.showInnerView();
             }
-        );
-    },
+        },
 
-    close: function ()
-    {
-        this.ui.modal.modal('hide');
-    }
-});
+        /**
+         * Show the inner view from the ModalViewModel.
+         */
+        showInnerView: function ()
+        {
+            console.log("Rendering innerview...");
+            this.modalBody.show(this.model.get("innerView"));
+        },
+
+        /**
+         * Open the modal.
+         */
+        open: function ()
+        {
+            console.log(this);
+            console.log(this.ui);
+            this.ui.modal.modal(
+                {
+                    backdrop: 'static',
+                    keyboard: false
+                }
+            );
+        },
+
+        /**
+         * Close the modal.
+         */
+        close: function ()
+        {
+            this.ui.modal.modal('hide');
+        }
+    });

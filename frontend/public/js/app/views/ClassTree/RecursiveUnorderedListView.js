@@ -15,75 +15,75 @@ export default Marionette.ItemView.extend(
      * @lends RecursiveUnorderedListView.prototype
      */
     {
-    template,
+        template,
 
-    events: {
-        "click .class-name": "onClickNode"
-    },
+        events: {
+            "click .class-name": "onClickNode"
+        },
 
-    onShow: function ()
-    {
-        this.$el.html(this.constructListHtml(this.model, ""));
-    },
-
-    /**
-     * Clicking one of the class names in the tree fires an event.  This event causes the currently selected glyphs to
-     * be assigned the name.
-     *
-     * @param event
-     */
-    onClickNode: function (event)
-    {
-        event.preventDefault();
-
-        // Extract the name from the HTML5 data attribute.
-        var className = event.target.dataset.name;
-        RadioChannels.edit.trigger(GlyphEvents.clickGlyphName, className);
-    },
-
-    /**
-     * Construct an html <ul> element recursively.
-     *
-     * @param {RecursiveUnorderedListViewModel} node
-     * @param {string} parentValue
-     * @returns {string}
-     */
-    constructListHtml: function (node, parentValue)
-    {
-        var output = "";
-
-        var value = node.get("value"),
-            children = node.get("children");
-
-        if (value)
+        onShow: function ()
         {
-            // Build this level of the recursion
-            output = '<li><a href="#" data-name="' + parentValue + value + '" class="class-name">' + value + "</a>";
-        }
+            this.$el.html(this.constructListHtml(this.model, ""));
+        },
 
-        // Recursively construct the children
-        if (children.length > 0)
+        /**
+         * Clicking one of the class names in the tree fires an event.  This event causes the currently selected glyphs to
+         * be assigned the name.
+         *
+         * @param event
+         */
+        onClickNode: function (event)
         {
-            output += "<ul>";
-            // Add the children recursively
-            for (var i = 0; i < children.length; i++)
+            event.preventDefault();
+
+            // Extract the name from the HTML5 data attribute.
+            var className = event.target.dataset.name;
+            RadioChannels.edit.trigger(GlyphEvents.clickGlyphName, className);
+        },
+
+        /**
+         * Construct an html <ul> element recursively.
+         *
+         * @param {RecursiveUnorderedListViewModel} node
+         * @param {string} parentValue
+         * @returns {string}
+         */
+        constructListHtml: function (node, parentValue)
+        {
+            var output = "";
+
+            var value = node.get("value"),
+                children = node.get("children");
+
+            if (value)
             {
-                var recursiveName = parentValue;
-                if (value)
-                {
-                    recursiveName += value + "."
-                }
-
-                output += this.constructListHtml(children[i], recursiveName);
+                // Build this level of the recursion
+                output = '<li><a href="#" data-name="' + parentValue + value + '" class="class-name">' + value + "</a>";
             }
-            output += "</ul>";
-        }
 
-        if (value)
-        {
-            output += "</li>";
-        }
+            // Recursively construct the children
+            if (children.length > 0)
+            {
+                output += "<ul>";
+                // Add the children recursively
+                for (var i = 0; i < children.length; i++)
+                {
+                    var recursiveName = parentValue;
+                    if (value)
+                    {
+                        recursiveName += value + "."
+                    }
 
-        return output;
-    }
-});
+                    output += this.constructListHtml(children[i], recursiveName);
+                }
+                output += "</ul>";
+            }
+
+            if (value)
+            {
+                output += "</li>";
+            }
+
+            return output;
+        }
+    });

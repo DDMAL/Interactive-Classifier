@@ -22,167 +22,167 @@ export default Marionette.LayoutView.extend(
      * @lends RodanDashboardView.prototype
      */
     {
-    template,
+        template,
 
-    regions: {
-        classCreateRegion: ".glyph-class-create-region",
-        glyphTreeRegion: ".glyph-class-tree-region",
-        glyphTableRegion: ".glyph-table-region",
-        glyphEditRegion: ".glyph-edit-region",
-        pagePreviewRegion: ".page-image-preview-region",
-        modalTestRegion: ".modal-test"
-    },
+        regions: {
+            classCreateRegion: ".glyph-class-create-region",
+            glyphTreeRegion: ".glyph-class-tree-region",
+            glyphTableRegion: ".glyph-table-region",
+            glyphEditRegion: ".glyph-edit-region",
+            pagePreviewRegion: ".page-image-preview-region",
+            modalTestRegion: ".modal-test"
+        },
 
-    /**
-     * @class RodanDashboardView
-     *
-     * This view is the main "dashboard" of the application.  This view handles
-     * most of the glyph editing functionality and determines which editing
-     * views the user can see.
-     *
-     * @constructs
-     */
-    initialize: function ()
-    {
-        // Create the preview window
-        this.previewView = new ImagePreviewView({
-            model: new ImagePreviewViewModel({
-                backgroundImage: this.model.get("binaryImage")
-            })
-        });
-
-        // Construct the glyph table data structure
-        this.tableRowCollection = new GlyphTableRowCollection();
-
-        // Selected Glyphs
-        this.selectedGlyphs = new Backbone.Collection();
-        var that = this;
-        this.listenTo(RadioChannels.edit, GlyphEvents.selectGlyph,
-            function (glyph)
-            {
-                that.selectedGlyphs.add(glyph);
-            }
-        );
-        this.listenTo(RadioChannels.edit, GlyphEvents.deselectGlyph,
-            function (glyph)
-            {
-                that.selectedGlyphs.remove(glyph);
-            }
-        );
-        this.listenTo(RadioChannels.edit, GlyphEvents.deselectAllGlyphs,
-            function ()
-            {
-                that.selectedGlyphs.reset();
-            }
-        );
-
-        // Glyph Editing Events
-        this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
-            function (model)
-            {
-                that.previewView.highlightGlyph(model);
-                that.openGlyphEdit(model);
-            });
-        this.listenTo(RadioChannels.edit, GlyphEvents.moveGlyph,
-            function (glyph, oldClassName, newClassName)
-            {
-                that.tableRowCollection.moveGlyph(glyph, oldClassName, newClassName);
-            }
-        );
-        this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
-            function ()
-            {
-                that.openMultiGlyphEdit(that.selectedGlyphs);
-            }
-        );
-    },
-
-    onShow: function ()
-    {
-        var timer = new Timer("RodanDashboardView onShow");
-
-        // Create the preview
-        this.pagePreviewRegion.show(this.previewView);
-
-        timer.tick();
-
-        var glyphDictionary = this.model.get("glyphDictionary");
-        var classNames = this.model.get("classNames");
-
-        // Show the tree
-        this.glyphTreeRegion.show(new ClassTreeView({
-            model: new ClassTreeViewModel({
-                class_names: classNames
-            })
-        }));
-
-        timer.tick();
-
-        var glyphCollections = {};
-        // Separate the glyphs by their class
-        for (var i = 0; i < classNames.length; i++)
+        /**
+         * @class RodanDashboardView
+         *
+         * This view is the main "dashboard" of the application.  This view handles
+         * most of the glyph editing functionality and determines which editing
+         * views the user can see.
+         *
+         * @constructs
+         */
+        initialize: function ()
         {
-            glyphCollections[classNames[i]] = new GlyphCollection(glyphDictionary[classNames[i]]);
-        }
-
-        timer.tick("pre-final render");
-
-        var that = this;
-        _.each(classNames, function (className)
-        {
-            var row = new GlyphTableRowViewModel({
-                class_name: className,
-                glyphs: glyphCollections[className]
+            // Create the preview window
+            this.previewView = new ImagePreviewView({
+                model: new ImagePreviewViewModel({
+                    backgroundImage: this.model.get("binaryImage")
+                })
             });
-            that.tableRowCollection.add(row);
-        });
 
-        timer.tick();
+            // Construct the glyph table data structure
+            this.tableRowCollection = new GlyphTableRowCollection();
 
-        this.glyphTableRegion.show(new GlyphTableView({
-            collection: this.tableRowCollection
-        }));
+            // Selected Glyphs
+            this.selectedGlyphs = new Backbone.Collection();
+            var that = this;
+            this.listenTo(RadioChannels.edit, GlyphEvents.selectGlyph,
+                function (glyph)
+                {
+                    that.selectedGlyphs.add(glyph);
+                }
+            );
+            this.listenTo(RadioChannels.edit, GlyphEvents.deselectGlyph,
+                function (glyph)
+                {
+                    that.selectedGlyphs.remove(glyph);
+                }
+            );
+            this.listenTo(RadioChannels.edit, GlyphEvents.deselectAllGlyphs,
+                function ()
+                {
+                    that.selectedGlyphs.reset();
+                }
+            );
 
-        timer.tick("final");
-    },
+            // Glyph Editing Events
+            this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
+                function (model)
+                {
+                    that.previewView.highlightGlyph(model);
+                    that.openGlyphEdit(model);
+                });
+            this.listenTo(RadioChannels.edit, GlyphEvents.moveGlyph,
+                function (glyph, oldClassName, newClassName)
+                {
+                    that.tableRowCollection.moveGlyph(glyph, oldClassName, newClassName);
+                }
+            );
+            this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
+                function ()
+                {
+                    that.openMultiGlyphEdit(that.selectedGlyphs);
+                }
+            );
+        },
 
-    /**
-     * Open the GlyphEditView for editing a particular glyph.
-     *
-     * @param {Glyph} model - A Glyph model.
-     */
-    openGlyphEdit: function (model)
-    {
-        console.log("Open glyphedit!", model);
-        this.glyphEditRegion.show(new GlyphEditView({
-            model: model
-        }));
-    },
+        onShow: function ()
+        {
+            var timer = new Timer("RodanDashboardView onShow");
 
-    /**
-     * Open the GlyphMultiEditView for editing a particular collection of
-     * Glyph models.
-     *
-     * @param {GlyphCollection} collection - Collection of glyphs to edit.
-     */
-    openMultiGlyphEdit: function (collection)
-    {
-        this.glyphEditRegion.show(new GlyphMultiEditView({
-            collection: collection
-        }));
-    },
+            // Create the preview
+            this.pagePreviewRegion.show(this.previewView);
 
-    /**
-     * This template has lots of localized strings.
-     *
-     * @returns {{classesHeader: *, editGlyphLabel: (*|string), editGlyphDescription: (*|string)}}
-     */
-    serializeData: function ()
-    {
-        return {
-            classesHeader: Strings.classes,
-            editGlyphLabel: Strings.editGlyphLabel,
-            editGlyphDescription: Strings.editGlyphDescription
+            timer.tick();
+
+            var glyphDictionary = this.model.get("glyphDictionary");
+            var classNames = this.model.get("classNames");
+
+            // Show the tree
+            this.glyphTreeRegion.show(new ClassTreeView({
+                model: new ClassTreeViewModel({
+                    class_names: classNames
+                })
+            }));
+
+            timer.tick();
+
+            var glyphCollections = {};
+            // Separate the glyphs by their class
+            for (var i = 0; i < classNames.length; i++)
+            {
+                glyphCollections[classNames[i]] = new GlyphCollection(glyphDictionary[classNames[i]]);
+            }
+
+            timer.tick("pre-final render");
+
+            var that = this;
+            _.each(classNames, function (className)
+            {
+                var row = new GlyphTableRowViewModel({
+                    class_name: className,
+                    glyphs: glyphCollections[className]
+                });
+                that.tableRowCollection.add(row);
+            });
+
+            timer.tick();
+
+            this.glyphTableRegion.show(new GlyphTableView({
+                collection: this.tableRowCollection
+            }));
+
+            timer.tick("final");
+        },
+
+        /**
+         * Open the GlyphEditView for editing a particular glyph.
+         *
+         * @param {Glyph} model - A Glyph model.
+         */
+        openGlyphEdit: function (model)
+        {
+            console.log("Open glyphedit!", model);
+            this.glyphEditRegion.show(new GlyphEditView({
+                model: model
+            }));
+        },
+
+        /**
+         * Open the GlyphMultiEditView for editing a particular collection of
+         * Glyph models.
+         *
+         * @param {GlyphCollection} collection - Collection of glyphs to edit.
+         */
+        openMultiGlyphEdit: function (collection)
+        {
+            this.glyphEditRegion.show(new GlyphMultiEditView({
+                collection: collection
+            }));
+        },
+
+        /**
+         * This template has lots of localized strings.
+         *
+         * @returns {{classesHeader: *, editGlyphLabel: (*|string), editGlyphDescription: (*|string)}}
+         */
+        serializeData: function ()
+        {
+            return {
+                classesHeader: Strings.classes,
+                editGlyphLabel: Strings.editGlyphLabel,
+                editGlyphDescription: Strings.editGlyphDescription
+            }
         }
-    }
-});
+    });
