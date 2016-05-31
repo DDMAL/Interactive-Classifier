@@ -1,12 +1,19 @@
+/**
+ * Utility functions for manipulating Glyph class names.
+ *
+ * @module ClassNameUtils
+ */
 export default {
     /**
      * Given a class name, remove illegal characters.
      *
-     * @param input
-     * @returns {*}
+     * @param {string} input - The name to sanitize.
+     * @returns {string}
      */
     sanitizeClassName: function (input)
     {
+        // Enforce string
+        input = String(input);
         // Lowercase
         input = input.toLowerCase();
         // Remove everything other than letters and periods
@@ -21,9 +28,9 @@ export default {
     /**
      * Given a string, strip away leading or trailing instances of char.
      *
-     * @param string
-     * @param char
-     * @returns {string}
+     * @param {string} string - String to strip from.
+     * @param {char} char - Character to strip away.
+     * @returns {string} The stripped string.
      */
     trimCharacter: function (string, char)
     {

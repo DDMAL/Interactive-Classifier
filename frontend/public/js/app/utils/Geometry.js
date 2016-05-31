@@ -1,3 +1,8 @@
+/**
+ * Functions for doing geometry.
+ *
+ * @module Geometry
+ */
 export default {
 
     /**
@@ -9,9 +14,9 @@ export default {
     /**
      * Test if two rectangles overlap.
      *
-     * @param {BoundingBox} rectangleA
-     * @param {BoundingBox} rectangleB
-     * @returns {boolean}
+     * @param {BoundingBox} rectangleA - The first rectangle.
+     * @param {BoundingBox} rectangleB - The second rectangle.
+     * @returns {boolean} True if the rectangles intersect.
      */
     rectangleOverlap: function (rectangleA, rectangleB)
     {

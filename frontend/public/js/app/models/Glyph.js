@@ -13,7 +13,6 @@ export default Backbone.Model.extend(
      * @lends Glyph.prototype
      */
     {
-
         defaults: {
             id: 0,
             class_name: "",
