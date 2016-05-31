@@ -6,7 +6,8 @@ import template from "./main-menu-link.template.html";
 export default Marionette.LayoutView.extend({
     template,
 
-    tagName: 'li class="dropdown"',
+    tagName: 'li',
+    className: "dropdown",
 
     events: {
         "click .menu-link": "onClick"

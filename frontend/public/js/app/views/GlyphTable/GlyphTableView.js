@@ -5,7 +5,8 @@ import GlyphEvents from "events/GlyphEvents";
 import RadioChannels from "radio/RadioChannels";
 
 export default Marionette.CollectionView.extend({
-    tagName: 'table class="table table-hover"',
+    tagName: 'table',
+    className: "table table-hover",
     childView: GlyphTableRowView,
 
     isMouseDown: false,

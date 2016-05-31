@@ -10,7 +10,8 @@ export default Marionette.ItemView.extend({
     viewModel: undefined,
     tableViewModel: undefined,
 
-    tagName: 'div class="glyph-image-container"',
+    tagName: 'div',
+    className: "glyph-image-container",
 
     events: {
         "click .glyph": "onClickGlyph"
