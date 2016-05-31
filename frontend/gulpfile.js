@@ -4,6 +4,7 @@ var gulp = require('gulp');
 var runSequence = require('run-sequence');
 var eslint = require('gulp-eslint');
 var jscs = require('gulp-jscs');
+var jsdoc = require('gulp-jsdoc3');
 var concat = require('gulp-concat');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
@@ -52,7 +53,7 @@ gulp.task('default', function (cb)
     runSequence(['lint-nofail:js', 'build'], 'watch', cb);
 });
 
-gulp.task('build', ['build:js', 'build:css']);
+gulp.task('build', ['build:js', 'build:css', 'build:jsdoc']);
 
 /*
  * JavaScript linting
@@ -131,6 +132,16 @@ gulp.task('clean:js', function (done)
         else
             done();
     });
+});
+
+/*
+Build JSDocs
+ */
+gulp.task('build:jsdoc', function(cb)
+{
+    var config = require('./jsdoc.json');
+    gulp.src(sources.appJS, {read: false})
+        .pipe(jsdoc(config, cb));
 });
 
 gulp.task('build:modernizr', function (cb)
@@ -226,7 +237,7 @@ gulp.task('watch', function (done) // eslint-disable-line no-unused-vars
     // Run the livereload server
     livereload.listen();
 
-    var jsWatcher = gulp.watch(sources.clientJS, ['lint-nofail:js', 'rebuild:js']);
+    var jsWatcher = gulp.watch(sources.clientJS, ['lint-nofail:js', 'rebuild:js', 'build:jsdoc']);
     var cssWatcher = gulp.watch(sources.css, ['rebuild:css']);
 
     jsWatcher.on('change', logWatchedChange);
