@@ -13,8 +13,15 @@ export default Marionette.ItemView.extend({
         highlight: ".preview-highlight"
     },
 
+    /**
+     * Draw a highlight box over a particular Glyph model that is on the page.
+     *
+     * @param glyph A Glyph model.
+     */
     highlightGlyph: function (glyph)
     {
+        // Change the dimensions of our highlight box to match those of the
+        // glyph.
         this.ui.highlight.css({
             top: glyph.get("uly"),
             left: glyph.get("ulx"),

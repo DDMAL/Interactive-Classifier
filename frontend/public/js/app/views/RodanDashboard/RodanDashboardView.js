@@ -137,6 +137,11 @@ export default Marionette.LayoutView.extend({
         timer.tick("final");
     },
 
+    /**
+     * Open the GlyphEditView for editing a particular glyph.
+     *
+     * @param model A Glyph model.
+     */
     openGlyphEdit: function (model)
     {
         console.log("Open glyphedit!", model);
@@ -145,6 +150,12 @@ export default Marionette.LayoutView.extend({
         }));
     },
 
+    /**
+     * Open the GlyphMultiEditView for editing a particular collection of
+     * Glyph models.
+     *
+     * @param collection
+     */
     openMultiGlyphEdit: function (collection)
     {
         this.glyphEditRegion.show(new GlyphMultiEditView({
@@ -152,6 +163,11 @@ export default Marionette.LayoutView.extend({
         }));
     },
 
+    /**
+     * This template has lots of localized strings.
+     *
+     * @returns {{classesHeader: *, editGlyphLabel: (*|string), editGlyphDescription: (*|string)}}
+     */
     serializeData: function ()
     {
         return {

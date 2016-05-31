@@ -5,6 +5,15 @@ import RadioChannels from "radio/RadioChannels";
 import template from "./table-glyph.template.html";
 import Geometry from "utils/Geometry";
 
+/**
+ * This view is a single Glyph item in the glyph table.  This is the childView
+ * for the GlyphTableRowView collection view.
+ *
+ * This view triggers the events that occur when the user clicks on the glyph.
+ *
+ * This view also automatically checks if the glyph collides with the
+ * selectionBox lasso.
+ */
 export default Marionette.ItemView.extend({
     template,
     viewModel: undefined,
@@ -21,6 +30,11 @@ export default Marionette.ItemView.extend({
         "change": "render"
     },
 
+    /**
+     * 
+     *
+     * @param options
+     */
     initialize: function (options)
     {
         // Call the super constructor
@@ -62,6 +76,20 @@ export default Marionette.ItemView.extend({
         });
     },
 
+    /**
+     * When the user clicks on a glyph, there are two possible behaviours
+     * depending on whether or not the shift key is being held.
+     *
+     * If the user holds the shift key, then there are two possibilities.
+     * If this glyph is already selected, then the glyph is unselected.
+     * If the glyph isn't selected, then the glyph is added to the list of
+     * currently selected glyphs in the GlyphMultiEditView.
+     *
+     * If the user is not holding the shift key, then all other glyphs are
+     * unselected, the GlyphEditView is opened, and this glyph is selected.
+     *
+     * @param event jQuery event object.
+     */
     onClickGlyph: function (event)
     {
         event.preventDefault();
@@ -92,6 +120,12 @@ export default Marionette.ItemView.extend({
         }
     },
 
+    /**
+     * Depending on whether the glyph has been manually identified by the user
+     * or automatically identified by Gamera, we apply different CSS styles.
+     *
+     * @returns {*|string}
+     */
     serializeData: function ()
     {
         var data = this.model.toJSON();

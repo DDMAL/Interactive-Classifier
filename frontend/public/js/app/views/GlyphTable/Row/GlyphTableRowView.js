@@ -2,6 +2,9 @@ import Marionette from "marionette";
 import GlyphTableItemView from "views/GlyphTable/Row/GlyphTableItemView";
 import template from "./table-row.template.html";
 
+/**
+ * This view is a row in the GlyphTableView.
+ */
 export default Marionette.LayoutView.extend({
     template,
     tagName: "tr",
