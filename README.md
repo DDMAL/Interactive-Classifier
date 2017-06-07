@@ -10,7 +10,7 @@ Open `/path/to/Rodan/rodan/settings.py`.  Add `"rodan.jobs.interactive_classifie
 
 Finally, run `python manage.py migrate` in the Rodan virtual environment to activate the job package.
 
-###Running webpack:
+### Running webpack:
 Go in Interactive-Classifier/frontend
 run:
 ````
