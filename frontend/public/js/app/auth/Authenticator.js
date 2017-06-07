@@ -38,6 +38,7 @@ export default class Authenticator {
     authenticate()
     {
         var that = this;
+        console.log("TEST");
         $.ajax({
             url: this._authUrl,
             type: 'POST',
