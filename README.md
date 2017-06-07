@@ -10,3 +10,11 @@ Open `/path/to/Rodan/rodan/settings.py`.  Add `"rodan.jobs.interactive_classifie
 
 Finally, run `python manage.py migrate` in the Rodan virtual environment to activate the job package.
 
+###Running webpack:
+Go in Interactive-Classifier/frontend
+run:
+````
+npm install
+npm install --save bootstrap jquery backbone backbone.radio backbone.marionette@2.4.7
+./node_modules/.bin/gulp
+````
