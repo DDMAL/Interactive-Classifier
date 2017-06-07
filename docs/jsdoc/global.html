@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Documentation Class: GlyphTableView</title>
+	<title>Documentation Global</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -79,30 +79,14 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Class: GlyphTableView</h1>
+	<h1 class="page-title">Global</h1>
 <section>
 
 <header>
     
         <h2>
-        GlyphTableView
-        </h2>
         
-            <div class="class-description"><p>GlyphTableView</p>
-<p>This view is the main GUI where all of the glyphs are and ordanized by class.</p>
-<p>This view also handles logic for selecting glyphs to be edited.  Right now,
-there are two ways that users can select glyphs:</p>
-<pre class="prettyprint source"><code> - The first way is to click on an individual glyph.  This causes the
-   GlyphEditView to open.
-
- - The second way is to click and drag.  This causes a blue &quot;lasso&quot; box
-   to appear.  Glyphs which collide with the lasso box will be
-   selected.  These glyphs are sent to the GlyphMultiEditView.</code></pre><p> It is important to note that each individual GlyphTableItemView in the table
- has event listeners which listen to the dragSelect event.  This event is
- fired when the user comples a click and drag selection.</p>
-<p> So, it is the GlyphTableView which triggers the click and drag selection,
- but it is the individual GlyphTableItemViews which determine whether or not
- they have been selected.</p></div>
+        </h2>
         
     
 </header>
@@ -112,24 +96,8 @@ there are two ways that users can select glyphs:</p>
     <div class="container-overview">
     
         
-<hr>
-<dt>
-    <h4 class="name" id="GlyphTableView"><span class="type-signature"></span>new GlyphTableView()</h4>
-    
-    
-</dt>
-<dd>
 
-    
-
-    
-
-    
-
-    
-    
-
-    
+        
 <dl class="details">
     
 
@@ -169,21 +137,7 @@ there are two ways that users can select glyphs:</p>
 </dl>
 
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
+        
     
     </div>
 
@@ -197,71 +151,6 @@ there are two ways that users can select glyphs:</p>
 
     
 
-    
-        <h3 class="subsection-title">Members</h3>
-
-        <dl>
-            
-<hr>
-<dt class="name" id="selectionBox">
-    <h4 id="selectionBox"><span class="type-signature"></span>selectionBox<span class="type-signature"></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>selectionBox is the blue lasso that appears when the user clicks and
-drags their mouse.</p>
-    </div>
-    
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-</dd>
-
-        </dl>
     
 
     
@@ -271,7 +160,7 @@ drags their mouse.</p>
             
 <hr>
 <dt>
-    <h4 class="name" id="onMouseDown"><span class="type-signature"></span>onMouseDown(event)</h4>
+    <h4 class="name" id="authenticate"><span class="type-signature"></span>authenticate()</h4>
     
     
 </dt>
@@ -279,9 +168,8 @@ drags their mouse.</p>
 
     
     <div class="description">
-        <p>This function fires when the user clicks and holds their mouse down.
-We record the location of the user's mouse and trigger the selectionBox
-lasso to appear.</p>
+        <p>Authenticate with the server then save the working POST url for when
+we will submit to the server later.</p>
     </div>
     
 
@@ -290,50 +178,6 @@ lasso to appear.</p>
     
 
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>event</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>jQuery event object.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
     
 
     
@@ -395,7 +239,7 @@ lasso to appear.</p>
             
 <hr>
 <dt>
-    <h4 class="name" id="onMouseUp"><span class="type-signature"></span>onMouseUp(event)</h4>
+    <h4 class="name" id="getAuthUrl"><span class="type-signature"></span>getAuthUrl()</h4>
     
     
 </dt>
@@ -403,10 +247,7 @@ lasso to appear.</p>
 
     
     <div class="description">
-        <p>This function fires when the user who has been clicking and dragging
-finally releases their mouse.</p>
-<p>This function triggers the logic to select whichever glyphs in the table
-collide with the selectionBox.</p>
+        <p>Get the authentication url.</p>
     </div>
     
 
@@ -416,49 +257,215 @@ collide with the selectionBox.</p>
 
     
     
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>event</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>jQuery event object.</p></td>
-        </tr>
 
     
-    </tbody>
-</table>
+<dl class="details">
+    
 
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <ul>
+<li>The authentication URL.</li>
+</ul>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="getWorkingUrl"><span class="type-signature"></span>getWorkingUrl()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Get the working POST url for the Interactive Job.  This is the URL that
+we make a post request to when we want to complete the interactive
+portion of the interactive job.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <ul>
+<li>The &quot;working&quot; URL on the server for the job.</li>
+</ul>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="startTimedAuthentication"><span class="type-signature"></span>startTimedAuthentication()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Start authenticating on an interval.</p>
+    </div>
+    
+
+    
+
+    
+
+    
     
 
     
@@ -520,7 +527,7 @@ collide with the selectionBox.</p>
             
 <hr>
 <dt>
-    <h4 class="name" id="onShow"><span class="type-signature"></span>onShow()</h4>
+    <h4 class="name" id="tick"><span class="type-signature"></span>tick(name)</h4>
     
     
 </dt>
@@ -528,10 +535,7 @@ collide with the selectionBox.</p>
 
     
     <div class="description">
-        <p>After the view is rendered, this function automatically constructs
-the selectionBox as a hidden DOM element.</p>
-<p>This function also sets up an event listener which resizes the
-selectionBox when the user moves their mouse.</p>
+        <p>Print the miliseconds elapsed since Timer was initialized.</p>
     </div>
     
 
@@ -540,6 +544,56 @@ selectionBox when the user moves their mouse.</p>
     
 
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Optional name to attach to the tick log.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
     
 
     
@@ -647,7 +701,7 @@ selectionBox when the user moves their mouse.</p>
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
 	
-		on 2017-06-07T10:47:16-04:00
+		on 2017-06-07T10:47:15-04:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

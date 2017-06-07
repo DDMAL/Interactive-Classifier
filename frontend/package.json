@@ -44,5 +44,11 @@
     "test": "karma start --single-run",
     "lint": "gulp lint:js",
     "build": "gulp build"
+  },
+  "dependencies": {
+    "backbone": "^1.3.3",
+    "backbone.marionette": "^2.4.7",
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.2.1"
   }
 }
