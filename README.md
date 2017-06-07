@@ -9,3 +9,4 @@ First, create a symbolic link from `/path/to/Rodan/rodan/jobs/interactive_classi
 Open `/path/to/Rodan/rodan/settings.py`.  Add `"rodan.jobs.interactive_classifier"` to the `RODAN_JOB_PACKAGES` tuple.  Save `settings.py`.
 
 Finally, run `python manage.py migrate` in the Rodan virtual environment to activate the job package.
+
