@@ -10,7 +10,7 @@
     },
 
     "requireOperatorBeforeLineBreak": true,
-    "requireCamelCaseOrUpperCaseIdentifiers": true,
+    "requireCamelCaseOrUpperCaseIdentifiers": false,
 
     "disallowMultipleLineStrings": true,
     "disallowMixedSpacesAndTabs": true,
