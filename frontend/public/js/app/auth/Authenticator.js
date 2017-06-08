@@ -38,7 +38,6 @@ export default class Authenticator {
     authenticate()
     {
         var that = this;
-        console.log("THIS IS TESTING WEBPACK AGAIN");
         $.ajax({
             url: this._authUrl,
             type: 'POST',
@@ -50,7 +49,7 @@ export default class Authenticator {
             {
                 var responseData = JSON.parse(response.responseText);
                 // Save the working url
-                that._workingUrl = responseData["working_url"];
+                that._workingUrl = responseData.working_url;
             }
         });
     }

@@ -134,7 +134,9 @@ var App = Marionette.Application.extend(
          */
         submitCorrections: function ()
         {
-            var data = JSON.stringify({"glyphs": this.changedGlyphs.toJSON()});
+            var data = JSON.stringify({
+                "glyphs": this.changedGlyphs.toJSON()
+            });
             // Submit the corrections and close the window
             $.ajax({
                 url: this.authenticator.getWorkingUrl(),
@@ -187,21 +189,30 @@ var App = Marionette.Application.extend(
             var x = document.getElementById("inputFile");
             x.disabled = true;
 
+            var data = JSON.stringify({
+                "data": x,
+                "glyphs": this.changedGlyphs.toJSON()
+            })
+
             //placeholder for sending the request
             $.ajax({
                 url: this.authenticator.getWorkingUrl(),
                 type: 'POST',
+                data: data,
                 contentType: 'application/json',
                 complete: function (response)
                 {
                     /* Close the window if successful POST*/
                     if (response.status === 200)
                     {
-                        window.close();
+                        alert("Success!");
+                    }
+                    else
+                    {
+                        alert("Failed!");
                     }
                 }
             });
-            
         },
 
         /**
