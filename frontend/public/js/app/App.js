@@ -186,6 +186,21 @@ var App = Marionette.Application.extend(
         {
             var x = document.getElementById("inputFile");
             x.disabled = true;
+
+            //placeholder for sending the request
+            $.ajax({
+                url: this.authenticator.getWorkingUrl(),
+                type: 'POST',
+                contentType: 'application/json',
+                complete: function (response)
+                {
+                    /* Close the window if successful POST*/
+                    if (response.status === 200)
+                    {
+                        window.close();
+                    }
+                }
+            });
             
         },
 
