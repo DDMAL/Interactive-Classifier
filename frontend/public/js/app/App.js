@@ -65,6 +65,10 @@ var App = Marionette.Application.extend(
             {
                 that.modals.finalizeCorrections.open();
             });
+            this.listenTo(RadioChannels.menu, MainMenuEvents.clickTest, function ()
+            {
+                that.modals.opening.open();
+            });
             this.listenTo(RadioChannels.edit, GlyphEvents.changeGlyph, function (glyphModel)
             {
                 that.changedGlyphs.add(glyphModel);
@@ -176,6 +180,16 @@ var App = Marionette.Application.extend(
         },
 
         /**
+         *  Testing Button
+         */
+        opening: function ()
+        {
+            var x = document.getElementById("inputFile");
+            x.disabled = true;
+            
+        },
+
+        /**
          * Initialize all of the modals used in the application.
          */
         initializeModals: function ()
@@ -189,6 +203,7 @@ var App = Marionette.Application.extend(
             this.modals.loading = new ModalViewModel({
                 title: Strings.loadingPage,
                 isCloseable: false,
+                isHiddenObject: false,
                 innerView: new LoadingScreenView({
                     model: new LoadingScreenViewModel({
                         text: Strings.loadingGlyphs
@@ -202,6 +217,7 @@ var App = Marionette.Application.extend(
             this.modals.submitCorrections = new ModalViewModel({
                 title: Strings.submitCorrections,
                 isCloseable: true,
+                isHiddenObject: false,
                 innerView: new ConfirmView({
                     model: new ConfirmViewModel({
                         text: Strings.submissionWarning,
@@ -219,6 +235,7 @@ var App = Marionette.Application.extend(
             this.modals.finalizeCorrections = new ModalViewModel({
                 title: Strings.finalizeCorrections,
                 isCloseable: true,
+                isHiddenObject: false,
                 innerView: new ConfirmView({
                     model: new ConfirmViewModel({
                         text: Strings.finalizeText,
@@ -232,6 +249,24 @@ var App = Marionette.Application.extend(
                 })
             });
             this.modalCollection.add(this.modals.finalizeCorrections);
+
+            // testing modal
+            this.modals.opening = new ModalViewModel({
+                title: Strings.openTitle,
+                isCloseable: true,
+                isHiddenObject: true,
+                innerView: new ConfirmView({
+                    model: new ConfirmViewModel({
+                        text: Strings.openWarning,
+                        callback: function ()
+                        {
+                            // Once the user confirms, submit the corrections.
+                            that.opening();
+                        }
+                    })
+                })
+            });
+            this.modalCollection.add(this.modals.opening);
 
             // Listen to the "closeAll" channel
             RadioChannels.modal.on(ModalEvents.closeAll,

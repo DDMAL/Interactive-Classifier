@@ -88,11 +88,8 @@
         exports
         </h2>
         
-            <div class="class-description"><p>ModalViewModel</p>
-<p>This ViewModel controls the state of a modal.</p>
-<p>The innerView property points to an arbitrary view that is rendered
-in the body of the modal.</p>
-<p>The isClosable property determines whether or not the user has the power to manually close the view.</p></div>
+            <div class="class-description"><p>RecursiveUnorderedListView</p>
+<p>This view is a recursive unordered list.  This view is the main component of the ClassTreeView.</p></div>
         
     
 </header>
@@ -210,8 +207,9 @@ in the body of the modal.</p>
         exports
         </h2>
         
-            <div class="class-description"><p>RecursiveUnorderedListView</p>
-<p>This view is a recursive unordered list.  This view is the main component of the ClassTreeView.</p></div>
+            <div class="class-description"><p>ConfirmView</p>
+<p>A view which displays a message and a button for the user to click.  When they click the button, an arbitrary
+callback function is called.</p></div>
         
     
 </header>
@@ -502,8 +500,250 @@ was called.</p>
         exports
         </h2>
         
+            <div class="class-description"><p>ConfirmViewModel</p>
+<p>The ViewModel for the ConfirmView.  When the user clicks on the button in the ConfirmView, the callback property
+is called.</p></div>
+        
+    
+</header>
+
+
+<article>
+    <div class="container-overview">
+    
+        
+<hr>
+<dt>
+    <h4 class="name" id=".exports"><span class="type-signature"></span>new exports()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+	<h1 class="page-title">Class: exports</h1>
+<section>
+
+<header>
+    
+        <h2>
+        exports
+        </h2>
+        
             <div class="class-description"><p>LoadingScreenView</p>
 <p>A view which displays some text and an infinite loading bar.</p></div>
+        
+    
+</header>
+
+
+<article>
+    <div class="container-overview">
+    
+        
+<hr>
+<dt>
+    <h4 class="name" id=".exports"><span class="type-signature"></span>new exports()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+	<h1 class="page-title">Class: exports</h1>
+<section>
+
+<header>
+    
+        <h2>
+        exports
+        </h2>
+        
+            <div class="class-description"><p>ModalViewModel</p>
+<p>This ViewModel controls the state of a modal.</p>
+<p>The innerView property points to an arbitrary view that is rendered
+in the body of the modal.</p>
+<p>The isClosable property determines whether or not the user has the power to manually close the view.</p></div>
         
     
 </header>
@@ -736,246 +976,6 @@ to 5000 miliseconds.</p>
 
 
 
-	<h1 class="page-title">Class: exports</h1>
-<section>
-
-<header>
-    
-        <h2>
-        exports
-        </h2>
-        
-            <div class="class-description"><p>ConfirmViewModel</p>
-<p>The ViewModel for the ConfirmView.  When the user clicks on the button in the ConfirmView, the callback property
-is called.</p></div>
-        
-    
-</header>
-
-
-<article>
-    <div class="container-overview">
-    
-        
-<hr>
-<dt>
-    <h4 class="name" id=".exports"><span class="type-signature"></span>new exports()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
-	<h1 class="page-title">Class: exports</h1>
-<section>
-
-<header>
-    
-        <h2>
-        exports
-        </h2>
-        
-            <div class="class-description"><p>ConfirmView</p>
-<p>A view which displays a message and a button for the user to click.  When they click the button, an arbitrary
-callback function is called.</p></div>
-        
-    
-</header>
-
-
-<article>
-    <div class="container-overview">
-    
-        
-<hr>
-<dt>
-    <h4 class="name" id=".exports"><span class="type-signature"></span>new exports()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
 		</div>
 	</div>
 
@@ -1013,7 +1013,7 @@ callback function is called.</p></div>
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
 	
-		on 2017-06-07T10:47:16-04:00
+		on 2017-06-08T10:27:48-04:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

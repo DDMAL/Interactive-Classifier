@@ -18,7 +18,8 @@ export default Backbone.Model.extend(
         defaults: {
             title: "",
             innerView: undefined,
-            isCloseable: false
+            isCloseable: false,
+            isHiddenObject: true
         },
 
         /**

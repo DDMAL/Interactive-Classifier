@@ -9,7 +9,11 @@
                 <% } %>
                 <h4 class="modal-title"><%- title %></h4>
             </div>
-            <div class="modal-body"></div>
+                <% if (isHiddenObject) { %>
+            <input type="file" id="inputFile"></input>
+                <% } %>
+            <div class="modal-body">
+            </div>
         </div>
     </div>
 </div>
