@@ -18,6 +18,8 @@ import ConfirmViewModel from "views/widgets/Confirm/ConfirmViewModel";
 import Strings from "localization/Strings";
 import Timer from "utils/Timer";
 import Authenticator from "auth/Authenticator";
+//import RODAN_EVENTS DCDC
+
 
 var App = Marionette.Application.extend(
     /**
@@ -185,12 +187,19 @@ var App = Marionette.Application.extend(
         opening: function ()
         {
             var x = document.getElementById("inputFile");
-            x.disabled = true;
-
+            x.setAttribute("read", true);
+            //var file = x.files[0].name
+            //file = "/home/alex/Desktop/misc/gamera-glyphs"
+            var data = JSON.stringify({
+                "importXML": true,
+                "XML": x,
+                "glyphs": this.changedGlyphs.toJSON()
+            });
             //placeholder for sending the request
             $.ajax({
                 url: this.authenticator.getWorkingUrl(),
                 type: 'POST',
+                data: data,
                 contentType: 'application/json',
                 complete: function (response)
                 {
