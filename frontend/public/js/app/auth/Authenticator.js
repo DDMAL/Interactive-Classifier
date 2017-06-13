@@ -56,9 +56,8 @@ export default class Authenticator {
                 var responseData = JSON.parse(response.responseText);
                 that._workingUrl = responseData.working_url;
                 var objectUUID = [that._workingUrl.split("/").slice(4, 6).join("/")];
-                //jscs:disable maximumLineLength
-                window.history.pushState({urlPath: '/interactive/' + objectUUID[0] + "/"},"",'/interactive/' + objectUUID[0] + "/");
-                //jscs:enable maximumLineLength
+                var workingUrlUpdated = '/interactive/' + objectUUID[0] + '/';
+                window.history.pushState({urlPath: workingUrlUpdated},"", workingUrlUpdated);
             }
         });
     }
