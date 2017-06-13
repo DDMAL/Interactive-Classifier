@@ -187,7 +187,6 @@ var App = Marionette.Application.extend(
         opening: function ()
         {
             var x = document.getElementById("inputFile");
-            x.disabled = true;
 
             var data = JSON.stringify({
                 "data": x,

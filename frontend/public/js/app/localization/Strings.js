@@ -5,6 +5,8 @@
  *
  * @module Strings
  */
+
+//jscs:disable maximumLineLength
 export default {
     siteTitle: "Interactive Classifier test",
     submissionWarning: "Your manual corrections will be sent back to Rodan for another round of Gamera classification. Once the classification is complete, you can make more manual corrections.",
@@ -38,3 +40,4 @@ export default {
         updateAllSelected: "Update All Selected"
     }
 };
+//jscs:enable maximumLineLength

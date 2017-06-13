@@ -44,12 +44,20 @@ export default class Authenticator {
             headers: {
                 Accept: "application/json; charset=utf-8",
                 "Content-Type": "application/json; charset=utf-8"
+                //Authorization: "Token d1f6d0386d796fe2045a1e631d6e14d27ea94999"
             },
             complete: function (response)
             {
                 var responseData = JSON.parse(response.responseText);
                 // Save the working url
                 that._workingUrl = responseData.working_url;
+                console.log(responseData.working_url);
+                console.log(that._workingUrl);
+                var objectUUID = [that._workingUrl.split("/").slice(4, 6).join("/")];
+                console.log(objectUUID[0]);
+                //jscs:disable maximumLineLength
+                window.history.pushState({urlPath: '/interactive/' + objectUUID[0] + "/"},"",'/interactive/' + objectUUID[0] + "/");
+                //jscs:enable maximumLineLength
             }
         });
     }
