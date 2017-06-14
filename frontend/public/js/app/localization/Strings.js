@@ -21,7 +21,7 @@ export default {
     finalizeCorrections: "Finalize Corrections...",
     openTitle: "Open...",
     classes: "Classes",
-    editGlyphLabel: "Edit Glyph",
+    editGlyphLabel: "Edit",
     editGlyphDescription: "Click on a Glyph to edit it.",
     // Strings for GlyphEditview
     editGlyph: {
@@ -33,6 +33,12 @@ export default {
         position: "Position",
         dimensions: "Dimensions",
         glyphPreview: "Glyph Preview"
+    },
+    editClass:{
+        update: "Update",
+        className: "Name",
+        deleteClass: "Delete Class",
+        glyphs: "Glyphs"
     },
     glyphMultiEdit: {
         updateAllSelected: "Update All Selected"
