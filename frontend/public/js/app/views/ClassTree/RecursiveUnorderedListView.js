@@ -1,6 +1,7 @@
 import Marionette from "marionette";
 import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
+import ClassEvents from "events/ClassEvents";
 import template from "./recursive-unordered-list.template.html";
 
 /**
@@ -39,6 +40,7 @@ export default Marionette.ItemView.extend(
             // Extract the name from the HTML5 data attribute.
             var className = event.target.dataset.name;
             RadioChannels.edit.trigger(GlyphEvents.clickGlyphName, className);
+            RadioChannels.edit.trigger(ClassEvents.openClassEdit);            
         },
 
         /**
