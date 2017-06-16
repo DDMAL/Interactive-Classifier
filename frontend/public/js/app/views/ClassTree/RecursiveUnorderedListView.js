@@ -3,6 +3,7 @@ import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
 import ClassEvents from "events/ClassEvents";
 import template from "./recursive-unordered-list.template.html";
+import Class from 'models/Class';
 
 /**
  * @class RecursiveUnorderedListView
@@ -40,7 +41,46 @@ export default Marionette.ItemView.extend(
             // Extract the name from the HTML5 data attribute.
             var className = event.target.dataset.name;
             RadioChannels.edit.trigger(GlyphEvents.clickGlyphName, className);
-            RadioChannels.edit.trigger(ClassEvents.openClassEdit);            
+
+            //the user cannot edit the unclassified class
+            if(className!="unclassified" && className!="UNCLASSIFIED")
+            {
+                var c = new Class();
+                c.setName(className);
+                RadioChannels.edit.trigger(ClassEvents.openClassEdit, c);
+            }
+
+            //If a class is deleted, search through all classes and remove the class
+            this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, 
+                function(deleteClass) 
+                {
+                    this.onDelete(deleteClass);
+                }
+                );
+
+        },
+
+        onDelete: function(className){
+            if(className=="unclassified")
+            {
+                return;
+            }
+            var delete_elem;
+            var list = document.getElementsByTagName("li");
+            for (var i =0; i< list.length; i++)
+            {
+                if(list[i].firstChild!= null)
+                {
+                    if(list[i].firstChild.getAttribute('data-name')===className)
+                    {
+                        delete_elem = list[i];
+                    }
+                }
+
+            }
+            delete_elem.remove();                                
+            //delete_elem.parentNode.removeChild(delete_elem);
+            this.model.deleteChild(className);
         },
 
         /**
@@ -60,7 +100,7 @@ export default Marionette.ItemView.extend(
             if (value)
             {
                 // Build this level of the recursion
-                output = '<li><a href="#" data-name="' + parentValue + value + '" class="class-name">' + value + "</a>";
+                output = '<li><a href="#" data-name="' + parentValue + value + '" class="class-name">' + value + "</a>";                
             }
 
             // Recursively construct the children
