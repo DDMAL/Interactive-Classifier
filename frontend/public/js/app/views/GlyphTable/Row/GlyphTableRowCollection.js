@@ -31,7 +31,7 @@ export default Backbone.Collection.extend(
                 class_name: oldClassName
             });
             oldRow.get("glyphs").remove(glyph);
-
+            
             // Remove the old row if it's empty
             if (oldRow.get("glyphs").length < 1)
             {
@@ -56,5 +56,25 @@ export default Backbone.Collection.extend(
                     glyphs: new GlyphCollection([glyph])
                 });
             }
+        },
+
+        /**
+         * Delete a class so it is no longer shown in the right pane.
+         *
+         * @param {string} className - The class name.
+         */
+        deleteClass: function (className)
+        {
+
+            var row = this.findWhere({
+                class_name: className
+            });
+            var glyphs = row.get("glyphs");
+            while (glyphs.length>0)
+            {
+                var glyph = glyphs.pop();
+                glyph.unclassify();
+            }
         }
+
     });
