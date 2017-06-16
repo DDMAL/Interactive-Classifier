@@ -10,7 +10,6 @@ import template from "./class-edit.template.html";
 export default Marionette.ItemView.extend({
 
     	template,
-        // A collection representing the menu links
 
         ui: {
             classInput: 'input[title="class-name"]',
@@ -49,15 +48,11 @@ export default Marionette.ItemView.extend({
 
         delete: function(event)
         {
-            console.log("Something happened in the class edit view");
             if (event)
             {
                 event.preventDefault();
             }
-
-            console.log("hrryry");
-            var className = "testclassname";
-            RadioChannels.edit.trigger(ClassEvents.deleteClass, className); //DCDC if I make a class, this will go in the class
+            RadioChannels.edit.trigger(ClassEvents.deleteClass, this.model.getName());
 
         }
 });
