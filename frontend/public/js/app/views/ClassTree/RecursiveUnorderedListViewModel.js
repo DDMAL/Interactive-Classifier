@@ -45,7 +45,23 @@ var RecursiveUnorderedListViewModel = Backbone.Model.extend(
                 this.get("children").push(newChild);
                 return newChild;
             }
+        },
+
+
+        deleteChild: function (value)
+        {
+            var children = this.get("children");
+            var matchingChild = _.find(
+                children,
+                (child) => child.get("value") === value
+            );
+            if(matchingChild)
+            {
+                var index = children.indexOf(matchingChild);
+                this.get("children").splice(index,1);
+            }
         }
+
     });
 
 export default RecursiveUnorderedListViewModel;
