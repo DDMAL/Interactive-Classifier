@@ -1,11 +1,13 @@
 import _ from "underscore";
 import Backbone from "backbone";
 import Marionette from "marionette";
+import ClassEvents from "events/ClassEvents";
 import GlyphEvents from "events/GlyphEvents";
 import GlyphCollection from "collections/GlyphCollection";
 import ClassTreeView from "views/ClassTree/ClassTreeView";
 import ClassTreeViewModel from "views/ClassTree/ClassTreeViewModel";
 import GlyphEditView from "views/GlyphEdit/GlyphEditView";
+import ClassEditView from "views/ClassEdit/ClassEditView";
 import GlyphMultiEditView from "views/GlyphMultiEdit/GlyphMultiEditView";
 import GlyphTableView from "views/GlyphTable/GlyphTableView";
 import GlyphTableRowViewModel from "views/GlyphTable/Row/GlyphTableRowViewModel";
@@ -75,6 +77,18 @@ export default Marionette.LayoutView.extend(
                     that.selectedGlyphs.reset();
                 }
             );
+            // Class editing events
+            this.listenTo(RadioChannels.edit, ClassEvents.openClassEdit,
+                function (className)
+                {
+                    that.openClassEdit(className);
+                });
+
+            this.listenTo(RadioChannels.edit, ClassEvents.deleteClass,
+                function(className)
+                {
+                    that.tableRowCollection.deleteClass(className);
+                });
 
             // Glyph Editing Events
             this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
@@ -170,6 +184,16 @@ export default Marionette.LayoutView.extend(
             this.glyphEditRegion.show(new GlyphMultiEditView({
                 collection: collection
             }));
+        },
+
+        openClassEdit: function(model)
+        {
+            console.log("Open classEdit!");
+
+            this.glyphEditRegion.show(new ClassEditView({
+                model: model
+            }));
+
         },
 
         /**
