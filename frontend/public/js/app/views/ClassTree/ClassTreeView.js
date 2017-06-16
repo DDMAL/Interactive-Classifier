@@ -2,6 +2,7 @@ import _ from "underscore";
 import Marionette from "marionette";
 import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
+import ClassEvents from "events/ClassEvents";
 import classNameArrayToRecursiveTree from "./classNameArrayToRecursiveTree";
 import RecursiveUnorderedListView from "./RecursiveUnorderedListView";
 import RecursiveUnorderedListViewModel from "./RecursiveUnorderedListViewModel";
@@ -49,7 +50,19 @@ export default Marionette.LayoutView.extend(
                     // Re-render the view
                     that.showSubTree();
                 }
-            });
+            }),
+            this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, function (deletedClassName)
+            {
+                // Add the model to the class_names
+                console.log("Delete class!");
+                var classNameList = that.model.get("class_names");
+                var index = classNameList.indexOf(deletedClassName);
+                classNameList.splice(index, 1);
+                // Set the new list
+                that.model.set("class_names", classNameList.sort());
+                // Re-render the view
+                that.showSubTree();
+            })
         },
 
         onShow: function ()

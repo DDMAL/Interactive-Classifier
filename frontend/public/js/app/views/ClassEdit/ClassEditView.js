@@ -2,6 +2,7 @@ import Backbone from "backbone";
 import Marionette from "marionette";
 import Strings from "localization/Strings";
 import ClassEvents from "events/ClassEvents";
+import RadioChannels from "radio/RadioChannels";
 import template from "./class-edit.template.html";
 /**
  * The detailed class view
@@ -17,7 +18,8 @@ export default Marionette.ItemView.extend({
         },
 
         events: {
-            "submit": "onSubmitForm"
+            "click .delete": "delete",
+            "click .update": "update"
         },
 
         modelEvents: {
@@ -38,5 +40,24 @@ export default Marionette.ItemView.extend({
             output.gui = Strings.editClass;
             console.log(output.gui);
             return output;
+        },
+
+        update(event)
+        {
+            console.log("Updating class name... " + this.ui.classInput.val());
+        },
+
+        delete: function(event)
+        {
+            console.log("Something happened in the class edit view");
+            if (event)
+            {
+                event.preventDefault();
+            }
+
+            console.log("hrryry");
+            var className = "testclassname";
+            RadioChannels.edit.trigger(ClassEvents.deleteClass, className); //DCDC if I make a class, this will go in the class
+
         }
 });
