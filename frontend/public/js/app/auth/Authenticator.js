@@ -44,12 +44,20 @@ export default class Authenticator {
             headers: {
                 Accept: "application/json; charset=utf-8",
                 "Content-Type": "application/json; charset=utf-8"
+                // For testing only.
+                //Authorization: "Token d1f6d0386d796fe2045a1e631d6e14d27ea94999"
             },
             complete: function (response)
             {
+
+                /** 
+                * Get the working user token, and update it in the url,
+                */
                 var responseData = JSON.parse(response.responseText);
-                // Save the working url
-                that._workingUrl = responseData["working_url"];
+                that._workingUrl = responseData.working_url;
+                var objectUUID = [that._workingUrl.split("/").slice(4, 6).join("/")];
+                var workingUrlUpdated = '/interactive/' + objectUUID[0] + '/';
+                window.history.pushState({urlPath: workingUrlUpdated},"", workingUrlUpdated);
             }
         });
     }

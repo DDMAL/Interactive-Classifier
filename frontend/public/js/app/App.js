@@ -3,6 +3,7 @@ import Backbone from "backbone";
 import RadioChannels from "radio/RadioChannels";
 import Radio from 'backbone.radio';
 import Marionette from "marionette";
+import Marionette from "marionette";
 import RootView from "views/Root/RootView";
 import MenuView from "views/MainMenu/MenuView";
 import RodanDashboardView from "views/RodanDashboard/RodanDashboardView";
@@ -11,6 +12,7 @@ import ModalCollectionView from "views/widgets/Modal/ModalCollectionView";
 import LoadingScreenView from "views/widgets/LoadingScreen/LoadingScreenView";
 import LoadingScreenViewModel from "views/widgets/LoadingScreen/LoadingScreenViewModel";
 import ClassEvents from "events/ClassEvents";
+import GlyphEvents from "events/GlyphEvents";
 import GlyphEvents from "events/GlyphEvents";
 import ModalEvents from "events/ModalEvents";
 import MainMenuEvents from "events/MainMenuEvents";
@@ -140,7 +142,9 @@ var App = Marionette.Application.extend(
          */
         submitCorrections: function ()
         {
-            var data = JSON.stringify({"glyphs": this.changedGlyphs.toJSON()});
+            var data = JSON.stringify({
+                "glyphs": this.changedGlyphs.toJSON()
+            });
             // Submit the corrections and close the window
             $.ajax({
                 url: this.authenticator.getWorkingUrl(),
@@ -210,13 +214,16 @@ var App = Marionette.Application.extend(
                 complete: function (response)
                 {
                     /* Close the window if successful POST*/
-                   /* if (response.status === 200)
+                    if (response.status === 200)
                     {
-                        //window.close();
-                    }*/
+                        alert("Success!");
+                    }
+                    else
+                    {
+                        alert("Failed!");
+                    }
                 }
             });
-            
         },
 
         /**

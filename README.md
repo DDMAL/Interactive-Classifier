@@ -18,6 +18,6 @@ Go in Interactive-Classifier/frontend
 run:
 ````
 npm install
-npm install --save bootstrap jquery backbone backbone.radio backbone.marionette@2.4.7
+npm install --save bootstrap jquery backbone backbone.radio backbone.marionette@2.4.7 minimatch tough-cookie
 ./node_modules/.bin/gulp
 ````
