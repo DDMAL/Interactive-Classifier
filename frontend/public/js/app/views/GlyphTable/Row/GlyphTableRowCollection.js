@@ -2,6 +2,7 @@ import Backbone from "backbone";
 import GlyphTableRowViewModel from "views/GlyphTable/Row/GlyphTableRowViewModel";
 import GlyphCollection from "collections/GlyphCollection";
 
+
 /**
  * @class GlyphTableRowCollection
  *

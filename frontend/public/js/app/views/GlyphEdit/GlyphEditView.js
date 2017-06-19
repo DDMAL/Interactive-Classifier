@@ -17,7 +17,7 @@ export default Marionette.ItemView.extend(
         },
 
         events: {
-            "submit": "onSubmitForm"
+            "submit": "onSubmitForm",
         },
 
         modelEvents: {
@@ -68,7 +68,9 @@ export default Marionette.ItemView.extend(
             {
                 event.preventDefault();
             }
-            this.model.changeClass(this.ui.classInput.val());
+
+            this.model.changeClass(this.ui.classInput.val());            
+
         },
 
         /**

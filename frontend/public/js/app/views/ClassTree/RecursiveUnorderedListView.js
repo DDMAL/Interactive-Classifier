@@ -46,7 +46,7 @@ export default Marionette.ItemView.extend(
             if(className!="unclassified" && className!="UNCLASSIFIED")
             {
                 var c = new Class();
-                c.setName(className);
+                c.set("name",className);
                 RadioChannels.edit.trigger(ClassEvents.openClassEdit, c);
             }
 

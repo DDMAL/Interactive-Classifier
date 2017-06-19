@@ -1,5 +1,6 @@
 import Marionette from "marionette";
 import GlyphEvents from "events/GlyphEvents";
+import ClassEvents from "events/ClassEvents";
 import GlyphTableItemViewModel from "views/GlyphTable/Row/GlyphTableItemViewModel";
 import RadioChannels from "radio/RadioChannels";
 import template from "./table-glyph.template.html";
@@ -80,6 +81,11 @@ export default Marionette.ItemView.extend(
                     that.viewModel.deactivate();
                 }
             });
+            this.listenTo(RadioChannels.edit, ClassEvents.openClassEdit, function (className)
+            {
+                that.viewModel.deactivate();
+            });
+
         },
 
         /**
