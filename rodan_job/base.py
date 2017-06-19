@@ -5,12 +5,12 @@ import gamera.core
 import gamera.gamera_xml
 import gamera.knn
 from gamera.gamera_xml import glyphs_from_xml
+from gamera.gamera_xml import LoadXML
 from rodan.jobs.base import RodanTask
 from rodan.jobs.interactive_classifier.intermediary.gamera_xml import GameraXML
 from rodan.jobs.interactive_classifier.intermediary.run_length_image import \
     RunLengthImage
 from rodan.settings import MEDIA_URL, MEDIA_ROOT
-
 
 class ClassifierStateEnum:
     IMPORT_XML = 0
@@ -294,7 +294,13 @@ class InteractiveClassifier(RodanTask):
         if 'GameraXML - Training Data' in inputs:
             training_database = glyphs_from_xml(
                 inputs['GameraXML - Training Data'][0]['resource_path'])
+        elif '@XML' in settings:
+            file = settings['@XML']
+            training_database = []            
+            #TODO-implement XML import
+            #training_database = LoadXML().parse_stream(file).glyphs # + glyphs_from_xml(inputs['GameraXML - Training Data'][0]['resource_path'])
         else:
+            settings['@XML'] = []
             training_database = []
 
         # Set the initial state
@@ -339,6 +345,13 @@ class InteractiveClassifier(RodanTask):
                 '@state': ClassifierStateEnum.EXPORT_XML,
                 '@changed_glyphs': user_input['glyphs']
             }
+        #if the user uploaded an XML, add these glyphs to the training data
+        elif 'importXML' in user_input:
+            data = {
+            '@changed_glyphs': user_input['glyphs'],
+            '@XML': user_input['XML'],
+            } 
+            return data
         else:
             # We are not complete.  Run another correction stage
             return {
