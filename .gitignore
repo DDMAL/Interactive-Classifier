@@ -75,3 +75,6 @@ public/static/
 
 /public/gamera
 frontend/public/node_modules
+
+#Jsdocs
+docs/
