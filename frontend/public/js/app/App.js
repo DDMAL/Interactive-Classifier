@@ -1,6 +1,7 @@
 import $ from "jquery";
 import Backbone from "backbone";
 import RadioChannels from "radio/RadioChannels";
+import Radio from 'backbone.radio';
 import Marionette from "marionette";
 import RootView from "views/Root/RootView";
 import MenuView from "views/MainMenu/MenuView";
@@ -9,6 +10,7 @@ import ModalViewModel from "views/widgets/Modal/ModalViewModel";
 import ModalCollectionView from "views/widgets/Modal/ModalCollectionView";
 import LoadingScreenView from "views/widgets/LoadingScreen/LoadingScreenView";
 import LoadingScreenViewModel from "views/widgets/LoadingScreen/LoadingScreenViewModel";
+import ClassEvents from "events/ClassEvents";
 import GlyphEvents from "events/GlyphEvents";
 import ModalEvents from "events/ModalEvents";
 import MainMenuEvents from "events/MainMenuEvents";
@@ -18,8 +20,6 @@ import ConfirmViewModel from "views/widgets/Confirm/ConfirmViewModel";
 import Strings from "localization/Strings";
 import Timer from "utils/Timer";
 import Authenticator from "auth/Authenticator";
-//import RODAN_EVENTS DCDC
-
 
 var App = Marionette.Application.extend(
     /**
@@ -72,6 +72,10 @@ var App = Marionette.Application.extend(
                 that.modals.opening.open();
             });
             this.listenTo(RadioChannels.edit, GlyphEvents.changeGlyph, function (glyphModel)
+            {
+                that.changedGlyphs.add(glyphModel);
+            });
+            this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, function (glyphModel)
             {
                 that.changedGlyphs.add(glyphModel);
             });
@@ -187,15 +191,17 @@ var App = Marionette.Application.extend(
         opening: function ()
         {
             var x = document.getElementById("inputFile");
-            x.setAttribute("read", true);
-            //var file = x.files[0].name
-            //file = "/home/alex/Desktop/misc/gamera-glyphs"
+            var project = window.location.href.split("/")[2];
+            Radio.channel('rodan').trigger('REQUEST__RESOURCE_CREATE', {project: project, file: x});
+            var resource = new Resource({project:project, file: x, resource_type : 'application/gamera+xml(xml)'});
+            console.log(resource);
             var data = JSON.stringify({
                 "importXML": true,
                 "XML": x,
                 "glyphs": this.changedGlyphs.toJSON()
             });
             //placeholder for sending the request
+            
             $.ajax({
                 url: this.authenticator.getWorkingUrl(),
                 type: 'POST',
@@ -204,10 +210,10 @@ var App = Marionette.Application.extend(
                 complete: function (response)
                 {
                     /* Close the window if successful POST*/
-                    if (response.status === 200)
+                   /* if (response.status === 200)
                     {
-                        window.close();
-                    }
+                        //window.close();
+                    }*/
                 }
             });
             
