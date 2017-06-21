@@ -43,7 +43,8 @@ export default {
         glyphs: "Glyphs"
     },
     glyphMultiEdit: {
-        updateAllSelected: "Update All Selected"
+        updateAllSelected: "Update All Selected",
+        groupAllSelected: "Group All Selected"
     }
 };
 //jscs:enable maximumLineLength
