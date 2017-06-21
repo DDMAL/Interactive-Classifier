@@ -1,4 +1,5 @@
 import os
+import copy
 import json
 import gamera.classify
 import gamera.core
@@ -7,6 +8,7 @@ import gamera.knn
 from gamera.gamera_xml import glyphs_from_xml
 from gamera.gamera_xml import LoadXML
 from rodan.jobs.base import RodanTask
+from rodan.jobs.interactive_classifier.intermediary.gamera_glyph import GameraGlyph
 from rodan.jobs.interactive_classifier.intermediary.gamera_xml import GameraXML
 from rodan.jobs.interactive_classifier.intermediary.run_length_image import \
     RunLengthImage
@@ -16,6 +18,7 @@ class ClassifierStateEnum:
     IMPORT_XML = 0
     CLASSIFYING = 1
     EXPORT_XML = 2
+    GROUP_AND_CLASSIFY=3
 
 
 def media_file_path_to_public_url(media_file_path):
@@ -103,6 +106,49 @@ def prepare_classifier(training_database, glyphs, features_file_path):
         classifier.load_settings(features_file_path)
     return classifier
 
+def group_and_correct(glyphs, training_database, features_file_path):
+    """
+    Run the automatic correction stage of the Rodan job.
+    """
+    # Train a classifier
+    cknn = prepare_classifier(training_database,
+                              glyphs,
+                              features_file_path)
+    # The automatic classifications
+    gamera_glyphs = []
+    for glyph in glyphs:
+        if not glyph['id_state_manual']:
+            # It's a glyph to be classified
+            gamera_glyph = RunLengthImage(
+                glyph['ulx'],
+                glyph['uly'],
+                glyph['ncols'],
+                glyph['nrows'],
+                glyph['image']
+            ).get_gamera_image()
+            # Classify it!
+            gamera_glyphs.append(gamera_glyph)
+    added, removed = cknn.group_list_automatic(gamera_glyphs)
+    for elem in added:
+        #glyph = GameraGlyph(class_name,rle_image,ncols,nrows,ulx,uly,id_state_manual,confidence)
+        #TODO-fix this so that it doesn't convert to XML first
+        xmlGlyph=elem.to_xml()
+        glyph = GameraGlyph(
+            elem.get_main_id(),
+            (xmlGlyph.split('<data>')[1]).split('</data>')[0], #extracting data from XML
+            elem.ncols,
+            elem.nrows,
+            elem.offset_x,
+            elem.offset_y,
+            False,
+            elem.get_confidence()
+            )
+        glyphs.append(glyph.to_dict())
+    for elem in removed:
+        index = gamera_glyphs.index(elem)
+        gamera_glyphs.remove(elem)
+        glyphs.remove(glyphs[index])
+    return cknn
 
 def run_correction_stage(glyphs, training_database, features_file_path):
     """
@@ -124,8 +170,6 @@ def run_correction_stage(glyphs, training_database, features_file_path):
                 glyph['image']
             ).get_gamera_image()
             # Classify it!
-            cknn.classify_glyph_automatic(gamera_glyph)
-            # Save the classification back into memory
             result, confidence = cknn.guess_glyph_automatic(gamera_glyph)
             glyph['class_name'] = result[0][1]
             if confidence:
@@ -319,11 +363,19 @@ class InteractiveClassifier(RodanTask):
             # CLASSIFYING STAGE
             # Update any changed glyphs
             update_changed_glyphs(settings)
-            run_correction_stage(settings['glyphs'],
+            group_and_correct(settings['glyphs'], #this needs to be changed to normal run_correction_stage
                                  training_database,
                                  features)
             serialize_data(settings, training_database)
             return self.WAITING_FOR_INPUT()
+        elif settings['@state'] == ClassifierStateEnum.GROUP_AND_CLASSIFY:
+                        # CLASSIFYING STAGE
+            # Update any changed glyphs
+            update_changed_glyphs(settings)
+            group_and_correct(settings['glyphs'],
+                                 training_database,
+                                 features)
+            serialize_data(settings, training_database)
         else:
             # EXPORT_XML STAGE
             # Update changed glyphs
