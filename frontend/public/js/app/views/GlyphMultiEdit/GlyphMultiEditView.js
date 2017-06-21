@@ -21,7 +21,8 @@ export default Marionette.LayoutView.extend(
         },
 
         events: {
-            "submit": "onSubmitForm"
+            "submit": "onSubmitForm",
+            "click .group": "group"
         },
 
         /**
@@ -73,6 +74,21 @@ export default Marionette.LayoutView.extend(
             {
                 model.changeClass(that.ui.classInput.val());
             });
+        },
+
+        group(event)
+        {
+            if (event)
+            {
+                event.preventDefault();
+            }            
+            var that = this;
+            var className = that.ui.classInput.val();
+            if(className=="")
+            {
+                className="UNCLASSIFIED";
+            }
+            console.log("Glyphs will be grouped... to " + className);
         },
 
         /**
