@@ -26,6 +26,19 @@ export default Backbone.Model.extend(
             image_b64: ""
         },
 
+        
+
+        /**
+         * Creates a new glyph.
+         *
+         * @param {string} className - The name for the class.
+         */
+        onCreate: function ()
+        {
+            RadioChannels.edit.trigger(GlyphEvents.addGlyph, this, this.get("class_name"));
+            RadioChannels.edit.trigger(GlyphEvents.setGlyphName, this.get("class_name"));            
+        },        
+
         /**
          * Change the class of the glyph.
          *
@@ -38,7 +51,6 @@ export default Backbone.Model.extend(
         {
             // Make sure it's a string
             newClassName = String(newClassName);
-
             var oldClassName = this.get("class_name");
 
             // do the sanitization step
