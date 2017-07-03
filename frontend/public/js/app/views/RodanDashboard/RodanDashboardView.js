@@ -130,6 +130,16 @@ export default Marionette.LayoutView.extend(
             var glyphDictionary = this.model.get("glyphDictionary");
             var classNames = this.model.get("classNames");
 
+            for (var i = 0; i < classNames.length; i++)
+            {
+                if(classNames[i].substring(0,12) == "_group._part")
+                {
+                    this.model.get("classNames").splice(i,1);
+                }
+            }
+
+
+
             // Show the tree
             this.glyphTreeRegion.show(new ClassTreeView({
                 model: new ClassTreeViewModel({
@@ -141,10 +151,12 @@ export default Marionette.LayoutView.extend(
 
             var glyphCollections = {};
             // Separate the glyphs by their class
-            for (var i = 0; i < classNames.length; i++)
+
+             for (var i = 0; i < classNames.length; i++)
             {
                 glyphCollections[classNames[i]] = new GlyphCollection(glyphDictionary[classNames[i]]);
             }
+
 
             timer.tick("pre-final render");
 
