@@ -40,15 +40,20 @@ export default Marionette.LayoutView.extend(
             {
                 // Add the model to the class_names
                 var oldClassNameList = that.model.get("class_names");
-                var newClassNameList = _.union(oldClassNameList, [newClassName]);
 
-                if (newClassNameList.length !== oldClassNameList.length)
+                //Don't display the new class if it's a part of a group
+                if(newClassName.substring(0,12) != "_group._part")
                 {
+                    var newClassNameList = _.union(oldClassNameList, [newClassName]);
+
+                    if (newClassNameList.length !== oldClassNameList.length)
+                    {
                     console.log("New name!");
                     // Set the new list
                     that.model.set("class_names", newClassNameList.sort());
-                    // Re-render the view
-                    that.showSubTree();
+                        // Re-render the view
+                        that.showSubTree();
+                    }
                 }
             }),
             this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, function (deletedClassName)

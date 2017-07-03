@@ -49,7 +49,7 @@ export default Backbone.Collection.extend(
                 // There is already a row, so we add to it
                 newRow.get("glyphs").add(glyph);
             }
-            else
+            else if(newClassName.substring(0,12) != "_group._part")
             {
                 // There is no row, so we add a new row
                 this.add({

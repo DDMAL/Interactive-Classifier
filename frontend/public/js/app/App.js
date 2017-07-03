@@ -107,6 +107,20 @@ var App = Marionette.Application.extend(
             var glyphDictionary = JSON.parse(glyphsElement.attr("data-glyphs"));
             var classNames = JSON.parse(classNamesElement.attr("data-class-names"));
 
+
+            for(var i = 0; i < classNames.length; )
+            {
+                if(classNames[i].substring(0,12) == "_group._part")
+                {
+                    classNames.splice(i,1);
+                }
+                else
+                {
+                    i++;
+                }
+            }
+
+
             timer.tick();
 
             // Delete the data elements from the dom
