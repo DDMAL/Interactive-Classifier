@@ -77,6 +77,13 @@ export default Marionette.LayoutView.extend(
                     that.selectedGlyphs.reset();
                 }
             );
+
+            this.listenTo(RadioChannels.edit, GlyphEvents.addGlyph,
+                function (glyph, className)
+                {
+                    that.tableRowCollection.addGlyph(glyph, className);
+                }
+            );            
             // Class editing events
             this.listenTo(RadioChannels.edit, ClassEvents.openClassEdit,
                 function (className)

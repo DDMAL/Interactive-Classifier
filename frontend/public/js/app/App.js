@@ -14,6 +14,7 @@ import ClassEvents from "events/ClassEvents";
 import GlyphEvents from "events/GlyphEvents";
 import ModalEvents from "events/ModalEvents";
 import MainMenuEvents from "events/MainMenuEvents";
+import Glyph from "models/Glyph";
 import GlyphCollection from "collections/GlyphCollection";
 import ConfirmView from "views/widgets/Confirm/ConfirmView";
 import ConfirmViewModel from "views/widgets/Confirm/ConfirmViewModel";
@@ -78,6 +79,17 @@ var App = Marionette.Application.extend(
             this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, function (glyphModel)
             {
                 that.changedGlyphs.add(glyphModel);
+            });
+            this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs, function (glyphList, glyphName)
+            {
+                var groupedGlyphs = new GlyphCollection();
+                for(var i=0; i < glyphList.length; i++)
+                {
+                    groupedGlyphs.add(glyphList[i]);
+                }
+                this.modals.group.open();                
+                that.groupGlyphs(groupedGlyphs, glyphName);
+                this.modals.group.close();
             });
             this.modals.loading.open();
         },
@@ -239,6 +251,50 @@ var App = Marionette.Application.extend(
         },
 
         /**
+         *  Group glyphs
+         *
+         * TODO: Create an error when the user tries to group 0 glyphs
+         */
+        groupGlyphs: function (glyphs, className)
+        {
+            var data = JSON.stringify({
+                "group": true,
+                "glyphs": glyphs.toJSON(),
+                "class_name": className
+            });   
+            // Submit the corrections and close the window
+            $.ajax({
+                url: this.authenticator.getWorkingUrl(),
+                type: 'POST',
+                data: data,
+                headers: {
+                Accept: "application/json; charset=utf-8",
+                "Content-Type": "application/json; charset=utf-8"
+                },
+                complete: function (response)
+                {
+                    //Send the new glyph
+                    if (response.status === 200)
+                    {
+                        var responseData = JSON.parse(response.responseText);
+                         var g = new Glyph({
+                            "id": responseData["id"],
+                            "class_name": className,
+                            "id_state_manual": true,
+                            "confidence": 1,
+                            "ulx": responseData["ulx"],
+                            "uly": responseData["uly"],
+                            "nrows": responseData["nrows"],
+                            "ncols": responseData["ncols"],
+                            "image_b64": (responseData["image"])
+                        });
+                        g.onCreate();
+
+                    }
+                }
+            });
+        },        
+        /**
          * Initialize all of the modals used in the application.
          */
         initializeModals: function ()
@@ -317,6 +373,22 @@ var App = Marionette.Application.extend(
             });
             this.modalCollection.add(this.modals.opening);
 
+            // group modal
+            this.modals.group = new ModalViewModel({
+                title: "Add to strings: Grouping",
+                isCloseable: false,
+                isHiddenObject: false,
+                innerView: new LoadingScreenView({
+                    model: new LoadingScreenViewModel({
+                        text: "Add to strings: Grouping Glyphs",
+                        callback: function ()
+                        {
+                            
+                        }
+                    })
+                })
+            });
+            this.modalCollection.add(this.modals.group);
             // Listen to the "closeAll" channel
             RadioChannels.modal.on(ModalEvents.closeAll,
                 function ()

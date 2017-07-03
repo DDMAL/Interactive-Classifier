@@ -5,6 +5,8 @@ import gamera.classify
 import gamera.core
 import gamera.gamera_xml
 import gamera.knn
+from celery import uuid
+from gamera.plugins.image_utilities import union_images
 from gamera.gamera_xml import glyphs_from_xml
 from gamera.gamera_xml import LoadXML
 from rodan.jobs.base import RodanTask
@@ -13,12 +15,16 @@ from rodan.jobs.interactive_classifier.intermediary.gamera_xml import GameraXML
 from rodan.jobs.interactive_classifier.intermediary.run_length_image import \
     RunLengthImage
 from rodan.settings import MEDIA_URL, MEDIA_ROOT
+from django.http import HttpResponse
+#from rest_framework.response import Response
+#from rest_framework import status
 
 class ClassifierStateEnum:
     IMPORT_XML = 0
     CLASSIFYING = 1
     EXPORT_XML = 2
     GROUP_AND_CLASSIFY=3
+    GROUP = 4
 
 
 def media_file_path_to_public_url(media_file_path):
@@ -130,16 +136,16 @@ def group_and_correct(glyphs, training_database, features_file_path):
             gamera_glyphs.append(gamera_glyph)
     added, removed = cknn.group_list_automatic(gamera_glyphs)
     for elem in added:
-        #glyph = GameraGlyph(class_name,rle_image,ncols,nrows,ulx,uly,id_state_manual,confidence)
-        #TODO-fix this so that it doesn't convert to XML first
+
+        # TODO-fix this so that it doesn't convert to XML first
         xmlGlyph=elem.to_xml()
         glyph = GameraGlyph(
             elem.get_main_id(),
             (xmlGlyph.split('<data>')[1]).split('</data>')[0], #extracting data from XML
             elem.ncols,
             elem.nrows,
-            elem.offset_x,
-            elem.offset_y,
+            elem.ul.x,
+            elem.ul.y,
             False,
             elem.get_confidence()
             )
@@ -147,7 +153,6 @@ def group_and_correct(glyphs, training_database, features_file_path):
     for elem in removed:
         index = gamera_glyphs.index(elem)
         gamera_glyphs.remove(elem)
-        glyphs.remove(glyphs[index])
     return cknn
 
 def run_correction_stage(glyphs, training_database, features_file_path):
@@ -170,6 +175,8 @@ def run_correction_stage(glyphs, training_database, features_file_path):
                 glyph['image']
             ).get_gamera_image()
             # Classify it!
+            cknn.classify_glyph_automatic(gamera_glyph)
+            # Save the classification back into memory
             result, confidence = cknn.guess_glyph_automatic(gamera_glyph)
             glyph['class_name'] = result[0][1]
             if confidence:
@@ -223,6 +230,8 @@ def update_changed_glyphs(settings):
     """
     Update the glyph objects that have been changed since the last round of classification
     """
+    #for g in settings['@changed_glyphs']
+
     # Build a hash of the changed glyphs by their id
     changed_glyph_hash = {g['id']: g for g in settings['@changed_glyphs']}
     # Loop through all glyphs.  Update if changed.
@@ -242,6 +251,7 @@ def update_changed_glyphs(settings):
                 glyph['confidence'] = changed_glyph['confidence']
                 # Pop the changed glyph from the hash
                 changed_glyph_hash.pop(key, None)
+
     # Clear out the @changed_glyphs from the settings...
     settings['@changed_glyphs'] = []
 
@@ -305,6 +315,7 @@ class InteractiveClassifier(RodanTask):
         }
     ]
 
+
     ##################
     # Required Methods
     ##################
@@ -363,19 +374,28 @@ class InteractiveClassifier(RodanTask):
             # CLASSIFYING STAGE
             # Update any changed glyphs
             update_changed_glyphs(settings)
-            group_and_correct(settings['glyphs'], #this needs to be changed to normal run_correction_stage
+            run_correction_stage(settings['glyphs'],
                                  training_database,
                                  features)
             serialize_data(settings, training_database)
             return self.WAITING_FOR_INPUT()
         elif settings['@state'] == ClassifierStateEnum.GROUP_AND_CLASSIFY:
-                        # CLASSIFYING STAGE
+            # CLASSIFYING STAGE
             # Update any changed glyphs
             update_changed_glyphs(settings)
             group_and_correct(settings['glyphs'],
                                  training_database,
                                  features)
             serialize_data(settings, training_database)
+
+        elif settings['@state'] == ClassifierStateEnum.GROUP:
+            # MANUAL STAGE CONTINUES
+            # Update any changed glyphs
+            update_changed_glyphs(settings)
+            group_and_correct(settings['glyphs'],
+                                 training_database,
+                                 features)
+            serialize_data(settings, training_database)        
         else:
             # EXPORT_XML STAGE
             # Update changed glyphs
@@ -390,6 +410,7 @@ class InteractiveClassifier(RodanTask):
             settings['glyphs_json'] = None
             settings['class_names_json'] = None
 
+
     def validate_my_user_input(self, inputs, settings, user_input):
         if 'complete' in user_input:
             # We are complete.  Advance to the final stage
@@ -397,15 +418,67 @@ class InteractiveClassifier(RodanTask):
                 '@state': ClassifierStateEnum.EXPORT_XML,
                 '@changed_glyphs': user_input['glyphs']
             }
-        #if the user uploaded an XML, add these glyphs to the training data
+        # If the user uploaded an XML, add these glyphs to the training data
         elif 'importXML' in user_input:
             data = {
             '@changed_glyphs': user_input['glyphs'],
             '@XML': user_input['XML'],
-            } 
+            }
             return data
+        # If the user wants to group, group the glyphs and return the new glyph
+        # TODO: Put this code in a function
+        elif 'group' in user_input:
+            import image_utilities
+            glyphs=user_input['glyphs']
+            gamera_glyphs=[]
+            #finding the glyphs that match the incoming ids          
+            for glyph_c in glyphs:
+                glyph={}
+                for g in settings['glyphs']:
+                    if(glyph_c['id']==g['id']):
+                        glyph = g                    
+                gamera_glyphs.append(RunLengthImage(
+                glyph['ulx'],
+                glyph['uly'],
+                glyph['ncols'],
+                glyph['nrows'],
+                glyph['image']
+                ).get_gamera_image())
+
+            grouped = image_utilities.union_images(gamera_glyphs)
+            xmlGlyph = grouped.to_xml()
+            
+            new_glyph = GameraGlyph(
+                class_name = user_input['class_name'],
+                rle_image = grouped.to_rle(),
+                ncols = grouped.ncols,
+                nrows = grouped.nrows,
+                ulx = grouped.ul.x,
+                uly = grouped.ul.y,
+                id_state_manual = True,
+                confidence = 1
+                ).to_dict()
+
+            settings['glyphs'].append(new_glyph)
+            changed_glyphs = user_input['glyphs']
+            changed_glyphs.append(new_glyph)
+                       
+            serialize_data(settings, [grouped])
+            data = {
+            'manual': True,
+            'settings_update': {'@changed_glyphs': changed_glyphs},
+            'id': new_glyph['id'],
+            'image': new_glyph['image_b64'], 
+            'ncols': new_glyph['ncols'],
+            'nrows': new_glyph['nrows'],
+            'ulx': new_glyph['ulx'],
+            'uly': new_glyph['uly'],
+            }
+            return data
+            
         else:
             # We are not complete.  Run another correction stage
             return {
+
                 '@changed_glyphs': user_input['glyphs']
             }

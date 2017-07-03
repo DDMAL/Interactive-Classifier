@@ -88,7 +88,14 @@ export default Marionette.LayoutView.extend(
             {
                 className="UNCLASSIFIED";
             }
-            console.log("Glyphs will be grouped... to " + className);
+            console.log("Glyphs will be grouped to " + className);
+            var glyphs = []
+            this.collection.each(function (model)
+            {
+                glyphs.push(model);
+                model.changeClass("_group._part." + className);                
+            });
+            RadioChannels.edit.trigger(GlyphEvents.groupGlyphs, glyphs, className)            
         },
 
         /**
