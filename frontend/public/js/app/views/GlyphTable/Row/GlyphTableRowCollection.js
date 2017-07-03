@@ -76,6 +76,35 @@ export default Backbone.Collection.extend(
                 var glyph = glyphs.pop();
                 glyph.unclassify();
             }
+        },
+
+        /**
+         * Add a new glyph to the table.
+         *
+         * @param {Glyph} glyph - Glyph model.
+         * @param {string} className - The class name.
+         */
+        addGlyph: function(glyph, className)
+        {
+            // Add to the new class name collection
+            var newRow = this.findWhere({
+                class_name: className
+            });
+
+            if (newRow)
+            {
+                // There is already a row, so we add to it
+                newRow.get("glyphs").add(glyph);
+            }
+            else
+            {
+                // There is no row, so we add a new row
+                this.add({
+                    class_name: className,
+                    glyphs: new GlyphCollection([glyph])
+                });
+            }
+
         }
 
     });
