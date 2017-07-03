@@ -36,8 +36,8 @@ export default Backbone.Model.extend(
         onCreate: function ()
         {
             RadioChannels.edit.trigger(GlyphEvents.addGlyph, this, this.get("class_name"));
-            RadioChannels.edit.trigger(GlyphEvents.setGlyphName, this.get("class_name"));            
-        },        
+            RadioChannels.edit.trigger(GlyphEvents.setGlyphName, this.get("class_name"));
+        },
 
         /**
          * Change the class of the glyph.
