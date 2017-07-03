@@ -80,6 +80,13 @@ var App = Marionette.Application.extend(
             {
                 that.changedGlyphs.add(glyphModel);
             });
+
+            // A loading screen pops up. TODO: should maybe wait until celery completes
+            this.listenTo(RadioChannels.edit, GlyphEvents.addGlyph, function (glyphModel)
+            {
+                this.modals.group.close();                
+            });
+
             this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs, function (glyphList, glyphName)
             {
                 var groupedGlyphs = new GlyphCollection();
@@ -89,7 +96,6 @@ var App = Marionette.Application.extend(
                 }
                 this.modals.group.open();                
                 that.groupGlyphs(groupedGlyphs, glyphName);
-                this.modals.group.close();
             });
             this.modals.loading.open();
         },
@@ -375,15 +381,15 @@ var App = Marionette.Application.extend(
 
             // group modal
             this.modals.group = new ModalViewModel({
-                title: "Add to strings: Grouping",
+                title: Strings.groupTitle,
                 isCloseable: false,
                 isHiddenObject: false,
                 innerView: new LoadingScreenView({
                     model: new LoadingScreenViewModel({
-                        text: "Add to strings: Grouping Glyphs",
+                        text: Strings.groupingGlyphs,
                         callback: function ()
                         {
-                            
+
                         }
                     })
                 })

@@ -25,6 +25,8 @@ export default {
     classes: "Classes",
     editGlyphLabel: "Edit",
     editGlyphDescription: "Click on a Glyph to edit it.",
+    groupTitle: "Grouping",
+    groupingGlyphs: "The Glyphs are being grouped...",
     // Strings for GlyphEditview
     editGlyph: {
         update: "Update",
