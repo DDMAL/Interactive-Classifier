@@ -23,7 +23,7 @@ class ClassifierStateEnum:
     IMPORT_XML = 0
     CLASSIFYING = 1
     EXPORT_XML = 2
-    GROUP_AND_CLASSIFY=3
+    GROUP_AND_CLASSIFY = 3
     GROUP = 4
 
 
@@ -359,8 +359,8 @@ class InteractiveClassifier(RodanTask):
         elif '@XML' in settings:
             file = settings['@XML']
             training_database = []            
-            #TODO-implement XML import
-            #training_database = LoadXML().parse_stream(file).glyphs # + glyphs_from_xml(inputs['GameraXML - Training Data'][0]['resource_path'])
+            # TODO - implement XML import
+            # training_database = LoadXML().parse_stream(file).glyphs # + glyphs_from_xml(inputs['GameraXML - Training Data'][0]['resource_path'])
         else:
             settings['@XML'] = []
             training_database = []
@@ -450,7 +450,6 @@ class InteractiveClassifier(RodanTask):
                 ).get_gamera_image())
 
             grouped = image_utilities.union_images(gamera_glyphs)
-            xmlGlyph = grouped.to_xml()
             
             new_glyph = GameraGlyph(
                 class_name = user_input['class_name'],
@@ -463,7 +462,6 @@ class InteractiveClassifier(RodanTask):
                 confidence = 1
                 ).to_dict()
 
-            settings['glyphs'].append(new_glyph)
             changed_glyphs = user_input['glyphs']
             changed_glyphs.append(new_glyph)
                        
