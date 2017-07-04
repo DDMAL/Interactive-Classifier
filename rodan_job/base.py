@@ -252,6 +252,13 @@ def update_changed_glyphs(settings):
                 # Pop the changed glyph from the hash
                 changed_glyph_hash.pop(key, None)
 
+        # If the changed glyph is not in settings, then add it to settings
+        if changed_glyph_hash:
+            for key in changed_glyph_hash:
+                g = changed_glyph_hash[key]
+                settings['glyphs'].append(g)
+
+
     # Clear out the @changed_glyphs from the settings...
     settings['@changed_glyphs'] = []
 
