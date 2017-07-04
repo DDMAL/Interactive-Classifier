@@ -135,13 +135,11 @@ def group_and_correct(glyphs, training_database, features_file_path):
             # Classify it!
             gamera_glyphs.append(gamera_glyph)
     added, removed = cknn.group_list_automatic(gamera_glyphs)
-    for elem in added:
 
-        # TODO-fix this so that it doesn't convert to XML first
-        xmlGlyph=elem.to_xml()
+    for elem in added:
         glyph = GameraGlyph(
             elem.get_main_id(),
-            (xmlGlyph.split('<data>')[1]).split('</data>')[0], #extracting data from XML
+            elem.to_rle(),
             elem.ncols,
             elem.nrows,
             elem.ul.x,
@@ -150,6 +148,8 @@ def group_and_correct(glyphs, training_database, features_file_path):
             elem.get_confidence()
             )
         glyphs.append(glyph.to_dict())
+
+    # TODO: check the contents of removed
     for elem in removed:
         index = gamera_glyphs.index(elem)
         gamera_glyphs.remove(elem)
@@ -393,16 +393,13 @@ class InteractiveClassifier(RodanTask):
             group_and_correct(settings['glyphs'],
                                  training_database,
                                  features)
-            serialize_data(settings, training_database)
-
-        elif settings['@state'] == ClassifierStateEnum.GROUP:
-            # MANUAL STAGE CONTINUES
-            # Update any changed glyphs
-            update_changed_glyphs(settings)
-            group_and_correct(settings['glyphs'],
+            run_correction_stage(settings['glyphs'],
                                  training_database,
-                                 features)
-            serialize_data(settings, training_database)        
+                                 features)            
+            serialize_data(settings, training_database)
+            settings['@state'] = ClassifierStateEnum.CLASSIFYING
+            return self.WAITING_FOR_INPUT()       
+  
         else:
             # EXPORT_XML STAGE
             # Update changed glyphs
@@ -482,7 +479,13 @@ class InteractiveClassifier(RodanTask):
             'uly': new_glyph['uly'],
             }
             return data
-            
+
+        elif "auto_group" in user_input:
+            return{
+            '@state': ClassifierStateEnum.GROUP_AND_CLASSIFY,
+            '@changed_glyphs': user_input['glyphs']
+            }
+
         else:
             # We are not complete.  Run another correction stage
             return {
