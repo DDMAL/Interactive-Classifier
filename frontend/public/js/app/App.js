@@ -64,6 +64,10 @@ var App = Marionette.Application.extend(
             {
                 that.modals.submitCorrections.open();
             });
+            this.listenTo(RadioChannels.menu, MainMenuEvents.clickGroupClassify, function ()
+            {
+                that.modals.groupReclassify.open();
+            });
             this.listenTo(RadioChannels.menu, MainMenuEvents.clickFinalizeCorrections, function ()
             {
                 that.modals.finalizeCorrections.open();
@@ -84,7 +88,7 @@ var App = Marionette.Application.extend(
             // A loading screen pops up. TODO: should maybe wait until celery completes
             this.listenTo(RadioChannels.edit, GlyphEvents.addGlyph, function (glyphModel)
             {
-                this.modals.group.close();                
+                this.modals.group.close();
             });
 
             this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs, function (glyphList, glyphName)
@@ -174,6 +178,32 @@ var App = Marionette.Application.extend(
         {
             var data = JSON.stringify({
                 "glyphs": this.changedGlyphs.toJSON()
+            });
+            // Submit the corrections and close the window
+            $.ajax({
+                url: this.authenticator.getWorkingUrl(),
+                type: 'POST',
+                data: data,
+                contentType: 'application/json',
+                complete: function (response)
+                {
+                    /* Close the window if successful POST*/
+                    if (response.status === 200)
+                    {
+                        window.close();
+                    }
+                }
+            });
+        },
+
+        /**
+         *  Group and reclassify.
+         */
+        groupReclassify: function ()
+        {
+            var data = JSON.stringify({
+                "glyphs": this.changedGlyphs.toJSON(),
+                "auto_group": true,
             });
             // Submit the corrections and close the window
             $.ajax({
@@ -341,6 +371,24 @@ var App = Marionette.Application.extend(
                 })
             });
             this.modalCollection.add(this.modals.submitCorrections);
+
+            // Group and reclassify modal
+            this.modals.groupReclassify = new ModalViewModel({
+                title: Strings.submitAndGroup,
+                isCloseable: true,
+                isHiddenObject: false,
+                innerView: new ConfirmView({
+                    model: new ConfirmViewModel({
+                        text: Strings.groupWarning,
+                        callback: function ()
+                        {
+                            // Once the user confirms, submit the corrections.
+                            that.groupReclassify();
+                        }
+                    })
+                })
+            });
+            this.modalCollection.add(this.modals.groupReclassify);
 
             // Finalize Corrections modal
             this.modals.finalizeCorrections = new ModalViewModel({

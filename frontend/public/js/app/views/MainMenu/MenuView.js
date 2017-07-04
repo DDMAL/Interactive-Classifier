@@ -40,6 +40,11 @@ export default Marionette.CompositeView.extend({
             clickEvent: MainMenuEvents.clickTest
         }));
 
+        menuLinks.add(new MenuLinkViewModel({
+            url: "#",
+            text: Strings.menuGroupLabel,
+            clickEvent: MainMenuEvents.clickGroupClassify
+        }));        
         this.collection = menuLinks;
     }
 });
