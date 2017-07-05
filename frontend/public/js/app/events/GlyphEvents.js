@@ -8,6 +8,7 @@ export default {
     changeGlyph: "change:glyph",
     groupGlyphs: "group:glyphs",
     dragSelect: "open:multiEdit",
+    previewSelect: "preview:select",    
     setGlyphName: "change:glyph:name",
     clickGlyphName: "click:glyph:name",
     addGlyph: "add:glyph",

@@ -58,9 +58,38 @@ export default Marionette.ItemView.extend(
                 {
                     if (boundingBox)
                     {
+
                         // If this div's bounding box is within the selection, then we've
                         // gotta add the model to the multi selection collection.
                         if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
+                        {
+                            // Add this glyph to the collection
+                            RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
+                            that.viewModel.activate();                          
+                        }
+                        else if (!additional)
+                        {
+                            // If it's additional, then we don't deactivate!
+                            that.viewModel.deactivate();
+                        }
+                    }
+                }
+            );
+            this.listenTo(RadioChannels.edit, GlyphEvents.previewSelect,
+                function (boundingBox, additional)
+                {
+                    if (boundingBox)
+                    {
+
+                        var glyphRect = 
+                        {
+                            left: that.model.get('ulx'),
+                            top: that.model.get('uly'),
+                            right: that.model.get('ulx') + that.model.get('ncols'),
+                            bottom: that.model.get('uly') + that.model.get('nrows')
+                        }
+
+                        if(Geometry.rectangleOverlap(glyphRect, boundingBox))
                         {
                             // Add this glyph to the collection
                             RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
@@ -73,7 +102,7 @@ export default Marionette.ItemView.extend(
                         }
                     }
                 }
-            );
+            );            
             this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit, function (model)
             {
                 if (that.model !== model)

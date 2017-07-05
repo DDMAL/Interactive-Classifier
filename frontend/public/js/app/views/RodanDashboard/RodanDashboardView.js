@@ -115,7 +115,7 @@ export default Marionette.LayoutView.extend(
                 {
                     that.openMultiGlyphEdit(that.selectedGlyphs);
                 }
-            );
+            );           
         },
 
         onShow: function ()
@@ -205,6 +205,11 @@ export default Marionette.LayoutView.extend(
             }));
         },
 
+        /**
+         * Open the ClassEditView for editing a class.
+         *
+         * @param TODO
+         */
         openClassEdit: function(model)
         {
             console.log("Open classEdit!");
