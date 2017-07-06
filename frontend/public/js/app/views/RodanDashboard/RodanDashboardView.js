@@ -18,6 +18,7 @@ import RadioChannels from "radio/RadioChannels";
 import Strings from "localization/Strings";
 import Timer from "utils/Timer";
 import template from "./rodan-dashboard.template.html";
+import each from "underscore";
 
 export default Marionette.LayoutView.extend(
     /**
@@ -101,7 +102,7 @@ export default Marionette.LayoutView.extend(
             this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
                 function (model)
                 {
-                    that.previewView.highlightGlyph(model);
+                    that.previewView.highlightGlyph([model]);
                     that.openGlyphEdit(model);
                 });
             this.listenTo(RadioChannels.edit, GlyphEvents.moveGlyph,
@@ -110,10 +111,18 @@ export default Marionette.LayoutView.extend(
                     that.tableRowCollection.moveGlyph(glyph, oldClassName, newClassName);
                 }
             );
-            this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
+            this.listenTo(RadioChannels.edit, GlyphEvents.openMultiEdit,
                 function ()
                 {
-                    that.openMultiGlyphEdit(that.selectedGlyphs);
+                    that.openMultiGlyphEdit(that.selectedGlyphs);                    
+                    var glyphs = [];
+
+                    for(var i = 0; i < that.selectedGlyphs.length; i++)
+                    {
+                        var glyph = that.selectedGlyphs.at(i);
+                        glyphs.push(glyph);
+                    }
+                    that.previewView.highlightGlyph(glyphs);
                 }
             );           
         },

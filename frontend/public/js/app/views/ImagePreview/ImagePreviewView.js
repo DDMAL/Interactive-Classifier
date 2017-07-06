@@ -2,6 +2,7 @@ import Marionette from "marionette";
 import GlyphEvents from "events/GlyphEvents";
 import template from "./image-preview.template.html";
 import RadioChannels from "radio/RadioChannels";
+import GlyphCollection from "collections/GlyphCollection";
 
 /**
  * @class ImagePreviewView
@@ -36,30 +37,59 @@ export default Marionette.ItemView.extend(
         },
 
         ui: {
+            "selectionBox": ".selection-box",
             highlight: ".preview-highlight",
-            "selectionBox": ".selection-box"
         },
 
         /**
-         * Draw a highlight box over a particular Glyph model that is on the page.
+         * Draw highlight boxes over the particular Glyph models that are on the page.
          *
-         * @param {Glyph} glyph - A Glyph model.
+         * @param {Glyph} glyphs - A collection of Glyph models.
          */
-        highlightGlyph: function (glyph)
+        highlightGlyph: function (glyphs)
         {
             // Change the dimensions of our highlight box to match those of the
             // glyph.
-            this.ui.highlight.css({
-                top: glyph.get("uly"),
-                left: glyph.get("ulx"),
-                width: glyph.get("ncols"),
-                height: glyph.get("nrows")
-            });
 
-            // Scroll to the highlight
-            this.ui.highlight[0].scrollIntoView();
+
+            // Getting rid of all the previously selected glyphs
+            var elems = document.getElementsByClassName("preview-highlight");
+            while(elems.length>0)
+            {
+                var elem = elems[0];
+                elem.parentNode.removeChild(elem);
+            }
+
+            for(var i = 0; i < glyphs.length; i++)
+            {
+                var glyph = glyphs[i];
+
+                var top = glyph.get("uly");
+                var left = glyph.get("ulx");
+                var width = glyph.get("ncols");
+                var height = glyph.get("nrows");
+
+                // Creating a box for each glyph
+                var el = document.body.appendChild(document.createElement("div"));
+                el.style = "top: " + top + "px; left: " + left + "px; width: " + width + "px; height: " + height + "px";
+                el.style.background = "#d30505";
+                el.style.position = "absolute";
+                el.style.opacity = 0.4;
+                el.style.filter = "alpha(opacity=40)"; // IE8
+                el.style.visibility = "visible";
+                el.className = 'preview-highlight';
+                this.el.appendChild(el);
+            }
+
+            if(glyphs.length>0)
+            {
+                // Scroll to the highlight of the first selected glyph
+                var elems = document.getElementsByClassName("preview-highlight");
+
+                // TODO: If the glyph is in view, the page shouldn't scroll
+                elems[0].scrollIntoView();
+            }
         },
-
 
         /**
          * This function fires when the user clicks and holds their mouse down.
@@ -145,6 +175,7 @@ export default Marionette.ItemView.extend(
                         boundingBox,
                         isAdditional // If the shift key is held, then it's an "additional" selection!
                     );
+                    RadioChannels.edit.trigger(GlyphEvents.openMultiEdit);
                 }
             }
 

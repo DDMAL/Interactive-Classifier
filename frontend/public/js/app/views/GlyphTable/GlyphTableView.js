@@ -118,6 +118,7 @@ export default Marionette.CollectionView.extend(
 
                     if (!isAdditional)
                     {
+                        // Deselects all the previously selected glyphs
                         RadioChannels.edit.trigger(GlyphEvents.deselectAllGlyphs);
                     }
 
@@ -130,6 +131,7 @@ export default Marionette.CollectionView.extend(
                         boundingBox,
                         isAdditional // If the shift key is held, then it's an "additional" selection!
                     );
+                    RadioChannels.edit.trigger(GlyphEvents.openMultiEdit);
                 }
             }
 

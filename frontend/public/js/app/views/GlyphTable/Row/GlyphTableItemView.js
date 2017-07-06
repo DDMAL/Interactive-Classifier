@@ -51,14 +51,12 @@ export default Marionette.ItemView.extend(
 
             // Re render when the viewmodel changes activity state
             this.listenTo(this.viewModel, "change:active", this.render);
-
             var that = this;
             this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
                 function (boundingBox, additional)
                 {
                     if (boundingBox)
                     {
-
                         // If this div's bounding box is within the selection, then we've
                         // gotta add the model to the multi selection collection.
                         if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
@@ -80,7 +78,6 @@ export default Marionette.ItemView.extend(
                 {
                     if (boundingBox)
                     {
-
                         var glyphRect = 
                         {
                             left: that.model.get('ulx'),
@@ -151,6 +148,7 @@ export default Marionette.ItemView.extend(
                     RadioChannels.edit.trigger(GlyphEvents.selectGlyph, this.model);
                 }
                 RadioChannels.edit.trigger(GlyphEvents.dragSelect);
+                RadioChannels.edit.trigger(GlyphEvents.openMultiEdit);
             }
             else
             {
