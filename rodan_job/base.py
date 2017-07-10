@@ -225,12 +225,30 @@ def serialize_data(settings, training_database):
         settings['glyphs'], training_database)
     settings['glyphs_json'] = serialize_glyphs_to_json(settings['glyphs'])
 
+def add_grouped_glyphs(settings):
+
+    grouped_glyphs=settings['@grouped_glyphs']
+
+    for glyph in grouped_glyphs:
+        new_glyph = GameraGlyph(
+        gid = glyph["id"],
+        class_name = glyph['class_name'],
+        rle_image = glyph['rle_image'],
+        ncols = glyph['ncols'],
+        nrows = glyph['nrows'],
+        ulx = glyph['ulx'],
+        uly = glyph['uly'],
+        id_state_manual = True,
+        confidence = 1
+        ).to_dict()
+        settings['glyphs'].append(new_glyph)
+
+    settings['@grouped_glyphs'] = []
 
 def update_changed_glyphs(settings):
     """
     Update the glyph objects that have been changed since the last round of classification
     """
-    #for g in settings['@changed_glyphs']
 
     # Build a hash of the changed glyphs by their id
     changed_glyph_hash = {g['id']: g for g in settings['@changed_glyphs']}
@@ -246,18 +264,11 @@ def update_changed_glyphs(settings):
             if key in changed_glyph_hash:
                 changed_glyph = changed_glyph_hash[key]
                 # Update the Glyph proper
-                glyph['id_state_manual'] = changed_glyph['id_state_manual']
                 glyph['class_name'] = changed_glyph['class_name']
+                glyph['id_state_manual'] = changed_glyph['id_state_manual']
                 glyph['confidence'] = changed_glyph['confidence']
                 # Pop the changed glyph from the hash
                 changed_glyph_hash.pop(key, None)
-
-        # If the changed glyph is not in settings, then add it to settings
-        if changed_glyph_hash:
-            for key in changed_glyph_hash:
-                g = changed_glyph_hash[key]
-                settings['glyphs'].append(g)
-
 
     # Clear out the @changed_glyphs from the settings...
     settings['@changed_glyphs'] = []
@@ -380,6 +391,7 @@ class InteractiveClassifier(RodanTask):
         elif settings['@state'] == ClassifierStateEnum.CLASSIFYING:
             # CLASSIFYING STAGE
             # Update any changed glyphs
+            add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
             run_correction_stage(settings['glyphs'],
                                  training_database,
@@ -389,6 +401,7 @@ class InteractiveClassifier(RodanTask):
         elif settings['@state'] == ClassifierStateEnum.GROUP_AND_CLASSIFY:
             # CLASSIFYING STAGE
             # Update any changed glyphs
+            add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
             group_and_correct(settings['glyphs'],
                                  training_database,
@@ -420,7 +433,8 @@ class InteractiveClassifier(RodanTask):
             # We are complete.  Advance to the final stage
             return {
                 '@state': ClassifierStateEnum.EXPORT_XML,
-                '@changed_glyphs': user_input['glyphs']
+                '@changed_glyphs': user_input['glyphs'],
+                '@grouped_glyphs': user_input['grouped_glyphs']
             }
         # If the user uploaded an XML, add these glyphs to the training data
         elif 'importXML' in user_input:
@@ -450,7 +464,6 @@ class InteractiveClassifier(RodanTask):
                 ).get_gamera_image())
 
             grouped = image_utilities.union_images(gamera_glyphs)
-            
             new_glyph = GameraGlyph(
                 class_name = user_input['class_name'],
                 rle_image = grouped.to_rle(),
@@ -460,17 +473,14 @@ class InteractiveClassifier(RodanTask):
                 uly = grouped.ul.y,
                 id_state_manual = True,
                 confidence = 1
-                ).to_dict()
+            ).to_dict()
 
-            changed_glyphs = user_input['glyphs']
-            changed_glyphs.append(new_glyph)
-                       
-            serialize_data(settings, [grouped])
             data = {
             'manual': True,
-            'settings_update': {'@changed_glyphs': changed_glyphs},
+            'class_name': user_input['class_name'],
             'id': new_glyph['id'],
-            'image': new_glyph['image_b64'], 
+            'image': new_glyph['image_b64'],
+            'rle_image': new_glyph['image'], 
             'ncols': new_glyph['ncols'],
             'nrows': new_glyph['nrows'],
             'ulx': new_glyph['ulx'],
@@ -481,12 +491,19 @@ class InteractiveClassifier(RodanTask):
         elif "auto_group" in user_input:
             return{
             '@state': ClassifierStateEnum.GROUP_AND_CLASSIFY,
-            '@changed_glyphs': user_input['glyphs']
+            '@changed_glyphs': user_input['glyphs'],
+            '@grouped_glyphs': user_input['grouped_glyphs']
             }
 
         else:
             # We are not complete.  Run another correction stage
+            changed_glyphs = []
+            grouped_glyphs = []
+            for glyph in user_input['glyphs']:
+                changed_glyphs.append(glyph)
+            for glyph in user_input['grouped_glyphs']:
+                grouped_glyphs.append(glyph)
             return {
-
-                '@changed_glyphs': user_input['glyphs']
+                '@changed_glyphs': changed_glyphs,
+                '@grouped_glyphs': grouped_glyphs
             }

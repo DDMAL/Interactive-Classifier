@@ -31,6 +31,7 @@ var App = Marionette.Application.extend(
         modalCollection: undefined,
         behaviors: {},
         changedGlyphs: new GlyphCollection(),
+        groupedGlyphs: [],
 
         /**
          * @class App
@@ -177,7 +178,8 @@ var App = Marionette.Application.extend(
         submitCorrections: function ()
         {
             var data = JSON.stringify({
-                "glyphs": this.changedGlyphs.toJSON()
+                "glyphs": this.changedGlyphs.toJSON(),
+                "grouped_glyphs": this.groupedGlyphs
             });
             // Submit the corrections and close the window
             $.ajax({
@@ -203,6 +205,7 @@ var App = Marionette.Application.extend(
         {
             var data = JSON.stringify({
                 "glyphs": this.changedGlyphs.toJSON(),
+                "grouped_glyphs": this.groupedGlyphs,
                 "auto_group": true,
             });
             // Submit the corrections and close the window
@@ -288,47 +291,58 @@ var App = Marionette.Application.extend(
 
         /**
          *  Group glyphs
+         * TODO: only send back the grouped glyphs rather than all the glyphs
          *
-         * TODO: Create an error when the user tries to group 0 glyphs
          */
         groupGlyphs: function (glyphs, className)
         {
-            var data = JSON.stringify({
-                "group": true,
-                "glyphs": glyphs.toJSON(),
-                "class_name": className
-            });   
-            // Submit the corrections and close the window
-            $.ajax({
-                url: this.authenticator.getWorkingUrl(),
-                type: 'POST',
-                data: data,
-                headers: {
-                Accept: "application/json; charset=utf-8",
-                "Content-Type": "application/json; charset=utf-8"
-                },
-                complete: function (response)
-                {
-                    //Send the new glyph
-                    if (response.status === 200)
-                    {
-                        var responseData = JSON.parse(response.responseText);
-                         var g = new Glyph({
-                            "id": responseData["id"],
-                            "class_name": className,
-                            "id_state_manual": true,
-                            "confidence": 1,
-                            "ulx": responseData["ulx"],
-                            "uly": responseData["uly"],
-                            "nrows": responseData["nrows"],
-                            "ncols": responseData["ncols"],
-                            "image_b64": (responseData["image"])
-                        });
-                        g.onCreate();
+            var that = this;
+            if(glyphs.length > 0)
+            {
+                var data = JSON.stringify({
+                    "group": true,
+                    "glyphs": glyphs.toJSON(),
+                    "class_name": className
+                });   
 
+                $.ajax({
+                    url: this.authenticator.getWorkingUrl(),
+                    type: 'POST',
+                    data: data,
+                    headers: {
+                    Accept: "application/json; charset=utf-8",
+                    "Content-Type": "application/json; charset=utf-8"
+                    },
+                    complete: function (response)
+                    {
+                        // Create the new glyph
+                        if (response.status === 200)
+                        {
+                            var responseData = JSON.parse(response.responseText);
+                             var g = new Glyph({
+                                "id": responseData["id"],
+                                "class_name": className,
+                                "id_state_manual": true,
+                                "confidence": 1,
+                                "ulx": responseData["ulx"],
+                                "uly": responseData["uly"],
+                                "nrows": responseData["nrows"],
+                                "ncols": responseData["ncols"],
+                                "image_b64": (responseData["image"]),
+                                "rle_image": (responseData["rle_image"])
+                            });
+                            g.onCreate();
+                            // The data gets saved to send to celery later
+                            // Double check that this gets emptied every reclassification
+                            that.groupedGlyphs.push(responseData);
+                        }
                     }
-                }
-            });
+                });
+            }
+            else
+            {
+                console.log("You cannot group 0 glyphs");
+            }
         },        
         /**
          * Initialize all of the modals used in the application.
