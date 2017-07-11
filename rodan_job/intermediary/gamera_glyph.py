@@ -5,8 +5,11 @@ from rodan.jobs.interactive_classifier.intermediary.run_length_image import \
 
 class GameraGlyph(object):
     def __init__(self, class_name, rle_image, ncols, nrows, ulx, uly,
-                 id_state_manual, confidence):
-        self._id = uuid.uuid4().hex
+                 id_state_manual, confidence,  gid=0):
+        if gid == 0:
+            self._id = uuid.uuid4().hex
+        else:
+            self._id = gid
         self._class_name = class_name
         self._image = rle_image
         self._ncols = ncols
