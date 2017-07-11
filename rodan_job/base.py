@@ -121,7 +121,9 @@ def group_and_correct(glyphs, training_database, features_file_path):
                               glyphs,
                               features_file_path)
     # The automatic classifications
+    manual =[]
     gamera_glyphs = []
+
     for glyph in glyphs:
         if not glyph['id_state_manual']:
             # It's a glyph to be classified
@@ -132,27 +134,45 @@ def group_and_correct(glyphs, training_database, features_file_path):
                 glyph['nrows'],
                 glyph['image']
             ).get_gamera_image()
-            # Classify it!
             gamera_glyphs.append(gamera_glyph)
-    added, removed = cknn.group_list_automatic(gamera_glyphs)
+        else:
+            manual.append(glyph)
 
-    for elem in added:
-        glyph = GameraGlyph(
-            elem.get_main_id(),
-            elem.to_rle(),
-            elem.ncols,
-            elem.nrows,
-            elem.ul.x,
-            elem.ul.y,
-            False,
-            elem.get_confidence()
-            )
-        glyphs.append(glyph.to_dict())
+    # Group and reclassify
+    add, remove = cknn.group_list_automatic(gamera_glyphs)
 
-    # TODO: check the contents of removed
-    for elem in removed:
+    # Taking out the manual glyphs so that the indices of the two lists will match
+    for g in manual:
+        glyphs.remove(g)
+
+    # Removing
+    for elem in remove:
         index = gamera_glyphs.index(elem)
         gamera_glyphs.remove(elem)
+        glyphs.remove(glyphs[index])
+
+    # Reassigning values after classification
+    for i in range(len(gamera_glyphs)):
+        glyphs[i]['class_name'] = gamera_glyphs[i].get_main_id()
+        glyphs[i]['confidence'] = gamera_glyphs[i].get_confidence()
+
+    # Adding new glyphs
+    for elem in add:
+        new_glyph = GameraGlyph(
+            class_name = elem.get_main_id(),
+            rle_image = elem.to_rle(),
+            ncols = elem.ncols,
+            nrows = elem.nrows,
+            ulx = elem.ul.x,
+            uly = elem.ul.y,
+            id_state_manual = False,
+            confidence = elem.get_confidence()).to_dict()
+        glyphs.append(new_glyph)
+    
+    # Put the manual glyphs back
+    for g in manual:
+        glyphs.append(g)
+
     return cknn
 
 def run_correction_stage(glyphs, training_database, features_file_path):
@@ -184,6 +204,7 @@ def run_correction_stage(glyphs, training_database, features_file_path):
             else:
                 glyph['confidence'] = 0
     return cknn
+
 
 
 def serialize_glyphs_to_json(glyphs):
@@ -224,6 +245,21 @@ def serialize_data(settings, training_database):
     settings['class_names_json'] = serialize_class_names_to_json(
         settings['glyphs'], training_database)
     settings['glyphs_json'] = serialize_glyphs_to_json(settings['glyphs'])
+
+# We don't want to reclassify glyphs that are a a part of a group
+def filter_parts(settings):
+    glyphs = settings['glyphs']
+    parts=[]
+    i=0
+    while i < len(glyphs):
+        g = glyphs[i]
+        if g['class_name'].startswith("_group._part."):
+            glyphs.remove(g)
+            parts.append(g)
+        else:
+            i=i+1
+    return parts
+
 
 def add_grouped_glyphs(settings):
 
@@ -393,9 +429,13 @@ class InteractiveClassifier(RodanTask):
             # Update any changed glyphs
             add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
+
+            # Takes out _group._parts glyphs
+            filter_parts(settings)
             run_correction_stage(settings['glyphs'],
                                  training_database,
                                  features)
+
             serialize_data(settings, training_database)
             return self.WAITING_FOR_INPUT()
         elif settings['@state'] == ClassifierStateEnum.GROUP_AND_CLASSIFY:
@@ -403,14 +443,12 @@ class InteractiveClassifier(RodanTask):
             # Update any changed glyphs
             add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
+            filter_parts(settings)
             group_and_correct(settings['glyphs'],
                                  training_database,
                                  features)
-            run_correction_stage(settings['glyphs'],
-                                 training_database,
-                                 features)            
+
             serialize_data(settings, training_database)
-            settings['@state'] = ClassifierStateEnum.CLASSIFYING
             return self.WAITING_FOR_INPUT()       
   
         else:
