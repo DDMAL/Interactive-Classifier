@@ -89,7 +89,7 @@ class RunLengthImage:
     def get_gamera_image(self):
         # Image has to be encoded Dense and not RLE.  If RLE, will seg fault
         image = GameraImage((self.ulx, self.uly),
-                            (self.ulx + self.width, self.uly + self.height),
+                            (self.ulx + self.width-1, self.uly + self.height-1),
                             ONEBIT,
                             DENSE)
         # Build the image by pixels
