@@ -112,7 +112,7 @@ def prepare_classifier(training_database, glyphs, features_file_path):
         classifier.load_settings(features_file_path)
     return classifier
 
-def group_and_correct(glyphs, training_database, features_file_path):
+def group_and_correct(glyphs, user_options, training_database, features_file_path):
     """
     Run the automatic correction stage of the Rodan job.
     """
@@ -134,12 +134,26 @@ def group_and_correct(glyphs, training_database, features_file_path):
                 glyph['nrows'],
                 glyph['image']
             ).get_gamera_image()
-            gamera_glyphs.append(gamera_glyph)
+            
+            gamera_glyphs.append(gamera_glyph)            
         else:
             manual.append(glyph)
 
+    distance = int(user_options['distance'])
+    parts = int(user_options['parts'])
+    graph = int(user_options['graph'])
+    criterion = user_options['criterion']    
+    if(user_options['func'] == "Shaped"):
+        func = gamera.classify.ShapedGroupingFunction(distance)
+    else:
+        func = gamera.classify.BoundingBoxGroupingFunction(distance)
+
+
     # Group and reclassify
-    add, remove = cknn.group_list_automatic(gamera_glyphs)
+    add, remove = cknn.group_list_automatic(gamera_glyphs, grouping_function=gamera.classify.ShapedGroupingFunction(distance),
+                                                        max_parts_per_group=parts,
+                                                        max_graph_size=graph,
+                                                        criterion = criterion)
 
     # Taking out the manual glyphs so that the indices of the two lists will match
     for g in manual:
@@ -167,6 +181,7 @@ def group_and_correct(glyphs, training_database, features_file_path):
             uly = elem.ul.y,
             id_state_manual = False,
             confidence = elem.get_confidence()).to_dict()
+
         glyphs.append(new_glyph)
     
     # Put the manual glyphs back
@@ -195,6 +210,7 @@ def run_correction_stage(glyphs, training_database, features_file_path):
                 glyph['image']
             ).get_gamera_image()
             # Classify it!
+
             cknn.classify_glyph_automatic(gamera_glyph)
             # Save the classification back into memory
             result, confidence = cknn.guess_glyph_automatic(gamera_glyph)
@@ -277,6 +293,7 @@ def add_grouped_glyphs(settings):
         id_state_manual = True,
         confidence = 1
         ).to_dict()
+
         settings['glyphs'].append(new_glyph)
 
     settings['@grouped_glyphs'] = []
@@ -445,9 +462,10 @@ class InteractiveClassifier(RodanTask):
             update_changed_glyphs(settings)
             filter_parts(settings)
             group_and_correct(settings['glyphs'],
+                                 settings['@user_options'],
                                  training_database,
                                  features)
-
+            filter_parts(settings)
             serialize_data(settings, training_database)
             return self.WAITING_FOR_INPUT()       
   
@@ -465,6 +483,41 @@ class InteractiveClassifier(RodanTask):
             settings['glyphs_json'] = None
             settings['class_names_json'] = None
 
+    # Grouping the glyphs manually
+    def manual_group(self, glyphs, settings, class_name):
+        import image_utilities
+        gamera_glyphs=[]
+
+        # Finding the glyphs that match the incoming ids          
+        for glyph_c in glyphs:
+            glyph={}
+            for g in settings['glyphs']:
+                if(glyph_c['id']==g['id']):
+                    glyph = g                    
+            gamera_glyph=RunLengthImage(
+            glyph['ulx'],
+            glyph['uly'],
+            glyph['ncols'],
+            glyph['nrows'],
+            glyph['image']
+            ).get_gamera_image()
+
+            gamera_glyphs.append(gamera_glyph)
+
+        grouped = image_utilities.union_images(gamera_glyphs)                
+
+        new_glyph = GameraGlyph(
+            class_name = class_name,
+            rle_image = grouped.to_rle(),
+            ncols = grouped.ncols,
+            nrows = grouped.nrows,
+            ulx = grouped.ul.x,
+            uly = grouped.ul.y,
+            id_state_manual = True,
+            confidence = 1
+            ).to_dict()
+
+        return new_glyph
 
     def validate_my_user_input(self, inputs, settings, user_input):
         if 'complete' in user_input:
@@ -481,37 +534,11 @@ class InteractiveClassifier(RodanTask):
             '@XML': user_input['XML'],
             }
             return data
-        # If the user wants to group, group the glyphs and return the new glyph
-        # TODO: Put this code in a function
-        elif 'group' in user_input:
-            import image_utilities
-            glyphs=user_input['glyphs']
-            gamera_glyphs=[]
-            #finding the glyphs that match the incoming ids          
-            for glyph_c in glyphs:
-                glyph={}
-                for g in settings['glyphs']:
-                    if(glyph_c['id']==g['id']):
-                        glyph = g                    
-                gamera_glyphs.append(RunLengthImage(
-                glyph['ulx'],
-                glyph['uly'],
-                glyph['ncols'],
-                glyph['nrows'],
-                glyph['image']
-                ).get_gamera_image())
 
-            grouped = image_utilities.union_images(gamera_glyphs)
-            new_glyph = GameraGlyph(
-                class_name = user_input['class_name'],
-                rle_image = grouped.to_rle(),
-                ncols = grouped.ncols,
-                nrows = grouped.nrows,
-                ulx = grouped.ul.x,
-                uly = grouped.ul.y,
-                id_state_manual = True,
-                confidence = 1
-            ).to_dict()
+        # If the user wants to group, group the glyphs and return the new glyph
+        elif 'group' in user_input:
+
+            new_glyph = self.manual_group(user_input['glyphs'], settings, user_input['class_name'])
 
             data = {
             'manual': True,
@@ -529,18 +556,15 @@ class InteractiveClassifier(RodanTask):
         elif "auto_group" in user_input:
             return{
             '@state': ClassifierStateEnum.GROUP_AND_CLASSIFY,
+            '@user_options': user_input['user_options'],
             '@changed_glyphs': user_input['glyphs'],
             '@grouped_glyphs': user_input['grouped_glyphs']
             }
 
         else:
             # We are not complete.  Run another correction stage
-            changed_glyphs = []
-            grouped_glyphs = []
-            for glyph in user_input['glyphs']:
-                changed_glyphs.append(glyph)
-            for glyph in user_input['grouped_glyphs']:
-                grouped_glyphs.append(glyph)
+            changed_glyphs = user_input['glyphs']
+            grouped_glyphs = user_input['grouped_glyphs']
             return {
                 '@changed_glyphs': changed_glyphs,
                 '@grouped_glyphs': grouped_glyphs

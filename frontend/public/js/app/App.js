@@ -18,6 +18,8 @@ import Glyph from "models/Glyph";
 import GlyphCollection from "collections/GlyphCollection";
 import ConfirmView from "views/widgets/Confirm/ConfirmView";
 import ConfirmViewModel from "views/widgets/Confirm/ConfirmViewModel";
+import ModifySettingsViewModel from "views/widgets/ModifySettings/ModifySettingsViewModel";
+import ModifySettingsView from "views/widgets/ModifySettings/ModifySettingsView";
 import Strings from "localization/Strings";
 import Timer from "utils/Timer";
 import Authenticator from "auth/Authenticator";
@@ -201,12 +203,13 @@ var App = Marionette.Application.extend(
         /**
          *  Group and reclassify.
          */
-        groupReclassify: function ()
+        groupReclassify: function (userSelections)
         {
             var data = JSON.stringify({
                 "glyphs": this.changedGlyphs.toJSON(),
                 "grouped_glyphs": this.groupedGlyphs,
                 "auto_group": true,
+                "user_options": userSelections
             });
             // Submit the corrections and close the window
             $.ajax({
@@ -233,7 +236,8 @@ var App = Marionette.Application.extend(
         {
             var data = JSON.stringify({
                 "complete": true,
-                "glyphs": this.changedGlyphs.toJSON()
+                "glyphs": this.changedGlyphs.toJSON(),
+                "grouped_glyphs": this.groupedGlyphs,
             });
             /* Submit the corrections and close the window*/
             $.ajax({
@@ -391,13 +395,33 @@ var App = Marionette.Application.extend(
                 title: Strings.submitAndGroup,
                 isCloseable: true,
                 isHiddenObject: false,
-                innerView: new ConfirmView({
-                    model: new ConfirmViewModel({
+                innerView: new ModifySettingsView({
+                    model: new ModifySettingsViewModel({
                         text: Strings.groupWarning,
-                        callback: function ()
+                        // A list of dictionaries that maps to functions or something
+                        // The types are checkbox, user fill in (input) and dropdown
+                        userOptions: [
+                        {"text": "Grouping Function", "type": "dropdown", "options": ["Bounding Box", "Shaped"]},
+                        {"text": "Distance Threshhold", "type": "input", "default": 4},
+                        {"text": "Maximum number of parts per group", "type": "input", "default": 4},
+                        {"text": "Maximum Solveable subgraph size", "type": "input", "default": 16},
+                        {"text": "Grouping criterion", "type": "dropdown", "options": ["min", "avg"]},
+                        ],
+                        callback: function (userArgs)
                         {
-                            // Once the user confirms, submit the corrections.
-                            that.groupReclassify();
+                            // Once the user confirms, submit the corrections with the user's options.
+
+                            var userSelections = {}
+
+                            // TODO: make more elegant
+
+                            userSelections['func'] = userArgs["Grouping Function"]
+                            userSelections['distance'] = userArgs["Distance Threshhold"]
+                            userSelections['parts'] = userArgs["Maximum number of parts per group"]
+                            userSelections['graph'] = userArgs["Maximum Solveable subgraph size"]
+                            userSelections['criterion'] = userArgs["Grouping criterion"]
+
+                            that.groupReclassify(userSelections);
                         }
                     })
                 })
