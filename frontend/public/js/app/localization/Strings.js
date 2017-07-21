@@ -8,7 +8,7 @@
 
 //jscs:disable maximumLineLength
 export default {
-    siteTitle: "Interactive Classifier test",
+    siteTitle: "Interactive Classifier",
     submissionWarning: "Your manual corrections will be sent back to Rodan for another round of Gamera classification. Once the classification is complete, you can make more manual corrections.",
     groupWarning: "Your manual corrections will be sent back to Rodan for a round of Gamera grouping and re-classification. Once the classification is complete, you can make more manual corrections.",
     finalizeText: "Your manual corrections will be sent back to Rodan for a final round of Gamera classification. The results will be saved, and the job will complete.",

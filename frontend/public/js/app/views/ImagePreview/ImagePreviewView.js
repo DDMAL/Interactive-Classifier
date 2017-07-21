@@ -157,7 +157,6 @@ export default Marionette.ItemView.extend(
                         bottom: Math.max(that.mouseDownY, y) - pageBounds.top
                     };
 
-                    RadioChannels.edit.trigger(GlyphEvents.findGlyphs, boundingBox);
                     // If the user holds shift, then this selection is an additional selection
                     var isAdditional = event.shiftKey === true;
 
