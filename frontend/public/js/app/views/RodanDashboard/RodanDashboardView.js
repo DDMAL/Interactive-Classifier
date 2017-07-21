@@ -185,6 +185,77 @@ export default Marionette.LayoutView.extend(
                 collection: this.tableRowCollection
             }));
 
+
+            // This section deals with resizing.
+
+            /* TODO: the decimals here are harcoded (they are the original percentages for height/width)
+             * These values should be found through the document somehow.
+             * These values are all the original values for the heights/widths of certain elements
+             */
+            this.classHeight = document.getElementById("left1").getClientRects()[0].height / 0.5;
+            this.classWidth = document.getElementById("left1").getClientRects()[0].width / 0.25;
+            this.glyphHeight = document.getElementById("right1").getClientRects()[0].height / 0.66;
+            this.winWidth = window.innerWidth;
+            this.winHeight = window.innerHeight;
+
+            var that = this;
+
+            $(document).mousemove(function (event)
+            {
+                // Each region of the table
+                var glyphEdit = document.getElementById("left2");
+                var glyphTable = document.getElementById("right1");
+                var imgPrev = document.getElementById("right2");
+                var classEdit = document.getElementById("left1");
+
+                var currentHeight = classEdit.getClientRects()[0].height;
+                var currentWidth = classEdit.getClientRects()[0].width;
+                // Coords of right of the class view = left for the glyph view
+                var left = classEdit.getClientRects()[0].right;
+                var currentWinHeight = window.innerHeight;
+                var currentWinWidth = window.innerWidth;
+
+                // If the window has been resized, the original widths/heights must be modified
+                if(that.winWidth != currentWinWidth)
+                {
+                    var perc = that.winWidth/currentWinWidth;                    
+                    that.winWidth = currentWinWidth;
+                    that.classWidth = that.classWidth/perc;                    
+                }
+
+                if(that.winHeight != currentWinHeight)
+                {
+                    var perc = that.winHeight/currentWinHeight;
+                    that.winHeight = currentWinHeight;
+
+                    that.classHeight = that.classHeight/perc;
+                    that.glyphHeight = that.glyphHeight/perc;
+                }
+
+                // Height percent and width percent
+                var heightPerc = currentHeight/that.classHeight;
+                var widthPerc = currentWidth/that.classWidth;
+
+                classEdit.style.height = heightPerc*100 + "%";
+                glyphEdit.style.height = (1-heightPerc)*100 + "%";
+
+                classEdit.style.width = widthPerc*100 + "%";
+                glyphEdit.style.width = widthPerc*100 + "%";
+                glyphTable.style.width = (1-widthPerc)*100 + "%";
+                imgPrev.style.width = (1-widthPerc)*100 + "%";                
+
+                // Make sure the right side has the same corner as the left side
+                imgPrev.style.left = left + "px";
+                glyphTable.style.left = left + "px";
+
+                // Specifically for the windows on the right
+                heightPerc = glyphTable.getClientRects()[0].height/that.glyphHeight;
+                glyphTable.style.height = 100*heightPerc + "%";
+                imgPrev.style.height = (1-heightPerc)*100 + "%";
+
+
+            });
+
             timer.tick("final");
         },
 
