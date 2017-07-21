@@ -147,8 +147,7 @@ export default Marionette.ItemView.extend(
                     // boundingBox is the dimensions of the drag selection.  We will
                     // use these dimensions to test whether or not individual glyphs
 
-                    var pageBounds = this.el.getBoundingClientRect();
-
+                    var pageBounds = document.getElementsByClassName("preview-background")[0].getBoundingClientRect();
                     // have been selected.
                     var boundingBox = {
                         left: Math.min(that.mouseDownX, x) - pageBounds.left,
