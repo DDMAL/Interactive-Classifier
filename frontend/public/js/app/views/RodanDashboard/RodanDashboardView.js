@@ -55,7 +55,7 @@ export default Marionette.LayoutView.extend(
             });
 
             // Construct the glyph table data structure
-            this.tableRowCollection = new GlyphTableRowCollection();
+            this.tableRowCollection = new GlyphTableRowCollection();      
 
             // Selected Glyphs
             this.selectedGlyphs = new Backbone.Collection();
@@ -124,7 +124,8 @@ export default Marionette.LayoutView.extend(
                     }
                     that.previewView.highlightGlyph(glyphs);
                 }
-            );           
+            );
+
         },
 
         onShow: function ()
@@ -139,22 +140,13 @@ export default Marionette.LayoutView.extend(
             var glyphDictionary = this.model.get("glyphDictionary");
             var classNames = this.model.get("classNames");
 
-            for (var i = 0; i < classNames.length; i++)
-            {
-                if(classNames[i].substring(0,12) == "_group._part")
-                {
-                    this.model.get("classNames").splice(i,1);
-                }
-            }
-
-
-
             // Show the tree
             this.glyphTreeRegion.show(new ClassTreeView({
                 model: new ClassTreeViewModel({
                     class_names: classNames
                 })
             }));
+
 
             timer.tick();
 

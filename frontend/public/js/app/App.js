@@ -132,20 +132,6 @@ var App = Marionette.Application.extend(
             var glyphDictionary = JSON.parse(glyphsElement.attr("data-glyphs"));
             var classNames = JSON.parse(classNamesElement.attr("data-class-names"));
 
-
-            for(var i = 0; i < classNames.length; )
-            {
-                if(classNames[i].substring(0,12) == "_group._part")
-                {
-                    classNames.splice(i,1);
-                }
-                else
-                {
-                    i++;
-                }
-            }
-
-
             timer.tick();
 
             // Delete the data elements from the dom
@@ -346,6 +332,7 @@ var App = Marionette.Application.extend(
             else
             {
                 console.log("You cannot group 0 glyphs");
+                this.modals.group.close();
             }
         },        
         /**
@@ -402,7 +389,7 @@ var App = Marionette.Application.extend(
                         // The types are checkbox, user fill in (input) and dropdown
                         userOptions: [
                         {"text": "Grouping Function", "type": "dropdown", "options": ["Bounding Box", "Shaped"]},
-                        {"text": "Distance Threshhold", "type": "input", "default": 4},
+                        {"text": "Distance Threshold", "type": "input", "default": 4},
                         {"text": "Maximum number of parts per group", "type": "input", "default": 4},
                         {"text": "Maximum Solveable subgraph size", "type": "input", "default": 16},
                         {"text": "Grouping criterion", "type": "dropdown", "options": ["min", "avg"]},
@@ -416,7 +403,7 @@ var App = Marionette.Application.extend(
                             // TODO: make more elegant
 
                             userSelections['func'] = userArgs["Grouping Function"]
-                            userSelections['distance'] = userArgs["Distance Threshhold"]
+                            userSelections['distance'] = userArgs["Distance Threshold"]
                             userSelections['parts'] = userArgs["Maximum number of parts per group"]
                             userSelections['graph'] = userArgs["Maximum Solveable subgraph size"]
                             userSelections['criterion'] = userArgs["Grouping criterion"]
