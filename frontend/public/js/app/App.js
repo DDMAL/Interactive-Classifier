@@ -280,13 +280,43 @@ var App = Marionette.Application.extend(
         },
 
         /**
-         *  Group glyphs
-         * TODO: only send back the grouped glyphs rather than all the glyphs
-         *
-         */
-        groupGlyphs: function (glyphs, className)
+        * Find glyphs
+        * Returns a collection full of all the original glyphs, without any grouped glyphs
+        * list is the new collection of glyphs, originally empty
+        * This function is necessary when the user tries to group the same glyph twice without sending corretions
+        */
+
+        findGroups: function (glyphs, list)
         {
             var that = this;
+            for(var i=0; i < glyphs.length; i++)
+            {
+                var glyph =  glyphs.at(i)
+                if('parts' in glyph && glyph['parts'].length > 0)
+                {
+                    that.findGroups(glyph['parts'], list);
+                }
+                else
+                {
+                    list.add(glyph);
+                }
+            }
+
+            return list;
+
+        },
+
+        /**
+         *  Group glyphs
+         *
+         */
+        groupGlyphs: function (grouped_glyphs, className)
+        {
+            var that = this;
+
+            var glyphs = that.findGroups(grouped_glyphs, new GlyphCollection());
+
+
             if(glyphs.length > 0)
             {
                 var data = JSON.stringify({
@@ -319,11 +349,17 @@ var App = Marionette.Application.extend(
                                 "nrows": responseData["nrows"],
                                 "ncols": responseData["ncols"],
                                 "image_b64": (responseData["image"]),
-                                "rle_image": (responseData["rle_image"])
+                                "rle_image": (responseData["rle_image"]),
                             });
+
+                             // If the user wants to group this glyph again, they'll need to access the group parts
+                             g['parts'] = glyphs;
+                                                         
+                            RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, g);
+                                                        
                             g.onCreate();
                             // The data gets saved to send to celery later
-                            // Double check that this gets emptied every reclassification
+
                             that.groupedGlyphs.push(responseData);
                         }
                     }

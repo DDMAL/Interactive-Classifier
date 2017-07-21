@@ -23,10 +23,9 @@ export default Backbone.Model.extend(
             nrows: 0,
             ncols: 0,
             image_file: "",
-            image_b64: ""
+            image_b64: "",
+            parts: []
         },
-
-        
 
         /**
          * Creates a new glyph.
