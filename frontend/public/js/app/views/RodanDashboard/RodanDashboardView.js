@@ -95,7 +95,17 @@ export default Marionette.LayoutView.extend(
             this.listenTo(RadioChannels.edit, ClassEvents.deleteClass,
                 function(className)
                 {
-                    that.tableRowCollection.deleteClass(className);
+                    var classes = this.model.get('classNames');
+                    that.tableRowCollection.deleteClass(name);
+                    for(var i = 0; i < classes.length; i++)
+                    {
+                        var name = classes[i];
+                        if(name.startsWith(className + "."))
+                        {
+                            that.tableRowCollection.deleteClass(name);
+                        }
+                    }
+
                 });
 
             // Glyph Editing Events

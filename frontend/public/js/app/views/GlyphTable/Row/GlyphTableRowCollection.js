@@ -1,7 +1,8 @@
 import Backbone from "backbone";
 import GlyphTableRowViewModel from "views/GlyphTable/Row/GlyphTableRowViewModel";
 import GlyphCollection from "collections/GlyphCollection";
-
+import RadioChannels from "radio/RadioChannels";
+import ClassEvents from "events/ClassEvents";
 
 /**
  * @class GlyphTableRowCollection
@@ -36,6 +37,7 @@ export default Backbone.Collection.extend(
             // Remove the old row if it's empty
             if (oldRow.get("glyphs").length < 1)
             {
+                RadioChannels.edit.trigger(ClassEvents.deleteClass, oldClassName);
                 this.remove(oldRow);
             }
 
@@ -66,15 +68,17 @@ export default Backbone.Collection.extend(
          */
         deleteClass: function (className)
         {
-
             var row = this.findWhere({
                 class_name: className
-            });
-            var glyphs = row.get("glyphs");
-            while (glyphs.length>0)
+                });
+            if(row)
             {
-                var glyph = glyphs.pop();
-                glyph.unclassify();
+                var glyphs = row.get("glyphs");
+                while (glyphs.length>0)
+                {
+                    var glyph = glyphs.pop();
+                    glyph.unclassify();
+                }
             }
         },
 
