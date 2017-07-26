@@ -3,6 +3,7 @@ import Backbone from "backbone";
 import Marionette from "marionette";
 import ClassEvents from "events/ClassEvents";
 import GlyphEvents from "events/GlyphEvents";
+import PageEvents from "events/PageEvents";
 import GlyphCollection from "collections/GlyphCollection";
 import ClassTreeView from "views/ClassTree/ClassTreeView";
 import ClassTreeViewModel from "views/ClassTree/ClassTreeViewModel";
@@ -121,6 +122,19 @@ export default Marionette.LayoutView.extend(
                     that.tableRowCollection.moveGlyph(glyph, oldClassName, newClassName);
                 }
             );
+
+            this.listenTo(RadioChannels.edit, PageEvents.zoom,
+            function (zoomLevel)
+                {
+                    var pic = document.getElementsByClassName("preview-background")[0];
+                    var oldHeight = pic.style.originalHeight;
+                    var newHeight = oldHeight*zoomLevel/50; //50 is the default value
+                    pic.style.height = newHeight + "px";
+                    //makes sure the box around the glyphs follows the zoom
+                    RadioChannels.edit.trigger(GlyphEvents.openMultiEdit);
+                }
+            );
+
             this.listenTo(RadioChannels.edit, GlyphEvents.openMultiEdit,
                 function ()
                 {
@@ -212,8 +226,7 @@ export default Marionette.LayoutView.extend(
 
                 var currentHeight = classEdit.getClientRects()[0].height;
                 var currentWidth = classEdit.getClientRects()[0].width;
-                // Coords of right of the class view = left for the glyph view
-                var left = classEdit.getClientRects()[0].right;
+
                 var currentWinHeight = window.innerHeight;
                 var currentWinWidth = window.innerWidth;
 
@@ -222,7 +235,7 @@ export default Marionette.LayoutView.extend(
                 {
                     var perc = that.winWidth/currentWinWidth;                    
                     that.winWidth = currentWinWidth;
-                    that.classWidth = that.classWidth/perc;                    
+                    that.classWidth = that.classWidth/perc; 
                 }
 
                 if(that.winHeight != currentWinHeight)
@@ -246,6 +259,9 @@ export default Marionette.LayoutView.extend(
                 glyphTable.style.width = (1-widthPerc)*100 + "%";
                 imgPrev.style.width = (1-widthPerc)*100 + "%";                
 
+                // Coords of right of the class view = left for the glyph view
+                var left = classEdit.getClientRects()[0].right;
+
                 // Make sure the right side has the same corner as the left side
                 imgPrev.style.left = left + "px";
                 glyphTable.style.left = left + "px";
@@ -254,6 +270,13 @@ export default Marionette.LayoutView.extend(
                 heightPerc = glyphTable.getClientRects()[0].height/that.glyphHeight;
                 glyphTable.style.height = 100*heightPerc + "%";
                 imgPrev.style.height = (1-heightPerc)*100 + "%";
+
+                var slider = document.getElementById("zoom-slider");
+                var outer = document.getElementById("right2").getClientRects()[0]
+                var top = outer.top + outer.height - 30;
+                slider.style.top = top + "px";
+                var left = outer.width + outer.left - slider.style.width.split("px")[0] - 25;
+                slider.style.left = left + "px";
 
 
             });

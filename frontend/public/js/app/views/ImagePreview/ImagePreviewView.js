@@ -1,5 +1,6 @@
 import Marionette from "marionette";
 import GlyphEvents from "events/GlyphEvents";
+import PageEvents from "events/PageEvents";
 import template from "./image-preview.template.html";
 import RadioChannels from "radio/RadioChannels";
 import GlyphCollection from "collections/GlyphCollection";
@@ -23,6 +24,8 @@ export default Marionette.ItemView.extend(
         isMouseDown: false,
         mouseDownX: 0,
         mouseDownY: 0,
+        isHover: false,
+        isSlider: false,
 
         /**
          * selectionBox is the blue lasso that appears when the user clicks and
@@ -63,11 +66,13 @@ export default Marionette.ItemView.extend(
             for(var i = 0; i < glyphs.length; i++)
             {
                 var glyph = glyphs[i];
+                var pic = document.getElementsByClassName("preview-background")[0];
+                var zoomLevel = pic.getBoundingClientRect().height/pic.style.originalHeight;
 
-                var top = glyph.get("uly");
-                var left = glyph.get("ulx");
-                var width = glyph.get("ncols");
-                var height = glyph.get("nrows");
+                var top = (glyph.get("uly"))*zoomLevel;
+                var left = (glyph.get("ulx"))*zoomLevel;
+                var width = glyph.get("ncols")*zoomLevel;
+                var height = glyph.get("nrows")*zoomLevel;
 
                 // Creating a box for each glyph
                 var el = document.body.appendChild(document.createElement("div"));
@@ -107,17 +112,32 @@ export default Marionette.ItemView.extend(
                 width: 0,
                 height: 0
             });
-
-            event.preventDefault();
+            
             this.isMouseDown = true;
             this.mouseDownX = event.clientX;
             this.mouseDownY = event.clientY;
 
-            this.selectionBox.style.top = this.mouseDownY + "px";
-            this.selectionBox.style.left = this.mouseDownX + "px";
-            this.selectionBox.style.width = "0px";
-            this.selectionBox.style.height = "0px";
-            this.selectionBox.style.visibility = "visible";
+
+            var slider = document.getElementById("zoom-slider");
+            var left = slider.style.left.split("px")[0];
+            var top = slider.style.top.split("px")[0];
+            var width = slider.style.width.split("px")[0];
+
+            var xBounds = this.mouseDownX > left && this.mouseDownX < left + width;
+            var yBounds = this.mouseDownY > top && this.mouseDownY < top + 5;
+            if(!(xBounds && yBounds)) //if the coords of the click are not on the slider
+            {
+                event.preventDefault();
+                this.selectionBox.style.top = this.mouseDownY + "px";
+                this.selectionBox.style.left = this.mouseDownX + "px";
+                this.selectionBox.style.width = "0px";
+                this.selectionBox.style.height = "0px";
+                this.selectionBox.style.visibility = "visible";
+            }
+            else
+            {
+                this.isSlider = true;
+            }
         },
 
         /**
@@ -131,6 +151,7 @@ export default Marionette.ItemView.extend(
          */
         onMouseUp: function (event)
         {
+            this.isSlider = false;
             if (this.isMouseDown === true)
             {
                 console.log("MouseUp!");
@@ -142,13 +163,14 @@ export default Marionette.ItemView.extend(
                     height = Math.abs(y - this.mouseDownY);
 
                 var that = this;
+               
                 if (width !== 0 && height !== 0 && (width * height) > 10)
                 {
                     // boundingBox is the dimensions of the drag selection.  We will
                     // use these dimensions to test whether or not individual glyphs
+                    // have been selected.                    
 
                     var pageBounds = document.getElementsByClassName("preview-background")[0].getBoundingClientRect();
-                    // have been selected.
                     var boundingBox = {
                         left: Math.min(that.mouseDownX, x) - pageBounds.left,
                         top: Math.min(that.mouseDownY, y) - pageBounds.top,
@@ -197,16 +219,60 @@ export default Marionette.ItemView.extend(
             this.selectionBox.style.filter = "alpha(opacity=40)"; // IE8
             this.selectionBox.style.visibility = "hidden";
 
+            var slider = document.getElementById("zoom-slider");
+            var outer = document.getElementById("right2").getClientRects()[0]
+            var left = outer.width + outer.left - slider.style.width.split("px")[0] - 25;
+            var top = outer.top + outer.height - 30;
+            slider.style.left = left + "px";
+            slider.style.top = top + "px";
+
+
+            var pic = document.getElementsByClassName("preview-background")[0];
+            var h = pic.getClientRects()[0].height
+            pic.style.height = h + "px";
+            pic.style.originalHeight = h;
+
             var that = this;
+            $(document).keypress(function (event)
+            {
+                var slider = document.getElementById("s1");
+                var value = slider['value'];
+                // If the user's mouse is hovering over the window, then = and - act as hotkeys
+                // This is so the user can still user = and - when classifying glpyhs.
+                if(that.isHover)
+                {
+                    if(event.key == "=")
+                    {
+                        var newVal = value*1.1;
+                        slider['value'] = newVal;
+                        RadioChannels.edit.trigger(PageEvents.zoom, newVal);
+                        
+                    }
+                    else if(event.key == "-")
+                    {
+                        var newVal = value/1.1;
+                        slider['value'] = newVal;
+                        RadioChannels.edit.trigger(PageEvents.zoom, newVal);
+                    }
+                }
+            });
+
             $(document).mousemove(function (event)
             {
+                that.isHover = (event.clientX > pic.getClientRects()[0].left && event.clientY > pic.getClientRects()[0].top);
                 if (that.isMouseDown === true)
                 {
                     // If the user has stopped holding their mouse down, execute
                     // the onMouseUp() procedure.
+
                     if (event.buttons === 0)
                     {
                         that.onMouseUp(event);
+                    }
+                    else if(that.isSlider) //if the coords of the click are on the slider
+                    {
+                        var value = document.getElementById("s1")['value'];
+                        RadioChannels.edit.trigger(PageEvents.zoom, value);
                     }
                     else
                     {

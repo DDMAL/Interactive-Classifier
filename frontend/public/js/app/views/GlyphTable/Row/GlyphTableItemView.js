@@ -77,15 +77,15 @@ export default Marionette.ItemView.extend(
                 function (boundingBox, additional)
                 {
                     if (boundingBox)
-                    {
+                    {   var pic = document.getElementsByClassName("preview-background")[0];
+                        var zoomLevel = pic.getBoundingClientRect().height/pic.style.originalHeight;
                         var glyphRect = 
                         {
-                            left: that.model.get('ulx'),
-                            top: that.model.get('uly'),
-                            right: that.model.get('ulx') + that.model.get('ncols'),
-                            bottom: that.model.get('uly') + that.model.get('nrows')
+                            left: that.model.get('ulx')*zoomLevel,
+                            top: that.model.get('uly')*zoomLevel,
+                            right: (that.model.get('ulx') + that.model.get('ncols'))*zoomLevel,
+                            bottom: (that.model.get('uly') + that.model.get('nrows'))*zoomLevel
                         }
-
                         if(Geometry.rectangleOverlap(glyphRect, boundingBox))
                         {
                             // Add this glyph to the collection
