@@ -13,10 +13,27 @@
                         <input type="text" class="form-control"
                                value="<%- class_name %>" title="glyph-class"
                                onfocus="this.value = this.value;">
-                        <button type="submit" id="change" class="btn btn-default" onClick="return onSubmit()"><%-
+                        <button type="submit" id="change" class="btn btn-default"><%-
                             gui.update %>
                         </button>
                     </form>
+                </td>
+            </tr>
+            <tr>
+                <td> Splitting </td>
+                <td>
+                <select id = "split_option">
+                <option>Split x</option>
+                <option >Split x left</option>
+                <option >Split x right</option>
+                <option >Split x max</option>
+                <option >Split y</option>
+                <option >Split y bottom</option>
+                <option >Split y top</option>
+                </select>
+                    <button class="split" type="button"><%-
+                        gui.split %>
+                    </button>
                 </td>
             </tr>        
             <tr>

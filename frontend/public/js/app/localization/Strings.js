@@ -16,11 +16,13 @@ export default {
     openText: "Choose a file... did it work?",
     openWarning: "Are you sure you wish to do this?",
     loadingGlyphs: "Loading page glyphs from the server.  This may take some time...",
+    submittingGlyphs: "Reclassifications of glyphs. This may take some time...",
     menuSubmitLabel: "Submit Corrections and Re-Classify",
     menuGroupLabel: "Group Glyphs and Re-Classify",    
     menuFinalizeLabel: "Finalize Classification and Save GameraXML",
     menuOpenImage: "Open File",
     loadingPage: "Loading Page...",
+    submittingCorrections: "Submitting Corrections",
     submitCorrections: "Submit Corrections...",
     submitAndGroup: "Submit and Group...",    
     finalizeCorrections: "Finalize Corrections...",
@@ -29,7 +31,9 @@ export default {
     editGlyphLabel: "Edit",
     editGlyphDescription: "Click on a Glyph to edit it.",
     groupTitle: "Grouping",
+    splitTItle: "Splitting",
     groupingGlyphs: "The Glyphs are being grouped...",
+    splittingGlyphs: "The Glyph is being split...",
     // Strings for GlyphEditview
     editGlyph: {
         update: "Update",
@@ -39,7 +43,8 @@ export default {
         confidence: "Confidence",
         position: "Position",
         dimensions: "Dimensions",
-        glyphPreview: "Glyph Preview"
+        glyphPreview: "Glyph Preview",
+        split: "Split"
     },
     editClass:{
         update: "Update",

@@ -24,7 +24,8 @@ export default Backbone.Model.extend(
             ncols: 0,
             image_file: "",
             image_b64: "",
-            parts: []
+            parts: [],
+            split: {}
         },
 
         /**
@@ -55,15 +56,18 @@ export default Backbone.Model.extend(
             // do the sanitization step
             var sanitizedClassName = ClassNameUtils.sanitizeClassName(newClassName);
 
+
             this.set({
-                class_name: sanitizedClassName,
-                id_state_manual: true,
-                confidence: 1.0
+            class_name: sanitizedClassName,
+            id_state_manual: true,
+            confidence: 1.0
             });
+            
             // Update glyph table location
             RadioChannels.edit.trigger(GlyphEvents.moveGlyph, this, oldClassName, this.get("class_name"));
             RadioChannels.edit.trigger(GlyphEvents.changeGlyph, this);
             RadioChannels.edit.trigger(GlyphEvents.setGlyphName, this.get("class_name"));
+
         },
 
 
@@ -81,11 +85,8 @@ export default Backbone.Model.extend(
 
             var oldClassName = this.get("class_name");
 
-            // do the sanitization step
-            var sanitizedClassName = ClassNameUtils.sanitizeClassName("unclassified");
-
             this.set({
-                class_name: sanitizedClassName,
+                class_name: "UNCLASSIFIED",
                 id_state_manual: false,
                 confidence: 0
             });

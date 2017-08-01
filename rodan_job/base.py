@@ -7,6 +7,7 @@ import gamera.gamera_xml
 import gamera.knn
 from celery import uuid
 from gamera.plugins.image_utilities import union_images
+import gamera.plugins.segmentation
 from gamera.gamera_xml import glyphs_from_xml
 from gamera.gamera_xml import LoadXML
 from rodan.jobs.base import RodanTask
@@ -16,8 +17,6 @@ from rodan.jobs.interactive_classifier.intermediary.run_length_image import \
     RunLengthImage
 from rodan.settings import MEDIA_URL, MEDIA_ROOT
 from django.http import HttpResponse
-#from rest_framework.response import Response
-#from rest_framework import status
 
 class ClassifierStateEnum:
     IMPORT_XML = 0
@@ -150,7 +149,7 @@ def group_and_correct(glyphs, user_options, training_database, features_file_pat
 
 
     # Group and reclassify
-    add, remove = cknn.group_list_automatic(gamera_glyphs, grouping_function=gamera.classify.ShapedGroupingFunction(distance),
+    add, remove = cknn.group_list_automatic(gamera_glyphs, grouping_function=func,
                                                         max_parts_per_group=parts,
                                                         max_graph_size=graph,
                                                         criterion = criterion)
@@ -269,7 +268,7 @@ def filter_parts(settings):
     i=0
     while i < len(glyphs):
         g = glyphs[i]
-        if g['class_name'].startswith("_group._part."):
+        if g['class_name'].startswith("_group._part.") or g['class_name'].startswith("_split"):
             glyphs.remove(g)
             parts.append(g)
         else:
@@ -290,8 +289,8 @@ def add_grouped_glyphs(settings):
         nrows = glyph['nrows'],
         ulx = glyph['ulx'],
         uly = glyph['uly'],
-        id_state_manual = True,
-        confidence = 1
+        id_state_manual = glyph['id_state_manual'],
+        confidence = glyph['confidence']
         ).to_dict()
 
         settings['glyphs'].append(new_glyph)
@@ -493,7 +492,22 @@ class InteractiveClassifier(RodanTask):
             glyph={}
             for g in settings['glyphs']:
                 if(glyph_c['id']==g['id']):
-                    glyph = g                    
+                    glyph = g 
+
+            # This means its a split glyph so a new glyph needs to be created
+            if(glyph == {}):
+                glyph = GameraGlyph(
+                        gid = glyph_c["id"],
+                        class_name = glyph_c['class_name'],
+                        rle_image = glyph_c['rle_image'],
+                        ncols = glyph_c['ncols'],
+                        nrows = glyph_c['nrows'],
+                        ulx = glyph_c['ulx'],
+                        uly = glyph_c['uly'],
+                        id_state_manual = glyph_c['id_state_manual'],
+                        confidence = glyph_c['confidence']
+                        ).to_dict()
+
             gamera_glyph=RunLengthImage(
             glyph['ulx'],
             glyph['uly'],
@@ -517,7 +531,83 @@ class InteractiveClassifier(RodanTask):
             confidence = 1
             ).to_dict()
 
-        return new_glyph
+        g={
+            'class_name': class_name,
+            'id': new_glyph['id'],
+            'image': new_glyph['image_b64'],
+            'rle_image': new_glyph['image'], 
+            'ncols': new_glyph['ncols'],
+            'nrows': new_glyph['nrows'],
+            'ulx': new_glyph['ulx'],
+            'uly': new_glyph['uly'],
+            'id_state_manual': new_glyph['id_state_manual'],
+            'confidence': new_glyph['confidence']
+            }
+
+        return g
+
+    def manual_split(self, glyph_to_split, split_type, settings):
+        import segmentation
+        # Finding the glyphs that match the incoming ids          
+
+        glyph={}
+        for g in settings['glyphs']:
+            if(glyph_to_split['id']==g['id']):
+                glyph = g
+
+        # This means its a split glyph so a new glyph needs to be created
+        if(glyph == {}):
+            glyph = GameraGlyph(
+                    gid = glyph_to_split["id"],
+                    class_name = glyph_to_split['class_name'],
+                    rle_image = glyph_to_split['rle_image'],
+                    ncols = glyph_to_split['ncols'],
+                    nrows = glyph_to_split['nrows'],
+                    ulx = glyph_to_split['ulx'],
+                    uly = glyph_to_split['uly'],
+                    id_state_manual = glyph_to_split['id_state_manual'],
+                    confidence = glyph_to_split['confidence']
+                    ).to_dict()
+
+        gamera_glyph=RunLengthImage(
+            glyph['ulx'],
+            glyph['uly'],
+            glyph['ncols'],
+            glyph['nrows'],
+            glyph['image'],
+            ).get_gamera_image()
+
+        splits = getattr(segmentation, split_type).__call__(gamera_glyph)
+
+        glyphs = []
+        for split in splits:
+            new_glyph = GameraGlyph(
+                class_name = "UNCLASSIFIED",
+                rle_image = split.to_rle(),
+                ncols = split.ncols,
+                nrows = split.nrows,
+                ulx = split.ul.x,
+                uly = split.ul.y,
+                id_state_manual = False,
+                confidence = 0
+                ).to_dict()
+
+            g={
+                'class_name': "UNCLASSIFIED",
+                'id': new_glyph['id'],
+                'image': new_glyph['image_b64'],
+                'rle_image': new_glyph['image'], 
+                'ncols': new_glyph['ncols'],
+                'nrows': new_glyph['nrows'],
+                'ulx': new_glyph['ulx'],
+                'uly': new_glyph['uly'],
+                'id_state_manual': new_glyph['id_state_manual'],
+                'confidence': new_glyph['confidence']
+                }
+
+            glyphs.append(g)
+
+        return glyphs
 
     def validate_my_user_input(self, inputs, settings, user_input):
         if 'complete' in user_input:
@@ -542,15 +632,17 @@ class InteractiveClassifier(RodanTask):
 
             data = {
             'manual': True,
-            'class_name': user_input['class_name'],
-            'id': new_glyph['id'],
-            'image': new_glyph['image_b64'],
-            'rle_image': new_glyph['image'], 
-            'ncols': new_glyph['ncols'],
-            'nrows': new_glyph['nrows'],
-            'ulx': new_glyph['ulx'],
-            'uly': new_glyph['uly'],
+            'glyph': new_glyph
             }
+            return data
+
+        elif 'split' in user_input:
+            glyphs = self.manual_split(user_input['glyph'], user_input['split_type'], settings)
+            data = {
+            'manual': True,
+            'glyphs' : glyphs
+            }
+
             return data
 
         elif "auto_group" in user_input:

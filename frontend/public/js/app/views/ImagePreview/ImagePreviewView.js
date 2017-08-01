@@ -119,13 +119,19 @@ export default Marionette.ItemView.extend(
 
 
             var slider = document.getElementById("zoom-slider");
-            var left = slider.style.left.split("px")[0];
-            var top = slider.style.top.split("px")[0];
-            var width = slider.style.width.split("px")[0];
+            var left = parseInt(slider.style.left.split("px")[0]);
+            var top = parseInt(slider.style.top.split("px")[0]);
+            var width = parseInt(slider.style.width.split("px")[0]);
 
-            var xBounds = this.mouseDownX > left && this.mouseDownX < left + width;
-            var yBounds = this.mouseDownY > top && this.mouseDownY < top + 5;
-            if(!(xBounds && yBounds)) //if the coords of the click are not on the slider
+            var xBounds = this.mouseDownX > left && this.mouseDownX < (left + width);
+            var yBounds = this.mouseDownY > top && this.mouseDownY < (top + 20);
+            var widthThing = this.mouseDownX < (left + width);
+
+            if(xBounds && yBounds) //if the coords of the click are not on the slider
+            {
+                this.isSlider = true;
+            }
+            else
             {
                 event.preventDefault();
                 this.selectionBox.style.top = this.mouseDownY + "px";
@@ -133,10 +139,7 @@ export default Marionette.ItemView.extend(
                 this.selectionBox.style.width = "0px";
                 this.selectionBox.style.height = "0px";
                 this.selectionBox.style.visibility = "visible";
-            }
-            else
-            {
-                this.isSlider = true;
+                
             }
         },
 
@@ -222,19 +225,16 @@ export default Marionette.ItemView.extend(
             var slider = document.getElementById("zoom-slider");
             var outer = document.getElementById("right2").getClientRects()[0]
             var left = outer.width + outer.left - slider.style.width.split("px")[0] - 25;
-            var top = outer.top + outer.height - 30;
+            var top = outer.top + outer.height - 35;
             slider.style.left = left + "px";
             slider.style.top = top + "px";
 
-
             var pic = document.getElementsByClassName("preview-background")[0];
-            var h = pic.getClientRects()[0].height
-            pic.style.height = h + "px";
-            pic.style.originalHeight = h;
 
             var that = this;
             $(document).keypress(function (event)
             {
+                
                 var slider = document.getElementById("s1");
                 var value = slider['value'];
                 // If the user's mouse is hovering over the window, then = and - act as hotkeys
@@ -259,6 +259,13 @@ export default Marionette.ItemView.extend(
 
             $(document).mousemove(function (event)
             {
+                if(pic.style.height == "" || pic.style.height == "0px")
+                {
+                    pic = document.getElementsByClassName("preview-background")[0];
+                    var h = pic.getClientRects()[0].height;
+                    pic.style.height = h + "px";
+                    pic.style.originalHeight = h;
+                }
                 that.isHover = (event.clientX > pic.getClientRects()[0].left && event.clientY > pic.getClientRects()[0].top);
                 if (that.isMouseDown === true)
                 {
@@ -285,6 +292,7 @@ export default Marionette.ItemView.extend(
                         that.selectionBox.style.height = Math.abs(y - that.mouseDownY) + "px";
                     }
                 }
+
             });
         }
 

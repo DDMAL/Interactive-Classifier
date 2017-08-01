@@ -13,6 +13,7 @@ export default {
     setGlyphName: "change:glyph:name",
     clickGlyphName: "click:glyph:name",
     addGlyph: "add:glyph",
+    splitGlyph: "split:glyph",
 
     // Events for glyph selection
     selectGlyph: "glyph:select",

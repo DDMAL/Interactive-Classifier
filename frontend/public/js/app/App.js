@@ -104,6 +104,16 @@ var App = Marionette.Application.extend(
                 this.modals.group.open();                
                 that.groupGlyphs(groupedGlyphs, glyphName);
             });
+            this.listenTo(RadioChannels.edit, GlyphEvents.splitGlyph, function (glyph, split_type)
+            {
+                this.modals.split.open();                
+                that.splitGlyph(glyph, split_type);
+
+            });
+
+
+
+
             this.modals.loading.open();
         },
 
@@ -339,28 +349,34 @@ var App = Marionette.Application.extend(
                         if (response.status === 200)
                         {
                             var responseData = JSON.parse(response.responseText);
+                            var new_glyph = responseData['glyph']
                              var g = new Glyph({
-                                "id": responseData["id"],
+                                "id": new_glyph["id"],
                                 "class_name": className,
                                 "id_state_manual": true,
                                 "confidence": 1,
-                                "ulx": responseData["ulx"],
-                                "uly": responseData["uly"],
-                                "nrows": responseData["nrows"],
-                                "ncols": responseData["ncols"],
-                                "image_b64": (responseData["image"]),
-                                "rle_image": (responseData["rle_image"]),
+                                "ulx": new_glyph["ulx"],
+                                "uly": new_glyph["uly"],
+                                "nrows": new_glyph["nrows"],
+                                "ncols": new_glyph["ncols"],
+                                "image_b64": (new_glyph["image"]),
+                                "rle_image": (new_glyph["rle_image"]),
                             });
 
                              // If the user wants to group this glyph again, they'll need to access the group parts
                              g['parts'] = glyphs;
                                                          
                             RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, g);
-                                                        
+
                             g.onCreate();
                             // The data gets saved to send to celery later
+                            if(className=="unclassied" || className == "UNCLASSIFIED")
+                            {
+                                g.unclassify();
+                            }
 
-                            that.groupedGlyphs.push(responseData);
+                            that.groupedGlyphs.push(responseData['glyph']);
+
                         }
                     }
                 });
@@ -369,6 +385,89 @@ var App = Marionette.Application.extend(
             {
                 console.log("You cannot group 0 glyphs");
                 this.modals.group.close();
+            }
+        },
+
+        /**
+         *  Split glyph
+         *
+         */
+        splitGlyph: function (glyph, split_type)
+        {
+            var that = this;
+            
+            // If this glyph is a grouped glyph, then using split will simply undo the group
+            // Provided that this is before the grouped glyphs have been submitted and reclassified
+            if('parts' in glyph  && glyph['parts'].length > 0)
+            {
+                var temp = new GlyphCollection();
+                temp.add(glyph);
+                var glyphs = that.findGroups(temp, new GlyphCollection()).models;
+                var i;
+                for(i in glyphs)
+                {
+                    var g = glyphs[i];
+                    g.onCreate();
+                    g.unclassify();
+                    RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, g);                                                        
+                    that.modals.split.close();
+                }
+            }
+            else
+            {
+                // If the glyph is the result of a recent split,
+                // then the original data of this glyph must be sent back in order
+                // to recreate it in the backend side
+                if('split' in glyph)
+                {
+                    glyph = glyph['split'];
+                }
+
+                var data = JSON.stringify({
+                        "split": true,
+                        "glyph": glyph,
+                        "split_type": split_type
+                    });   
+
+                    $.ajax({
+                        url: this.authenticator.getWorkingUrl(),
+                        type: 'POST',
+                        data: data,
+                        headers: {
+                        Accept: "application/json; charset=utf-8",
+                        "Content-Type": "application/json; charset=utf-8"
+                        },
+                        complete: function (response)
+                        {
+                            if (response.status === 200)
+                            {
+                                var responseData = JSON.parse(response.responseText);
+                                var glyphs = responseData['glyphs'];
+                                var i;
+                                for(i in glyphs)
+                                {
+                                    var glyph = glyphs[i];
+                                    var g = new Glyph({
+                                        "id": glyph["id"],
+                                        "class_name": "UNCLASSIFIED",
+                                        "id_state_manual": false,
+                                        "confidence": 0,
+                                        "ulx": glyph["ulx"],
+                                        "uly": glyph["uly"],
+                                        "nrows": glyph["nrows"],
+                                        "ncols": glyph["ncols"],
+                                        "image_b64": (glyph["image"]),
+                                        "rle_image": (glyph["rle_image"]),
+                                    });
+                                    RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, g);                                                        
+                                    g.onCreate();
+                                    g['split'] = glyph;
+                                    that.groupedGlyphs.push(glyph);
+                                }
+                                that.modals.split.close();
+                            }
+                        }   
+                });
             }
         },        
         /**
@@ -504,6 +603,24 @@ var App = Marionette.Application.extend(
                 })
             });
             this.modalCollection.add(this.modals.group);
+
+            // split modal
+            this.modals.split = new ModalViewModel({
+                title: Strings.splitTitle, //todo change these
+                isCloseable: false,
+                isHiddenObject: false,
+                innerView: new LoadingScreenView({
+                    model: new LoadingScreenViewModel({
+                        text: Strings.splittingGlyph,
+                        callback: function ()
+                        {
+
+                        }
+                    })
+                })
+            });
+            this.modalCollection.add(this.modals.split);
+
             // Listen to the "closeAll" channel
             RadioChannels.modal.on(ModalEvents.closeAll,
                 function ()

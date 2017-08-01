@@ -41,8 +41,8 @@ export default Marionette.LayoutView.extend(
                 // Add the model to the class_names
                 var oldClassNameList = that.model.get("class_names");
 
-                //Don't display the new class if it's a part of a group
-                if(newClassName.substring(0,12) != "_group._part")
+                //Don't display the new class if it's a part of a group or a split
+                if(newClassName.substring(0,12) != "_group._part" && newClassName.substring(0,6) != "_split")
                 {
                     var newClassNameList = _.union(oldClassNameList, [newClassName]);
 

@@ -18,6 +18,7 @@ export default Marionette.ItemView.extend(
 
         events: {
             "submit": "onSubmitForm",
+            "click .split" : "split"
         },
 
         modelEvents: {
@@ -71,6 +72,48 @@ export default Marionette.ItemView.extend(
 
             this.model.changeClass(this.ui.classInput.val());            
 
+        },
+
+        /**
+         * When the user clicks here, the glyph will be split according to the option selected.
+         *
+         * @param event
+         */
+        split: function (event)
+        {
+            if (event)
+            {
+                event.preventDefault();
+            }
+            var selection = document.getElementById("split_option");
+            var val = "";
+            switch(selection.value)
+            {
+                case "Split x":
+                    val = "splitx";
+                    break;
+                case "Split x left":
+                    val = "splitx_left";
+                    break;
+                case "Split x right":
+                    val = "splitx_right";
+                    break;
+                case "Split x max":
+                    val = "splitx_max";
+                    break;
+                case "Split y":
+                    val = "splity";
+                    break;
+                case "Split y bottom":
+                    val = "splity_bottom";
+                    break;
+                case "Split y top":
+                    val = "splity_top";
+                    break;
+            }
+
+            this.model.changeClass("_split." + val);
+            RadioChannels.edit.trigger(GlyphEvents.splitGlyph, this.model, val);
         },
 
         /**
