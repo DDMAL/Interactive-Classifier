@@ -34,11 +34,11 @@ export default Marionette.CompositeView.extend({
             text: Strings.menuFinalizeLabel,
             clickEvent: MainMenuEvents.clickFinalizeCorrections
         }));
-        menuLinks.add(new MenuLinkViewModel({
+        /*menuLinks.add(new MenuLinkViewModel({
             url: "#",
             text: Strings.menuOpenImage,
             clickEvent: MainMenuEvents.clickTest
-        }));
+        }));*/
 
         menuLinks.add(new MenuLinkViewModel({
             url: "#",

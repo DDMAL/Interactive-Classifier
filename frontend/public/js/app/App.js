@@ -88,7 +88,7 @@ var App = Marionette.Application.extend(
                 that.changedGlyphs.add(glyphModel);
             });
 
-            // A loading screen pops up. TODO: should maybe wait until celery completes
+            // A loading screen pops up.
             this.listenTo(RadioChannels.edit, GlyphEvents.addGlyph, function (glyphModel)
             {
                 this.modals.group.close();
@@ -606,7 +606,7 @@ var App = Marionette.Application.extend(
 
             // split modal
             this.modals.split = new ModalViewModel({
-                title: Strings.splitTitle, //todo change these
+                title: Strings.splitTitle,
                 isCloseable: false,
                 isHiddenObject: false,
                 innerView: new LoadingScreenView({
