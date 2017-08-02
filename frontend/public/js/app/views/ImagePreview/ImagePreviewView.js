@@ -127,7 +127,7 @@ export default Marionette.ItemView.extend(
             var yBounds = this.mouseDownY > top && this.mouseDownY < (top + 20);
             var widthThing = this.mouseDownX < (left + width);
 
-            if(xBounds && yBounds) //if the coords of the click are not on the slider
+            if(xBounds && yBounds) // If the coords of the click are not on the slider
             {
                 this.isSlider = true;
             }
@@ -171,7 +171,7 @@ export default Marionette.ItemView.extend(
                     height = Math.abs(y - this.mouseDownY);
 
                 var that = this;
-               
+
                 if (width !== 0 && height !== 0 && (width * height) > 10)
                 {
                     // boundingBox is the dimensions of the drag selection.  We will
@@ -264,12 +264,18 @@ export default Marionette.ItemView.extend(
 
             $(document).mousemove(function (event)
             {
+                // This makes sure that the height isn't stored before the image exists
+                // So it's not set to 0
                 if(pic.style.height == "" || pic.style.height == "0px")
                 {
                     pic = document.getElementsByClassName("preview-background")[0];
                     var h = pic.getClientRects()[0].height;
-                    pic.style.height = h + "px";
-                    pic.style.originalHeight = h;
+                    // Don't assign the height if h==0
+                    if(h != 0)
+                    {
+                        pic.style.height = h + "px";
+                        pic.style.originalHeight = h;
+                    }
                 }
                 that.isHover = (event.clientX > pic.getClientRects()[0].left && event.clientY > pic.getClientRects()[0].top);
                 if (that.isMouseDown === true)
@@ -281,7 +287,7 @@ export default Marionette.ItemView.extend(
                     {
                         that.onMouseUp(event);
                     }
-                    else if(that.isSlider) //if the coords of the click are on the slider
+                    else if(that.isSlider) // If the coords of the click are on the slider
                     {
                         var value = document.getElementById("s1")['value'];
                         RadioChannels.edit.trigger(PageEvents.zoom, value);
