@@ -1,3 +1,4 @@
 export default {
-    zoom: "page:zoom"
+    zoom: "page:zoom",
+    changeBackground: "change:background"
 }

@@ -56,7 +56,24 @@ export default Marionette.LayoutView.extend(
             });
 
             // Construct the glyph table data structure
-            this.tableRowCollection = new GlyphTableRowCollection();      
+            this.tableRowCollection = new GlyphTableRowCollection();
+
+            this.listenTo(RadioChannels.edit, PageEvents.changeBackground,
+                function()
+                {
+                    // This makes it so the classes switch color
+                    // so it's obvious to which class each glyph belongs
+                    var els = document.getElementsByClassName("table table-hover")[0].childNodes;
+                    // White and grey
+                    var colors = ["white","gainsboro"];
+                    for(var i = 0; i < els.length; i++)
+                    {
+                        // Alternating
+                        var index = i % 2;
+                        els[i].style.backgroundColor = colors[index];
+                    }
+                }
+            );    
 
             // Selected Glyphs
             this.selectedGlyphs = new Backbone.Collection();
@@ -201,6 +218,7 @@ export default Marionette.LayoutView.extend(
                 collection: this.tableRowCollection
             }));
 
+            RadioChannels.edit.trigger(PageEvents.changeBackground);
 
             // This section deals with resizing.
 

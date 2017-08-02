@@ -3,6 +3,7 @@ import GlyphTableRowViewModel from "views/GlyphTable/Row/GlyphTableRowViewModel"
 import GlyphCollection from "collections/GlyphCollection";
 import RadioChannels from "radio/RadioChannels";
 import ClassEvents from "events/ClassEvents";
+import PageEvents from "events/PageEvents";
 
 /**
  * @class GlyphTableRowCollection
@@ -59,17 +60,7 @@ export default Backbone.Collection.extend(
                     glyphs: new GlyphCollection([glyph])
                 });
 
-                // This makes it so the classes switch color
-                // so it's obvious to which class each glyph belongs
-                var els = document.getElementsByClassName("table table-hover")[0].childNodes;
-                // White and grey
-                var colors = ["white","gainsboro"];
-                for(var i = 0; i < els.length; i++)
-                {
-                    // Alternating
-                    var index = i % 2;
-                    els[i].style.backgroundColor = colors[index];
-                }
+                RadioChannels.edit.trigger(PageEvents.changeBackground);
             }
         },
 
@@ -121,16 +112,7 @@ export default Backbone.Collection.extend(
                 });
             }
             
-            // This makes it so the classes switch color
-            // so it's obvious to which class each glyph belongs
-            var els = document.getElementsByClassName("table table-hover")[0].childNodes;
-            // White and grey
-            var colors = ["white","gainsboro"];
-            for(var i = 0; i < els.length; i++)
-            {
-                var index = i % 2;
-                els[i].style.backgroundColor = colors[index];
-            }
+            RadioChannels.edit.trigger(PageEvents.changeBackground);
 
         }
 
