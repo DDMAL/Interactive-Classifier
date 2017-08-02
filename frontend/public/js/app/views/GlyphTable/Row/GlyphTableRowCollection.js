@@ -58,6 +58,18 @@ export default Backbone.Collection.extend(
                     class_name: newClassName,
                     glyphs: new GlyphCollection([glyph])
                 });
+
+                // This makes it so the classes switch color
+                // so it's obvious to which class each glyph belongs
+                var els = document.getElementsByClassName("table table-hover")[0].childNodes;
+                // White and grey
+                var colors = ["white","gainsboro"];
+                for(var i = 0; i < els.length; i++)
+                {
+                    // Alternating
+                    var index = i % 2;
+                    els[i].style.backgroundColor = colors[index];
+                }
             }
         },
 
@@ -107,6 +119,17 @@ export default Backbone.Collection.extend(
                     class_name: className,
                     glyphs: new GlyphCollection([glyph])
                 });
+            }
+            
+            // This makes it so the classes switch color
+            // so it's obvious to which class each glyph belongs
+            var els = document.getElementsByClassName("table table-hover")[0].childNodes;
+            // White and grey
+            var colors = ["white","gainsboro"];
+            for(var i = 0; i < els.length; i++)
+            {
+                var index = i % 2;
+                els[i].style.backgroundColor = colors[index];
             }
 
         }
