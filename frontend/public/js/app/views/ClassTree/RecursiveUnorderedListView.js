@@ -56,7 +56,7 @@ export default Marionette.ItemView.extend(
                 {
                     this.onDelete(deleteClass);
                 }
-                );
+            );
 
         },
 
@@ -76,11 +76,13 @@ export default Marionette.ItemView.extend(
                         delete_elem = list[i];
                     }
                 }
-
             }
-            delete_elem.remove();                                
-            //delete_elem.parentNode.removeChild(delete_elem);
+            
             this.model.deleteChild(className);
+            if(delete_elem)
+            {
+                delete_elem.remove();
+            }
         },
 
         /**
