@@ -233,31 +233,43 @@ export default Marionette.LayoutView.extend(
                 // If the window has been resized, the original widths/heights must be modified
                 if(that.winWidth != currentWinWidth)
                 {
-                    var perc = that.winWidth/currentWinWidth;                    
+
+                    var wPerc = that.winWidth/currentWinWidth;                    
                     that.winWidth = currentWinWidth;
-                    that.classWidth = that.classWidth/perc; 
+                    that.classWidth = that.classWidth/wPerc; 
                 }
 
                 if(that.winHeight != currentWinHeight)
                 {
-                    var perc = that.winHeight/currentWinHeight;
+                    var hPerc = that.winHeight/currentWinHeight;
                     that.winHeight = currentWinHeight;
 
-                    that.classHeight = that.classHeight/perc;
-                    that.glyphHeight = that.glyphHeight/perc;
+                    that.classHeight = that.classHeight/hPerc;
+                    that.glyphHeight = that.glyphHeight/hPerc;
                 }
 
                 // Height percent and width percent
                 var heightPerc = currentHeight/that.classHeight;
                 var widthPerc = currentWidth/that.classWidth;
 
-                classEdit.style.height = heightPerc*100 + "%";
-                glyphEdit.style.height = (1-heightPerc)*100 + "%";
+                console.log("currentHeight: " + currentHeight);
+                console.log("class height: " + that.classHeight);
+                console.log("percent: " + heightPerc);
+                console.log("win height: " + currentWinHeight);
 
-                classEdit.style.width = widthPerc*100 + "%";
-                glyphEdit.style.width = widthPerc*100 + "%";
-                glyphTable.style.width = (1-widthPerc)*100 + "%";
-                imgPrev.style.width = (1-widthPerc)*100 + "%";                
+
+                classEdit.style.height = Math.round(heightPerc*100) + "%";
+                glyphEdit.style.height = Math.round((1-heightPerc)*100) + "%";
+
+                classEdit.style.width = Math.round(widthPerc*100) + "%";
+                glyphEdit.style.width = Math.round(widthPerc*100) + "%";
+
+                heightPerc = glyphTable.getClientRects()[0].height/that.glyphHeight;
+
+                glyphTable.style.width = Math.round((1-widthPerc)*100) + "%";
+                imgPrev.style.width = Math.round((1-widthPerc)*100) + "%";
+                glyphTable.style.height = Math.round(heightPerc*100) + "%";
+                imgPrev.style.height = Math.round((1-heightPerc)*100) + "%";
 
                 // Coords of right of the class view = left for the glyph view
                 var left = classEdit.getClientRects()[0].right;
@@ -273,11 +285,11 @@ export default Marionette.LayoutView.extend(
 
                 var slider = document.getElementById("zoom-slider");
                 var outer = document.getElementById("right2").getClientRects()[0]
-                var top = outer.top + outer.height - 30;
+                var top = outer.top + outer.height - 35;
                 slider.style.top = top + "px";
                 var left = outer.width + outer.left - slider.style.width.split("px")[0] - 25;
                 slider.style.left = left + "px";
-
+                
 
             });
 
