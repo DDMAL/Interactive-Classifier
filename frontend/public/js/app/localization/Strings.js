@@ -31,9 +31,9 @@ export default {
     editGlyphLabel: "Edit",
     editGlyphDescription: "Click on a Glyph to edit it.",
     groupTitle: "Grouping",
-    splitTItle: "Splitting",
+    splitTitle: "Splitting",
     groupingGlyphs: "The Glyphs are being grouped...",
-    splittingGlyphs: "The Glyph is being split...",
+    splittingGlyph: "The Glyph is being split...",
     // Strings for GlyphEditview
     editGlyph: {
         update: "Update",
