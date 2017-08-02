@@ -154,6 +154,11 @@ export default Marionette.ItemView.extend(
          */
         onMouseUp: function (event)
         {
+            if(this.isSlider) // If the coords of the click are on the slider
+            {
+                var value = document.getElementById("s1")['value'];
+                RadioChannels.edit.trigger(PageEvents.zoom, value);
+            }
             this.isSlider = false;
             if (this.isMouseDown === true)
             {
