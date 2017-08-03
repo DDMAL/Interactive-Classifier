@@ -91,6 +91,17 @@ export default Marionette.ItemView.extend(
                             // Add this glyph to the collection
                             RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
                             that.viewModel.activate();
+                            
+                            // Scroll to the glyph
+                            var elems = Array.from(document.getElementsByClassName("glyph img-thumbnail bg-warning glyph-image"));
+                            elems.concat(Array.from(document.getElementsByClassName("glyph img-thumbnail bg-success glyph-image")));
+                            for(var i = 0; i < elems.length; i++)
+                            {
+                                if(elems[i]['href'].split('glyph/')[1].split('/')[0] == that.model.id)
+                                {
+                                    elems[i].scrollIntoView();
+                                }
+                            }
                         }
                         else if (!additional)
                         {
