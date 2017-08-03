@@ -155,15 +155,23 @@ export default Marionette.LayoutView.extend(
             this.listenTo(RadioChannels.edit, GlyphEvents.openMultiEdit,
                 function ()
                 {
-                    that.openMultiGlyphEdit(that.selectedGlyphs);                    
-                    var glyphs = [];
-
-                    for(var i = 0; i < that.selectedGlyphs.length; i++)
+                    // If only one glyph has been selected, then glyph edit will open
+                    if(that.selectedGlyphs.length == 1)
                     {
-                        var glyph = that.selectedGlyphs.at(i);
-                        glyphs.push(glyph);
+                        var glyph = that.selectedGlyphs.at(0);
+                        RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, glyph);
                     }
-                    that.previewView.highlightGlyph(glyphs);
+                    else
+                    {
+                        that.openMultiGlyphEdit(that.selectedGlyphs);
+                        var glyphs = [];
+                        for(var i = 0; i < that.selectedGlyphs.length; i++)
+                        {
+                            var glyph = that.selectedGlyphs.at(i);
+                            glyphs.push(glyph);
+                        }
+                        that.previewView.highlightGlyph(glyphs);
+                    }
                 }
             );
 
