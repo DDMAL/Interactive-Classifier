@@ -56,6 +56,27 @@ export default Marionette.LayoutView.extend(
             this.thumbnailListRegion.show(new GlyphMultiEditThumbnailList({
                 collection: this.collection
             }));
+
+            this.ui.classInput.focus();
+
+        /**
+         * If all selected glyphs have the same class name,
+         * The class name will show up in the input box
+         */
+            var sameName = true;
+            var glyphs = this.collection['models'];
+            for(var i = 0; i < glyphs.length-1; i++)
+            {   
+                if(glyphs[i].get('class_name') != glyphs[i+1].get('class_name'))
+                {
+                    sameName = false;
+                }
+            }
+            if(sameName && glyphs.length > 0)
+            {
+                this.ui.classInput.val(glyphs[0].get('class_name'));
+            }
+            this.ui.classInput.select();
         },
 
         /**

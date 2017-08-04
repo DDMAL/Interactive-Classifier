@@ -54,8 +54,9 @@ export default Marionette.ItemView.extend(
          */
         onShow: function ()
         {
-            // Automatically focus on the glyph class input
+            // Automatically focus on the glyph class input and hightlight the text
             this.ui.classInput.focus();
+            this.ui.classInput.select();
         },
 
         /**
