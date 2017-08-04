@@ -26,6 +26,14 @@ export default Marionette.ItemView.extend(
         onShow: function ()
         {
             this.$el.html(this.constructListHtml(this.model, ""));
+
+            //If a class is deleted, search through all classes and remove the class
+            this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, 
+                function(deleteClass) 
+                {
+                    this.onDelete(deleteClass);
+                }
+            );
         },
 
         /**
@@ -49,14 +57,6 @@ export default Marionette.ItemView.extend(
                 c.set("name",className);
                 RadioChannels.edit.trigger(ClassEvents.openClassEdit, c);
             }
-
-            //If a class is deleted, search through all classes and remove the class
-            this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, 
-                function(deleteClass) 
-                {
-                    this.onDelete(deleteClass);
-                }
-            );
 
         },
 
