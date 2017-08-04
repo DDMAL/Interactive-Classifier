@@ -239,17 +239,19 @@ export default Marionette.LayoutView.extend(
             this.glyphHeight = document.getElementById("right1").getClientRects()[0].height / 0.66;
             this.winWidth = window.innerWidth;
             this.winHeight = window.innerHeight;
+            this.resize = true;
 
             var that = this;
 
             $(document).mousemove(function (event)
             {
-                // Each region of the table
+                // Each region of the window
                 var glyphEdit = document.getElementById("left2");
                 var glyphTable = document.getElementById("right1");
                 var imgPrev = document.getElementById("right2");
                 var classEdit = document.getElementById("left1");
 
+                // Current height and width of the class view                
                 var currentHeight = classEdit.getClientRects()[0].height;
                 var currentWidth = classEdit.getClientRects()[0].width;
 
@@ -257,65 +259,86 @@ export default Marionette.LayoutView.extend(
                 var currentWinWidth = window.innerWidth;
 
                 // If the window has been resized, the original widths/heights must be modified
+                // By the same percentage (ratio)
                 if(that.winWidth != currentWinWidth)
                 {
-
+                    // Width percentage
                     var wPerc = that.winWidth/currentWinWidth;                    
                     that.winWidth = currentWinWidth;
-                    that.classWidth = that.classWidth/wPerc; 
+                    that.classWidth = that.classWidth/wPerc;
+
+                    that.resize = true;
                 }
 
                 if(that.winHeight != currentWinHeight)
                 {
+                    // Height percentage
                     var hPerc = that.winHeight/currentWinHeight;
                     that.winHeight = currentWinHeight;
 
                     that.classHeight = that.classHeight/hPerc;
                     that.glyphHeight = that.glyphHeight/hPerc;
+
+                    that.resize = true;
+                }
+                // Makes sure the user actually resizes a window
+                var resizeLeft = (classEdit.getClientRects()[0].left + classEdit.getClientRects()[0].width);
+                var resizeBottom = (classEdit.getClientRects()[0].top + classEdit.getClientRects()[0].height);
+                if(event.clientX < resizeLeft && event.clientX > (resizeLeft - 20) && event.clientY < resizeBottom && event.clientY > (resizeBottom - 20))
+                {
+                    that.resize = true;
+                }
+                var resizeLeft = (glyphTable.getClientRects()[0].left + glyphTable.getClientRects()[0].width);
+                var resizeBottom = (glyphTable.getClientRects()[0].top + glyphTable.getClientRects()[0].height);
+                if(event.clientX < resizeLeft && event.clientX > (resizeLeft - 20) && event.clientY < resizeBottom && event.clientY > (resizeBottom - 20))
+                {
+                    that.resize = true;
+                    console.log(event.buttons);
                 }
 
-                // Height percent and width percent
-                var heightPerc = currentHeight/that.classHeight;
-                var widthPerc = currentWidth/that.classWidth;
+                if(that.resize)
+                {
+                    // Height percent and width percent
+                    var heightPerc = currentHeight/that.classHeight;
+                    var widthPerc = currentWidth/that.classWidth;
 
-                console.log("currentHeight: " + currentHeight);
-                console.log("class height: " + that.classHeight);
-                console.log("percent: " + heightPerc);
-                console.log("win height: " + currentWinHeight);
+                    classEdit.style.height = Math.round(heightPerc*100) + "%";
+                    glyphEdit.style.height = Math.round((1-heightPerc)*100) + "%";
+                    classEdit.style.width = Math.round(widthPerc*100) + "%";
+                    glyphEdit.style.width = Math.round(widthPerc*100) + "%";
 
+                    heightPerc = glyphTable.getClientRects()[0].height/that.glyphHeight;
 
-                classEdit.style.height = Math.round(heightPerc*100) + "%";
-                glyphEdit.style.height = Math.round((1-heightPerc)*100) + "%";
+                    glyphTable.style.width = Math.round((1-widthPerc)*100) + "%";
+                    imgPrev.style.width = Math.round((1-widthPerc)*100) + "%";
+                    glyphTable.style.height = Math.round(heightPerc*100) + "%";
+                    imgPrev.style.height = Math.round((1-heightPerc)*100) + "%";
 
-                classEdit.style.width = Math.round(widthPerc*100) + "%";
-                glyphEdit.style.width = Math.round(widthPerc*100) + "%";
+                    // Coords of right of the class view = left for the glyph view
+                    var left = classEdit.getClientRects()[0].right;
 
-                heightPerc = glyphTable.getClientRects()[0].height/that.glyphHeight;
+                    // Make sure the right side has the same corner as the left side
+                    imgPrev.style.left = left + "px";
+                    glyphTable.style.left = left + "px";
 
-                glyphTable.style.width = Math.round((1-widthPerc)*100) + "%";
-                imgPrev.style.width = Math.round((1-widthPerc)*100) + "%";
-                glyphTable.style.height = Math.round(heightPerc*100) + "%";
-                imgPrev.style.height = Math.round((1-heightPerc)*100) + "%";
+                    // Specifically for the windows on the right
+                    heightPerc = glyphTable.getClientRects()[0].height/that.glyphHeight;
+                    glyphTable.style.height = 100*heightPerc + "%";
+                    imgPrev.style.height = (1-heightPerc)*100 + "%";
 
-                // Coords of right of the class view = left for the glyph view
-                var left = classEdit.getClientRects()[0].right;
+                    var slider = document.getElementById("zoom-slider");
+                    var outer = document.getElementById("right2").getClientRects()[0]
+                    var top = outer.top + outer.height - 35;
+                    slider.style.top = top + "px";
+                    var left = outer.width + outer.left - slider.style.width.split("px")[0] - 25;
+                    slider.style.left = left + "px";
 
-                // Make sure the right side has the same corner as the left side
-                imgPrev.style.left = left + "px";
-                glyphTable.style.left = left + "px";
-
-                // Specifically for the windows on the right
-                heightPerc = glyphTable.getClientRects()[0].height/that.glyphHeight;
-                glyphTable.style.height = 100*heightPerc + "%";
-                imgPrev.style.height = (1-heightPerc)*100 + "%";
-
-                var slider = document.getElementById("zoom-slider");
-                var outer = document.getElementById("right2").getClientRects()[0]
-                var top = outer.top + outer.height - 35;
-                slider.style.top = top + "px";
-                var left = outer.width + outer.left - slider.style.width.split("px")[0] - 25;
-                slider.style.left = left + "px";
-                
+                    // Mouse up, no longer resizing
+                    if (event.buttons === 0)
+                    {
+                        that.resize = false;
+                    }
+                }                
 
             });
 
