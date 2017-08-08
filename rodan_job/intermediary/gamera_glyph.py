@@ -18,6 +18,7 @@ class GameraGlyph(object):
         self._uly = uly
         self._id_state_manual = id_state_manual
         self._confidence = confidence
+        self._is_training = False #default
         # Generate multiple internal image representations
         self._run_length_image = RunLengthImage(ulx=self._ulx,
                                                 uly=self._uly,
@@ -60,5 +61,6 @@ class GameraGlyph(object):
             "ulx": self._ulx,
             "uly": self._uly,
             "id_state_manual": self.is_manual_id(),
-            "confidence": self._confidence
+            "confidence": self._confidence,
+            "is_training": self._is_training
         }

@@ -7,7 +7,7 @@ from rodan.jobs.interactive_classifier.intermediary.run_length_image import \
 
 
 def construct_glyph_dict(name, image_run_length, image_b64, width,
-                         height, ulx, uly, id_state_manual, confidence):
+                         height, ulx, uly, id_state_manual, confidence, is_training):
     """
     Construct a dictionary representing an in-memory Gamera glyph.
     """
@@ -21,7 +21,8 @@ def construct_glyph_dict(name, image_run_length, image_b64, width,
         "ulx": ulx,
         "uly": uly,
         "id_state_manual": id_state_manual,
-        "confidence": confidence
+        "confidence": confidence,
+        "is_training": is_training
     }
 
 
@@ -42,6 +43,8 @@ def gamera_image_to_glyph(image):
     image_b64 = RunLengthImage(ulx, uly, width, height,
                                image_rle).get_base64_image()
     id_state_manual = image.classification_state == MANUAL
+
+
     return construct_glyph_dict(
         name,
         image_rle,
@@ -51,7 +54,8 @@ def gamera_image_to_glyph(image):
         ulx,
         uly,
         id_state_manual,
-        confidence
+        confidence,
+        False
     )
 
 
