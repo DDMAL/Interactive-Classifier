@@ -398,12 +398,15 @@ class InteractiveClassifier(RodanTask):
         staffless_image_path = inputs['1-Bit PNG - Preview Image'][0][
             'resource_path']
         # We need to figure out the best way to include the data in the template
+
         data = {
             'glyphs': settings['glyphs_json'],
             'binary_image_path': media_file_path_to_public_url(
                 staffless_image_path),
-            'class_names': settings['class_names_json']
+            'class_names': settings['class_names_json'],
+            'training_glyphs': settings['training_json']
         }
+
         return 'interfaces/interactive_classifier.html', data
 
     def run_my_task(self, inputs, settings, outputs):
