@@ -18,5 +18,6 @@ export default {
     // Events for glyph selection
     selectGlyph: "glyph:select",
     deselectGlyph: "glyph:deselect",
-    deselectAllGlyphs: "glyph:deselect:all"
+    deselectAllGlyphs: "glyph:deselect:all",
+    highlightGlyphs: "glyph:highlight"
 }

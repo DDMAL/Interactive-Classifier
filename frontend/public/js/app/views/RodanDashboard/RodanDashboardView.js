@@ -152,9 +152,22 @@ export default Marionette.LayoutView.extend(
                     var newHeight = oldHeight*zoomLevel/50; //50 is the default value
                     pic.style.height = newHeight + "px";
                     //makes sure the box around the glyphs follows the zoom
-                    RadioChannels.edit.trigger(GlyphEvents.openMultiEdit);
+                    RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs);
+                
                 }
             );
+
+            this.listenTo(RadioChannels.edit, GlyphEvents.highlightGlyphs,
+                function()
+                {
+                    var glyphs = [];
+                    for(var i = 0; i < that.selectedGlyphs.length; i++)
+                    {
+                        var glyph = that.selectedGlyphs.at(i);
+                        glyphs.push(glyph);
+                    }
+                    that.previewView.highlightGlyph(glyphs);
+                });
 
             this.listenTo(RadioChannels.edit, GlyphEvents.openMultiEdit,
                 function ()
@@ -168,13 +181,7 @@ export default Marionette.LayoutView.extend(
                     else
                     {
                         that.openMultiGlyphEdit(that.selectedGlyphs);
-                        var glyphs = [];
-                        for(var i = 0; i < that.selectedGlyphs.length; i++)
-                        {
-                            var glyph = that.selectedGlyphs.at(i);
-                            glyphs.push(glyph);
-                        }
-                        that.previewView.highlightGlyph(glyphs);
+                        RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs);
                     }
                 }
             );

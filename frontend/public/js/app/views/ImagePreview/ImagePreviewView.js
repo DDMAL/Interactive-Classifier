@@ -91,8 +91,12 @@ export default Marionette.ItemView.extend(
                 // Scroll to the highlight of the first selected glyph
                 var elems = document.getElementsByClassName("preview-highlight");
 
-                // TODO: If the glyph is in view, the page shouldn't scroll
-                elems[0].scrollIntoView();
+                // If the user selected the glyph from the preview image, the page won't shift
+                // If the user is zooming, then it will stay scroll to the highlighted glyph
+                if(!this.isHover || this.isSlider)
+                {
+                    elems[0].scrollIntoView();
+                }
             }
         },
 
@@ -117,21 +121,7 @@ export default Marionette.ItemView.extend(
             this.mouseDownX = event.clientX;
             this.mouseDownY = event.clientY;
 
-
-            var slider = document.getElementById("zoom-slider");
-            var left = parseInt(slider.style.left.split("px")[0]);
-            var top = parseInt(slider.style.top.split("px")[0]);
-            var width = parseInt(slider.style.width.split("px")[0]);
-
-            var xBounds = this.mouseDownX > left && this.mouseDownX < (left + width);
-            var yBounds = this.mouseDownY > top && this.mouseDownY < (top + 20);
-            var widthThing = this.mouseDownX < (left + width);
-
-            if(xBounds && yBounds) // If the coords of the click are not on the slider
-            {
-                this.isSlider = true;
-            }
-            else
+            if(!this.isSlider)
             {
                 event.preventDefault();
                 this.selectionBox.style.top = this.mouseDownY + "px";
@@ -139,7 +129,6 @@ export default Marionette.ItemView.extend(
                 this.selectionBox.style.width = "0px";
                 this.selectionBox.style.height = "0px";
                 this.selectionBox.style.visibility = "visible";
-                
             }
         },
 
@@ -154,13 +143,15 @@ export default Marionette.ItemView.extend(
          */
         onMouseUp: function (event)
         {
-            if(this.isSlider) // If the coords of the click are on the slider
+            if(this.isSlider && this.isMouseDown === true) // If the coords of the click are on the slider
             {
-                var value = document.getElementById("s1")['value'];
+                var value = document.getElementById("s1")['value'];                
                 RadioChannels.edit.trigger(PageEvents.zoom, value);
+                RadioChannels.edit.trigger(GlyphEvents.openMultiEdit);
+                console.log("MouseUp!");
+                this.isMouseDown = false;
             }
-            this.isSlider = false;
-            if (this.isMouseDown === true)
+            else if (this.isMouseDown === true)
             {
                 console.log("MouseUp!");
                 this.isMouseDown = false;
@@ -264,6 +255,21 @@ export default Marionette.ItemView.extend(
 
             $(document).mousemove(function (event)
             {
+
+                this.mouseDownX = event.clientX;
+                this.mouseDownY = event.clientY;
+
+                var zoom = document.getElementById("zoom-slider");
+                var left = parseInt(zoom.style.left.split("px")[0]);
+                var top = parseInt(zoom.style.top.split("px")[0]);
+                var width = parseInt(zoom.style.width.split("px")[0]);
+
+                var xBounds = this.mouseDownX > left && this.mouseDownX < (left + width);
+                var yBounds = this.mouseDownY > (top-20) && this.mouseDownY < (top + 20);
+                var widthThing = this.mouseDownX < (left + width);
+
+                that.isSlider = (xBounds && yBounds);
+
                 // This makes sure that the height isn't stored before the image exists
                 // So it's not set to 0
                 if(pic.style.height == "" || pic.style.height == "0px")
