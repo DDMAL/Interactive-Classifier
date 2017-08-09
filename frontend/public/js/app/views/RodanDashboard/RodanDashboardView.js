@@ -149,7 +149,7 @@ export default Marionette.LayoutView.extend(
                 {
                     var pic = document.getElementsByClassName("preview-background")[0];
                     var oldHeight = pic.style.originalHeight;
-                    var newHeight = oldHeight*zoomLevel/50; //50 is the default value
+                    var newHeight = oldHeight*zoomLevel/document.getElementById("s1").getAttribute("default"); //60 is the default value
                     pic.style.height = newHeight + "px";
                     //makes sure the box around the glyphs follows the zoom
                     RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs);
