@@ -283,7 +283,7 @@ export default Marionette.ItemView.extend(
                         pic.style.originalHeight = h;
                     }
                 }
-                that.isHover = (event.clientX > pic.getClientRects()[0].left && event.clientY > pic.getClientRects()[0].top);
+                that.isHover = (event.clientX > document.getElementById("right2").getClientRects()[0].left && event.clientY > document.getElementById("right2").getClientRects()[0].top);
                 if (that.isMouseDown === true)
                 {
                     // If the user has stopped holding their mouse down, execute
