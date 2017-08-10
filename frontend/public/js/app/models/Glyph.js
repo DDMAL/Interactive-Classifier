@@ -25,7 +25,8 @@ export default Backbone.Model.extend(
             image_file: "",
             image_b64: "",
             parts: [],
-            split: {}
+            split: {},
+            is_training: false
         },
 
         /**

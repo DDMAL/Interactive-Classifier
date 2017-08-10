@@ -33,6 +33,7 @@ export default Marionette.LayoutView.extend(
             classCreateRegion: ".glyph-class-create-region",
             glyphTreeRegion: ".glyph-class-tree-region",
             glyphTableRegion: ".glyph-table-region",
+            classifierTableRegion: ".classifier-table-region",
             glyphEditRegion: ".glyph-edit-region",
             pagePreviewRegion: ".page-image-preview-region",
             modalTestRegion: ".modal-test"
@@ -58,6 +59,9 @@ export default Marionette.LayoutView.extend(
 
             // Construct the glyph table data structure
             this.tableRowCollection = new GlyphTableRowCollection();
+            this.trainingRowCollection = new GlyphTableRowCollection();
+
+            this.classifierRowCollection = new GlyphTableRowCollection();
 
             this.listenTo(RadioChannels.edit, PageEvents.changeBackground,
                 function()
@@ -146,11 +150,25 @@ export default Marionette.LayoutView.extend(
             {
                 var pic = document.getElementsByClassName("preview-background")[0];
                 var oldHeight = pic.style.originalHeight;
-                var newHeight = oldHeight * zoomLevel / 50; //50 is the default value
+                var newHeight = oldHeight * zoomLevel / document.getElementById("s1").getAttribute("default"); //60 is the default value
                 pic.style.height = newHeight + "px";
                 //makes sure the box around the glyphs follows the zoom
-                RadioChannels.edit.trigger(GlyphEvents.openMultiEdit);
-            });
+                RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs);
+
+            }
+            );
+
+            this.listenTo(RadioChannels.edit, GlyphEvents.highlightGlyphs,
+                function()
+                {
+                    var glyphs = [];
+                    for(var i = 0; i < that.selectedGlyphs.length; i++)
+                    {
+                        var glyph = that.selectedGlyphs.at(i);
+                        glyphs.push(glyph);
+                    }
+                    that.previewView.highlightGlyph(glyphs);
+                });
 
             this.listenTo(RadioChannels.edit, GlyphEvents.openMultiEdit,
                 function ()
@@ -164,13 +182,7 @@ export default Marionette.LayoutView.extend(
                     else
                     {
                         that.openMultiGlyphEdit(that.selectedGlyphs);
-                        var glyphs = [];
-                        for (var i = 0; i < that.selectedGlyphs.length; i++)
-                        {
-                            glyph = that.selectedGlyphs.at(i);
-                            glyphs.push(glyph);
-                        }
-                        that.previewView.highlightGlyph(glyphs);
+                        RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs);
                     }
                 }
             );
@@ -188,6 +200,7 @@ export default Marionette.LayoutView.extend(
 
             var glyphDictionary = this.model.get("glyphDictionary");
             var classNames = this.model.get("classNames");
+            var trainingGlyphs = this.model.get("trainingGlyphs");
 
             // Show the tree
             this.glyphTreeRegion.show(new ClassTreeView({
@@ -199,11 +212,22 @@ export default Marionette.LayoutView.extend(
             timer.tick();
 
             var glyphCollections = {};
-            // Separate the glyphs by their class
+            var trainingGlyphsCollection = {};
 
+            // Separate the glyphs by their class
             for (var i = 0; i < classNames.length; i++)
             {
-                glyphCollections[classNames[i]] = new GlyphCollection(glyphDictionary[classNames[i]]);
+                var glyphs = new GlyphCollection(glyphDictionary[classNames[i]]);
+                if(glyphs.length > 0)
+                {
+                    glyphCollections[classNames[i]] = glyphs;
+                }
+                glyphs = new GlyphCollection(trainingGlyphs[classNames[i]]);
+                if(glyphs.length > 0)
+                {
+                   trainingGlyphsCollection[classNames[i]] = glyphs;
+                }
+                
             }
 
             timer.tick("pre-final render");
@@ -211,17 +235,32 @@ export default Marionette.LayoutView.extend(
             var that = this;
             _.each(classNames, function (className)
             {
-                var row = new GlyphTableRowViewModel({
-                    class_name: className,
-                    glyphs: glyphCollections[className]
-                });
-                that.tableRowCollection.add(row);
+                if(glyphCollections[className])
+                {
+                    var row = new GlyphTableRowViewModel({
+                        class_name: className,
+                        glyphs: glyphCollections[className]
+                    });
+                    that.tableRowCollection.add(row);
+                }
+                if(trainingGlyphsCollection[className])
+                {
+                    var row = new GlyphTableRowViewModel({
+                        class_name: className,
+                        glyphs: trainingGlyphsCollection[className]
+                    });
+                    that.trainingRowCollection.add(row);
+                }
             });
 
             timer.tick();
 
             this.glyphTableRegion.show(new GlyphTableView({
                 collection: this.tableRowCollection
+            }));
+
+            this.classifierTableRegion.show(new GlyphTableView({
+                collection: this.trainingRowCollection
             }));
 
             RadioChannels.edit.trigger(PageEvents.changeBackground);

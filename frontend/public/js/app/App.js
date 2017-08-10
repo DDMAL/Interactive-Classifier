@@ -131,6 +131,7 @@ var App = Marionette.Application.extend(
             var pageElement = $("#page");
             var glyphsElement = $("#glyphs");
             var classNamesElement = $("#classNames");
+            var trainingGlyphsElement = $("#trainingGlyphs");
 
             timer.tick();
 
@@ -138,6 +139,8 @@ var App = Marionette.Application.extend(
             var binaryPageImage = pageElement.attr("data-page");
             var glyphDictionary = JSON.parse(glyphsElement.attr("data-glyphs"));
             var classNames = JSON.parse(classNamesElement.attr("data-class-names"));
+            var trainingGlyphs = JSON.parse(trainingGlyphsElement.attr("data-training-glyphs"));
+
 
             timer.tick();
 
@@ -145,6 +148,7 @@ var App = Marionette.Application.extend(
             pageElement.remove();
             glyphsElement.remove();
             classNamesElement.remove();
+            trainingGlyphsElement.remove();
 
             timer.tick();
 
@@ -153,7 +157,8 @@ var App = Marionette.Application.extend(
                 model: new Backbone.Model({
                     binaryImage: binaryPageImage,
                     glyphDictionary: glyphDictionary,
-                    classNames: classNames
+                    classNames: classNames,
+                    trainingGlyphs: trainingGlyphs
                 })
             });
 

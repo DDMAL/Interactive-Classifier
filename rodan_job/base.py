@@ -260,6 +260,7 @@ def serialize_data(settings, training_database):
     settings['class_names_json'] = serialize_class_names_to_json(
         settings['glyphs'], training_database)
     settings['glyphs_json'] = serialize_glyphs_to_json(settings['glyphs'])
+    settings['training_json'] = serialize_glyphs_to_json(settings['training_glyphs'])
 
 # We don't want to reclassify glyphs that are a a part of a group
 def filter_parts(settings):
@@ -397,12 +398,15 @@ class InteractiveClassifier(RodanTask):
         staffless_image_path = inputs['1-Bit PNG - Preview Image'][0][
             'resource_path']
         # We need to figure out the best way to include the data in the template
+
         data = {
             'glyphs': settings['glyphs_json'],
             'binary_image_path': media_file_path_to_public_url(
                 staffless_image_path),
-            'class_names': settings['class_names_json']
+            'class_names': settings['class_names_json'],
+            'training_glyphs': settings['training_json']
         }
+
         return 'interfaces/interactive_classifier.html', data
 
     def run_my_task(self, inputs, settings, outputs):
@@ -419,9 +423,13 @@ class InteractiveClassifier(RodanTask):
         if 'GameraXML - Training Data' in inputs:
             training_database = glyphs_from_xml(
                 inputs['GameraXML - Training Data'][0]['resource_path'])
+            classifier_glyphs = GameraXML(inputs['GameraXML - Training Data'][0]['resource_path']).get_glyphs()
+            for c in classifier_glyphs:
+                c['is_training'] = True
         elif '@XML' in settings:
             file = settings['@XML']
-            training_database = []            
+            training_database = []
+            classifier_glyphs = []  
             # TODO - implement XML import
             # training_database = LoadXML().parse_stream(file).glyphs # + glyphs_from_xml(inputs['GameraXML - Training Data'][0]['resource_path'])
         else:
@@ -437,9 +445,11 @@ class InteractiveClassifier(RodanTask):
         if settings['@state'] == ClassifierStateEnum.IMPORT_XML:
             # IMPORT_XML Stage
             settings['glyphs'] = GameraXML(classifier_path).get_glyphs()
+            settings['training_glyphs'] = classifier_glyphs
             settings['@state'] = ClassifierStateEnum.CLASSIFYING
             serialize_data(settings, training_database)
             return self.WAITING_FOR_INPUT()
+
         elif settings['@state'] == ClassifierStateEnum.CLASSIFYING:
             # CLASSIFYING STAGE
             # Update any changed glyphs
@@ -454,6 +464,7 @@ class InteractiveClassifier(RodanTask):
 
             serialize_data(settings, training_database)
             return self.WAITING_FOR_INPUT()
+
         elif settings['@state'] == ClassifierStateEnum.GROUP_AND_CLASSIFY:
             # CLASSIFYING STAGE
             # Update any changed glyphs
