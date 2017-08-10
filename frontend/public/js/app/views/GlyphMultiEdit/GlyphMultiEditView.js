@@ -59,20 +59,20 @@ export default Marionette.LayoutView.extend(
 
             this.ui.classInput.focus();
 
-        /**
-         * If all selected glyphs have the same class name,
-         * The class name will show up in the input box
-         */
+            /**
+             * If all selected glyphs have the same class name,
+             * The class name will show up in the input box
+             */
             var sameName = true;
-            var glyphs = this.collection['models'];
-            for(var i = 0; i < glyphs.length-1; i++)
-            {   
-                if(glyphs[i].get('class_name') != glyphs[i+1].get('class_name'))
+            var glyphs = this.collection.models;
+            for (var i = 0; i < glyphs.length - 1; i++)
+            {
+                if (glyphs[i].get('class_name') !== glyphs[i + 1].get('class_name'))
                 {
                     sameName = false;
                 }
             }
-            if(sameName && glyphs.length > 0)
+            if (sameName && glyphs.length > 0)
             {
                 this.ui.classInput.val(glyphs[0].get('class_name'));
             }
@@ -102,21 +102,21 @@ export default Marionette.LayoutView.extend(
             if (event)
             {
                 event.preventDefault();
-            }            
+            }
             var that = this;
             var className = that.ui.classInput.val();
-            if(className=="")
+            if (className === "")
             {
-                className="UNCLASSIFIED";
+                className = "UNCLASSIFIED";
             }
             console.log("Glyphs will be grouped to " + className);
             var glyphs = []
             this.collection.each(function (model)
             {
                 glyphs.push(model);
-                model.changeClass("_group._part." + className);                
+                model.changeClass("_group._part." + className);
             });
-            RadioChannels.edit.trigger(GlyphEvents.groupGlyphs, glyphs, className)            
+            RadioChannels.edit.trigger(GlyphEvents.groupGlyphs, glyphs, className)
         },
 
         /**

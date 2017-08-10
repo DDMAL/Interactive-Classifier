@@ -28,8 +28,8 @@ export default Marionette.ItemView.extend(
             this.$el.html(this.constructListHtml(this.model, ""));
 
             //If a class is deleted, search through all classes and remove the class
-            this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, 
-                function(deleteClass) 
+            this.listenTo(RadioChannels.edit, ClassEvents.deleteClass,
+                function(deleteClass)
                 {
                     this.onDelete(deleteClass);
                 }
@@ -51,7 +51,7 @@ export default Marionette.ItemView.extend(
             RadioChannels.edit.trigger(GlyphEvents.clickGlyphName, className);
 
             //the user cannot edit the unclassified class
-            if(className!="unclassified" && className!="UNCLASSIFIED")
+            if (className !== "unclassified" && className !== "UNCLASSIFIED")
             {
                 var c = new Class();
                 c.set("name",className);
@@ -60,26 +60,27 @@ export default Marionette.ItemView.extend(
 
         },
 
-        onDelete: function(className){
-            if(className=="unclassified")
+        onDelete: function(className)
+        {
+            if (className === "unclassified")
             {
                 return;
             }
             var delete_elem;
             var list = document.getElementsByTagName("li");
-            for (var i =0; i< list.length; i++)
+            for (var i = 0; i < list.length; i++)
             {
-                if(list[i].firstChild!= null)
+                if (list[i].firstChild !== null)
                 {
-                    if(list[i].firstChild.getAttribute('data-name')===className)
+                    if (list[i].firstChild.getAttribute('data-name') === className)
                     {
                         delete_elem = list[i];
                     }
                 }
             }
-            
+
             this.model.deleteChild(className);
-            if(delete_elem)
+            if (delete_elem)
             {
                 delete_elem.remove();
             }
@@ -102,7 +103,7 @@ export default Marionette.ItemView.extend(
             if (value)
             {
                 // Build this level of the recursion
-                output = '<li><a href="#" data-name="' + parentValue + value + '" class="class-name">' + value + "</a>";                
+                output = '<li><a href="#" data-name="' + parentValue + value + '" class="class-name">' + value + "</a>";
             }
 
             // Recursively construct the children

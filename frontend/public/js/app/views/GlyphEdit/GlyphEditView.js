@@ -18,7 +18,7 @@ export default Marionette.ItemView.extend(
 
         events: {
             "submit": "onSubmitForm",
-            "click .split" : "split"
+            "click .split": "split"
         },
 
         modelEvents: {
@@ -71,7 +71,7 @@ export default Marionette.ItemView.extend(
                 event.preventDefault();
             }
 
-            this.model.changeClass(this.ui.classInput.val());            
+            this.model.changeClass(this.ui.classInput.val());
 
         },
 
@@ -88,7 +88,7 @@ export default Marionette.ItemView.extend(
             }
             var selection = document.getElementById("split_option");
             var val = "";
-            switch(selection.value)
+            switch (selection.value)
             {
                 case "Split x":
                     val = "splitx";

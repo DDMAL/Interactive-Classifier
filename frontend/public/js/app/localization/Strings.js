@@ -18,13 +18,13 @@ export default {
     loadingGlyphs: "Loading page glyphs from the server.  This may take some time...",
     submittingGlyphs: "Reclassifications of glyphs. This may take some time...",
     menuSubmitLabel: "Submit Corrections and Re-Classify",
-    menuGroupLabel: "Group Glyphs and Re-Classify",    
+    menuGroupLabel: "Group Glyphs and Re-Classify",
     menuFinalizeLabel: "Finalize Classification and Save GameraXML",
     menuOpenImage: "Open File",
     loadingPage: "Loading Page...",
     submittingCorrections: "Submitting Corrections",
     submitCorrections: "Submit Corrections...",
-    submitAndGroup: "Submit and Group...",    
+    submitAndGroup: "Submit and Group...",
     finalizeCorrections: "Finalize Corrections...",
     openTitle: "Open...",
     classes: "Classes",
@@ -46,7 +46,7 @@ export default {
         glyphPreview: "Glyph Preview",
         split: "Split"
     },
-    editClass:{
+    editClass: {
         update: "Update",
         className: "Name",
         deleteClass: "Delete Class",

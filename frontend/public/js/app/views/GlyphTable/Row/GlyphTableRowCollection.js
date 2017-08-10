@@ -34,7 +34,7 @@ export default Backbone.Collection.extend(
                 class_name: oldClassName
             });
             oldRow.get("glyphs").remove(glyph);
-            
+
             // Remove the old row if it's empty
             if (oldRow.get("glyphs").length < 1)
             {
@@ -52,7 +52,7 @@ export default Backbone.Collection.extend(
                 // There is already a row, so we add to it
                 newRow.get("glyphs").add(glyph);
             }
-            else if(newClassName.substring(0,12) != "_group._part" && newClassName.substring(0,6) != "_split")
+            else if (newClassName.substring(0,12) !== "_group._part" && newClassName.substring(0,6) !== "_split")
             {
                 // There is no row, so we add a new row
                 this.add({
@@ -71,13 +71,14 @@ export default Backbone.Collection.extend(
          */
         deleteClass: function (className)
         {
-            var row = this.findWhere({
+            var row = this.findWhere(
+            {
                 class_name: className
-                });
-            if(row)
+            });
+            if (row)
             {
                 var glyphs = row.get("glyphs");
-                while (glyphs.length>0)
+                while (glyphs.length > 0)
                 {
                     var glyph = glyphs.pop();
                     glyph.unclassify();
@@ -111,7 +112,7 @@ export default Backbone.Collection.extend(
                     glyphs: new GlyphCollection([glyph])
                 });
             }
-            
+
             RadioChannels.edit.trigger(PageEvents.changeBackground);
 
         }
