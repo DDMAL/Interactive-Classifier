@@ -11,8 +11,9 @@
 <div id="glyphs" data-glyphs="{{ glyphs }}"></div>
 <div id="page" data-page="{{ binary_image_path }}"></div>
 <div id="classNames" data-class-names="{{ class_names }}"></div>
-<div id="trainingGlyphs" data-training-glyphs = "{{ training_glyphs }}"></div>
-
+{% if training_glyphs %}
+    <div id="trainingGlyphs" data-training-glyphs = "{{ training_glyphs }}"></div>
+{% endif %}
 <div id="container" class="container-fluid">
     <div id="navigation"></div>
     <div id="content"></div>
