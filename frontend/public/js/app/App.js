@@ -139,8 +139,10 @@ var App = Marionette.Application.extend(
             var binaryPageImage = pageElement.attr("data-page");
             var glyphDictionary = JSON.parse(glyphsElement.attr("data-glyphs"));
             var classNames = JSON.parse(classNamesElement.attr("data-class-names"));
-            var trainingGlyphs = JSON.parse(trainingGlyphsElement.attr("data-training-glyphs"));
-
+            if(trainingGlyphsElement.attr("data-training-glyphs"))
+            {
+                var trainingGlyphs = JSON.parse(trainingGlyphsElement.attr("data-training-glyphs"));
+            }
 
             timer.tick();
 
