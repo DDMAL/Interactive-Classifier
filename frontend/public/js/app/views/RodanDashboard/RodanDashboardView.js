@@ -222,10 +222,13 @@ export default Marionette.LayoutView.extend(
                 {
                     glyphCollections[classNames[i]] = glyphs;
                 }
-                glyphs = new GlyphCollection(trainingGlyphs[classNames[i]]);
-                if(glyphs.length > 0)
+                if(trainingGlyphs)
                 {
-                   trainingGlyphsCollection[classNames[i]] = glyphs;
+                    glyphs = new GlyphCollection(trainingGlyphs[classNames[i]]);
+                    if(glyphs.length > 0)
+                    {
+                       trainingGlyphsCollection[classNames[i]] = glyphs;
+                    }
                 }
                 
             }
