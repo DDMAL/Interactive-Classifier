@@ -21,6 +21,16 @@ export default Backbone.Collection.extend(
 
         comparator: "class_name",
 
+        /*
+        * Set whether the collection contains the classifier glyphs or the page glyphs
+        *
+        * @param {boolean} is_classifier - Whether or not this is the classifier
+        */
+        setClassifier: function(is_classifier)
+        {
+            this.is_classifier = is_classifier;
+        },
+
         /**
          * Move a glyph from one table row to another.
          *
@@ -30,37 +40,44 @@ export default Backbone.Collection.extend(
          */
         moveGlyph: function (glyph, oldClassName, newClassName)
         {
-            var oldRow = this.findWhere({
-                class_name: oldClassName
-            });
-            oldRow.get("glyphs").remove(glyph);
-            
-            // Remove the old row if it's empty
-            if (oldRow.get("glyphs").length < 1)
+            if(!this.is_classifier || glyph.attributes.id_state_manual)
             {
-                RadioChannels.edit.trigger(ClassEvents.deleteClass, oldClassName);
-                this.remove(oldRow);
-            }
-
-            // Add to the new class name collection
-            var newRow = this.findWhere({
-                class_name: newClassName
-            });
-
-            if (newRow)
-            {
-                // There is already a row, so we add to it
-                newRow.get("glyphs").add(glyph);
-            }
-            else if(newClassName.substring(0,12) != "_group._part" && newClassName.substring(0,6) != "_split")
-            {
-                // There is no row, so we add a new row
-                this.add({
-                    class_name: newClassName,
-                    glyphs: new GlyphCollection([glyph])
+                var oldRow = this.findWhere({
+                    class_name: oldClassName
+                });
+                if(oldRow)
+                {
+                    oldRow.get("glyphs").remove(glyph);
+                    // Remove the old row if it's empty
+                    if (oldRow.get("glyphs").length < 1)
+                    {
+                        if(!this.is_classifier)
+                        {
+                            RadioChannels.edit.trigger(ClassEvents.deleteClass, oldClassName);
+                        }
+                        this.remove(oldRow);
+                    }
+                }
+                // Add to the new class name collection
+                var newRow = this.findWhere({
+                    class_name: newClassName
                 });
 
-                RadioChannels.edit.trigger(PageEvents.changeBackground);
+                if (newRow)
+                {
+                    // There is already a row, so we add to it
+                    newRow.get("glyphs").add(glyph);
+                }
+                else if(newClassName.substring(0,12) != "_group._part" && newClassName.substring(0,6) != "_split")
+                {
+                    // There is no row, so we add a new row
+                    this.add({
+                        class_name: newClassName,
+                        glyphs: new GlyphCollection([glyph])
+                    });
+
+                    RadioChannels.edit.trigger(PageEvents.changeBackground);
+                }
             }
         },
 

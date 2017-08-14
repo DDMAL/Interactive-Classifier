@@ -10,6 +10,7 @@ import ClassTreeViewModel from "views/ClassTree/ClassTreeViewModel";
 import GlyphEditView from "views/GlyphEdit/GlyphEditView";
 import ClassEditView from "views/ClassEdit/ClassEditView";
 import GlyphMultiEditView from "views/GlyphMultiEdit/GlyphMultiEditView";
+import TrainingEditView from "views/TrainingEdit/TrainingEditView";
 import GlyphTableView from "views/GlyphTable/GlyphTableView";
 import GlyphTableRowViewModel from "views/GlyphTable/Row/GlyphTableRowViewModel";
 import GlyphTableRowCollection from "views/GlyphTable/Row/GlyphTableRowCollection";
@@ -58,7 +59,9 @@ export default Marionette.LayoutView.extend(
 
             // Construct the glyph table data structure
             this.tableRowCollection = new GlyphTableRowCollection();
+            this.tableRowCollection.setClassifier(false);
             this.trainingRowCollection = new GlyphTableRowCollection();
+            this.trainingRowCollection.setClassifier(true);
 
             this.classifierRowCollection = new GlyphTableRowCollection();
 
@@ -67,10 +70,18 @@ export default Marionette.LayoutView.extend(
                 {
                     // This makes it so the classes switch color
                     // so it's obvious to which class each glyph belongs
+                    // TODO: This should be improved so only one loop
                     var els = document.getElementsByClassName("table table-hover")[0].childNodes;
                     // White and grey
                     var colors = ["white","gainsboro"];
-                    for(var i = 0; i < els.length; i++)
+                    for (var i = 0; i < els.length; i++)
+                    {
+                        // Alternating
+                        var index = i % 2;
+                        els[i].style.backgroundColor = colors[index];
+                    }
+                    els = document.getElementsByClassName("table table-hover")[1].childNodes;
+                    for (var i = 0; i < els.length; i++)
                     {
                         // Alternating
                         var index = i % 2;
@@ -105,6 +116,10 @@ export default Marionette.LayoutView.extend(
                 function (glyph, className)
                 {
                     that.tableRowCollection.addGlyph(glyph, className);
+                    if(className.toLowerCase() != "unclassified" && className.substring(0,12) != "_group._part" && className.substring(0,6) != "_split")
+                    {
+                       that.trainingRowCollection.addGlyph(glyph, className);
+                    }
                 }
             );            
             // Class editing events
@@ -134,13 +149,35 @@ export default Marionette.LayoutView.extend(
             this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
                 function (model)
                 {
-                    that.previewView.highlightGlyph([model]);
-                    that.openGlyphEdit(model);
+                    // If it's a training glyph, open the training edit view
+                    if(model.attributes.is_training)
+                    {
+                        that.selectedGlyphs.add(model);
+                        that.openTrainingEdit(that.selectedGlyphs);
+                    }
+                    else
+                    {
+                        that.previewView.highlightGlyph([model]);
+                        that.openGlyphEdit(model);
+                    }
                 });
             this.listenTo(RadioChannels.edit, GlyphEvents.moveGlyph,
                 function (glyph, oldClassName, newClassName)
                 {
-                    that.tableRowCollection.moveGlyph(glyph, oldClassName, newClassName);
+                    if(glyph.attributes.is_training)
+                    {
+                        that.trainingRowCollection.moveGlyph(glyph, oldClassName, newClassName);
+                    }
+                    else if(glyph.attributes.id_state_manual)
+                    {
+                        that.tableRowCollection.moveGlyph(glyph, oldClassName, newClassName);
+                        that.trainingRowCollection.moveGlyph(glyph, oldClassName, newClassName);
+                    }
+                    else
+                    {
+                        that.tableRowCollection.moveGlyph(glyph, oldClassName, newClassName);
+                        that.trainingRowCollection.addGlyph(glyph, newClassName);
+                    }
                 }
             );
 
@@ -149,21 +186,21 @@ export default Marionette.LayoutView.extend(
                 {
                     var pic = document.getElementsByClassName("preview-background")[0];
                     var oldHeight = pic.style.originalHeight;
-                    var newHeight = oldHeight*zoomLevel/document.getElementById("s1").getAttribute("default"); //60 is the default value
+                    var newHeight = oldHeight*zoomLevel/document.getElementById("s1").getAttribute("default");
                     pic.style.height = newHeight + "px";
                     //makes sure the box around the glyphs follows the zoom
-                    RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs);
+                    RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, that.selectedGlyphs);
                 
                 }
             );
 
             this.listenTo(RadioChannels.edit, GlyphEvents.highlightGlyphs,
-                function()
+                function(highlightedGlyphs)
                 {
                     var glyphs = [];
-                    for(var i = 0; i < that.selectedGlyphs.length; i++)
+                    for(var i = 0; i < highlightedGlyphs.length; i++)
                     {
-                        var glyph = that.selectedGlyphs.at(i);
+                        var glyph = highlightedGlyphs.at(i);
                         glyphs.push(glyph);
                     }
                     that.previewView.highlightGlyph(glyphs);
@@ -172,19 +209,46 @@ export default Marionette.LayoutView.extend(
             this.listenTo(RadioChannels.edit, GlyphEvents.openMultiEdit,
                 function ()
                 {
-                    // If only one glyph has been selected, then glyph edit will open
-                    if(that.selectedGlyphs.length == 1)
+                    // if some of the glyphs selected are training glyphs
+                    var training_glyphs = new Backbone.Collection();
+                    var glyphs = new Backbone.Collection();
+                    // Separating training glyphs from page glyphs
+                    for(var i = 0; i < that.selectedGlyphs.length; i++)
                     {
-                        var glyph = that.selectedGlyphs.at(0);
+                        var glyph = that.selectedGlyphs.at(i);
+                        if(glyph.attributes.is_training === true)
+                        {
+                            training_glyphs.add(glyph);
+                        }
+                        else
+                        {
+                            glyphs.add(glyph);
+                        }
+                    }
+                    // Page glyphs are prioritized
+                    if(glyphs.length === 0)
+                    {
+                        that.openTrainingEdit(training_glyphs);
+                    }
+                    else if(glyphs.length === 1)
+                    {
+                        var glyph = glyphs.at(0);
                         RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, glyph);
                     }
                     else
                     {
-                        that.openMultiGlyphEdit(that.selectedGlyphs);
-                        RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs);
+                        that.openMultiGlyphEdit(glyphs);
+                        RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, glyphs);
                     }
                 }
             );
+
+            this.listenTo(RadioChannels.edit, GlyphEvents.openTrainingEdit,
+                function ()
+                {
+                    that.openTrainingEdit(that.selectedGlyphs);
+                }
+            );            
 
         },
 
@@ -221,12 +285,15 @@ export default Marionette.LayoutView.extend(
                 {
                     glyphCollections[classNames[i]] = glyphs;
                 }
-                glyphs = new GlyphCollection(trainingGlyphs[classNames[i]]);
-                if(glyphs.length > 0)
+                if(trainingGlyphs)
                 {
-                   trainingGlyphsCollection[classNames[i]] = glyphs;
+                    glyphs = new GlyphCollection(trainingGlyphs[classNames[i]]);
+                    if(glyphs.length > 0)
+                    {
+                       trainingGlyphsCollection[classNames[i]] = glyphs;
+                    }
                 }
-                
+
             }
 
             timer.tick("pre-final render");
@@ -403,6 +470,19 @@ export default Marionette.LayoutView.extend(
         openMultiGlyphEdit: function (collection)
         {
             this.glyphEditRegion.show(new GlyphMultiEditView({
+                collection: collection
+            }));
+        },
+
+        /**
+         * Open the TrainingEditView for editing a particular collection of
+         * Training glyph models.
+         *
+         * @param {GlyphCollection} collection - Collection of training glyphs to edit.
+         */
+        openTrainingEdit: function (collection)
+        {
+            this.glyphEditRegion.show(new TrainingEditView({
                 collection: collection
             }));
         },

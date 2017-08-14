@@ -63,16 +63,18 @@ export default Marionette.ItemView.extend(
                         {
                             // Add this glyph to the collection
                             RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
-                            that.viewModel.activate();                          
+                            RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, true);
                         }
-                        else if (!additional)
+                        // make sure not to deactivate if it's a top manual glyph
+                        else if (!additional && (!(that.is_classifier) || this.model.attributes.is_training))
                         {
                             // If it's additional, then we don't deactivate!
-                            that.viewModel.deactivate();
+                            RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, false);
                         }
                     }
                 }
             );
+
             this.listenTo(RadioChannels.edit, GlyphEvents.previewSelect,
                 function (boundingBox, additional)
                 {
@@ -90,38 +92,68 @@ export default Marionette.ItemView.extend(
                         {
                             // Add this glyph to the collection
                             RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
-                            that.viewModel.activate();
-                            
-                            // Scroll to the glyph
-                            var elems = Array.from(document.getElementsByClassName("glyph img-thumbnail bg-warning glyph-image"));
-                            elems.concat(Array.from(document.getElementsByClassName("glyph img-thumbnail bg-success glyph-image")));
-                            for(var i = 0; i < elems.length; i++)
+                            RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, that.model.attributes.id, true);
+                            if(!(this.model.attributes.is_training))
                             {
-                                if(elems[i]['href'].split('glyph/')[1].split('/')[0] == that.model.id)
+                                // Scroll to the glyph
+                                // Checks both manual and unmanual glyphs
+                                var elems = Array.from(document.getElementsByClassName("glyph img-thumbnail bg-warning glyph-image"));
+                                elems.concat(Array.from(document.getElementsByClassName("glyph img-thumbnail bg-success glyph-image")));
+                                for(var i = 0; i < elems.length; i++)
                                 {
-                                    elems[i].scrollIntoView();
+                                    if(elems[i]['href'].split('glyph/')[1].split('/')[0] === that.model.id)
+                                    {
+                                        elems[i].scrollIntoView();
+                                    }
                                 }
                             }
                         }
-                        else if (!additional)
+                        // If not additional and not a manual classifier glyph
+                        // If the glyph is a manual classifier glyph, that means that the the pageGlyph version
+                        // of that glyph will control activation and deactivation
+                        else if (!additional && (!(that.is_classifier) || this.model.attributes.is_training))
                         {
                             // If it's additional, then we don't deactivate!
-                            that.viewModel.deactivate();
+                            // false means deactivate
+                            RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, that.model.attributes.id, false);
                         }
                     }
                 }
-            );            
+            );
             this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit, function (model)
             {
-                if (that.model !== model)
+                if (that.model.attributes.id !== model.attributes.id)
                 {
-                    that.viewModel.deactivate();
+                    RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, that.model.attributes.id, false);
                 }
             });
             this.listenTo(RadioChannels.edit, ClassEvents.openClassEdit, function (className)
             {
-                that.viewModel.deactivate();
+                RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, that.model.attributes.id, false);
             });
+
+            this.listenTo(RadioChannels.edit, GlyphEvents.switchGlyphActivation,
+            function (id, toActive)
+             {
+                if(id === that.model.attributes.id)
+                {
+                    if(toActive)
+                    {
+                        that.viewModel.activate();
+                    }
+                    else
+                    {
+                        that.viewModel.deactivate();
+                    }
+                }
+             });
+
+        },
+
+        onShow: function()
+        {
+            var class_table = document.getElementsByClassName("classifier-table-region")[0].getBoundingClientRect();
+            this.is_classifier = Geometry.rectangleOverlap(this.getPosition(), class_table);
 
         },
 
@@ -150,20 +182,21 @@ export default Marionette.ItemView.extend(
                 // If the glyph is not already active, then activate it.
                 if (this.viewModel.isActive())
                 {
-                    this.viewModel.deactivate();
                     RadioChannels.edit.trigger(GlyphEvents.deselectGlyph, this.model);
+                    RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, false);
                 }
                 else
                 {
-                    this.viewModel.activate();
+                    RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, true);
                     RadioChannels.edit.trigger(GlyphEvents.selectGlyph, this.model);
+
                 }
                 RadioChannels.edit.trigger(GlyphEvents.dragSelect);
                 RadioChannels.edit.trigger(GlyphEvents.openMultiEdit);
             }
             else
             {
-                this.viewModel.activate();
+                RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, true);
                 RadioChannels.edit.trigger(GlyphEvents.deselectAllGlyphs);
                 RadioChannels.edit.trigger(GlyphEvents.selectGlyph, this.model);
                 RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, this.model, this.viewModel);
