@@ -13,12 +13,12 @@ export default Marionette.ItemView.extend({
     template,
 
     ui: {
-        button: ".btn",
+        button: ".btn"
 
     },
 
     events: {
-        "click @ui.button": "onClickButton",
+        "click @ui.button": "onClickButton"
 
     },
 
@@ -27,17 +27,18 @@ export default Marionette.ItemView.extend({
 
         var userOptions = document.getElementsByClassName("userOption");
         var userArgs = {}
-        for (var option in userOptions)
+        //for (var option in userOptions)
+        for (var i = 0; i < userOptions.length; i++)
         {
-            var name = userOptions[option].name;
-            var val = userOptions[option].value;
+            var name = userOptions[i].name;
+            var val = userOptions[i].value;
 
             // Checkbox's value cannot be accessed with .value
-            if(userOptions[option]['type']=="checkbox")
+            if (userOptions[i].type === "checkbox")
             {
-                val = userOptions[option].checked;
+                val = userOptions[i].checked;
             }
-            if (name != undefined && val != undefined)
+            if (name !== undefined && val !== undefined)
             {
                 userArgs[name] = val;
             }
@@ -46,6 +47,6 @@ export default Marionette.ItemView.extend({
         // Trigger the button click callback!
         this.model.triggerCallback(userArgs);
 
-    },
+    }
 
 });

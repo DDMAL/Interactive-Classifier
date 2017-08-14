@@ -57,13 +57,13 @@ export default Backbone.Model.extend(
             // do the sanitization step
             var sanitizedClassName = ClassNameUtils.sanitizeClassName(newClassName);
 
-
-            this.set({
-            class_name: sanitizedClassName,
-            id_state_manual: true,
-            confidence: 1.0
+            this.set(
+            {
+                class_name: sanitizedClassName,
+                id_state_manual: true,
+                confidence: 1.0
             });
-            
+
             // Update glyph table location
             RadioChannels.edit.trigger(GlyphEvents.moveGlyph, this, oldClassName, this.get("class_name"));
             RadioChannels.edit.trigger(GlyphEvents.changeGlyph, this);
@@ -71,14 +71,13 @@ export default Backbone.Model.extend(
 
         },
 
-
         /**
          * Unclassify a glyph
          *
          * This method fires events that might change the location where the
          * glyph is being rendered on the glyph table.
          *
-         * 
+         *
          */
         unclassify: function ()
         {
@@ -86,6 +85,7 @@ export default Backbone.Model.extend(
 
             var oldClassName = this.get("class_name");
 
+            // Update glyph table location
             RadioChannels.edit.trigger(GlyphEvents.moveGlyph, this, oldClassName, this.get("class_name"));
             RadioChannels.edit.trigger(GlyphEvents.changeGlyph, this);
             RadioChannels.edit.trigger(GlyphEvents.setGlyphName, this.get("class_name"));
@@ -95,6 +95,5 @@ export default Backbone.Model.extend(
                 id_state_manual: false,
                 confidence: 0
             });
-            // Update glyph table location
-        },        
+        }
     });

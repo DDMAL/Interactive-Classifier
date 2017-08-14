@@ -50,7 +50,7 @@ export default class Authenticator {
             complete: function (response)
             {
 
-                /** 
+                /**
                 * Get the working user token, and update it in the url,
                 */
                 var responseData = JSON.parse(response.responseText);

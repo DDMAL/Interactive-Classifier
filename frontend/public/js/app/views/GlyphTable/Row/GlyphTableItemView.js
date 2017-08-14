@@ -63,13 +63,17 @@ export default Marionette.ItemView.extend(
                         {
                             // Add this glyph to the collection
                             RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
+                            // jscs:disable
                             RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, true);
+                            // jscs:enable
                         }
                         // make sure not to deactivate if it's a top manual glyph
                         else if (!additional && (!(that.is_classifier) || this.model.attributes.is_training))
                         {
                             // If it's additional, then we don't deactivate!
+                            // jscs:disable
                             RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, false);
+                            // jscs:enable
                         }
                     }
                 }
@@ -80,33 +84,33 @@ export default Marionette.ItemView.extend(
                 {
                     if (boundingBox)
                     {   var pic = document.getElementsByClassName("preview-background")[0];
-                        var zoomLevel = pic.getBoundingClientRect().height/pic.style.originalHeight;
-                        var glyphRect = 
+                        var zoomLevel = pic.getBoundingClientRect().height / pic.style.originalHeight;
+                        var glyphRect =
                         {
-                            left: that.model.get('ulx')*zoomLevel,
-                            top: that.model.get('uly')*zoomLevel,
-                            right: (that.model.get('ulx') + that.model.get('ncols'))*zoomLevel,
-                            bottom: (that.model.get('uly') + that.model.get('nrows'))*zoomLevel
+                            left: that.model.get('ulx') * zoomLevel,
+                            top: that.model.get('uly') * zoomLevel,
+                            right: (that.model.get('ulx') + that.model.get('ncols')) * zoomLevel,
+                            bottom: (that.model.get('uly') + that.model.get('nrows')) * zoomLevel
                         }
-                        if(Geometry.rectangleOverlap(glyphRect, boundingBox))
+                        if (Geometry.rectangleOverlap(glyphRect, boundingBox) && !(this.model.attributes.is_training))
                         {
                             // Add this glyph to the collection
                             RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
+                            // jscs:disable
                             RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, that.model.attributes.id, true);
-                            if(!(this.model.attributes.is_training))
+                            // Scroll to the glyph
+                            // Checks both manual and unmanual glyphs
+                            var elems = Array.from(document.getElementsByClassName("glyph img-thumbnail bg-warning glyph-image"));
+                            elems.concat(Array.from(document.getElementsByClassName("glyph img-thumbnail bg-success glyph-image")));
+
+                            for (var i = 0; i < elems.length; i++)
                             {
-                                // Scroll to the glyph
-                                // Checks both manual and unmanual glyphs
-                                var elems = Array.from(document.getElementsByClassName("glyph img-thumbnail bg-warning glyph-image"));
-                                elems.concat(Array.from(document.getElementsByClassName("glyph img-thumbnail bg-success glyph-image")));
-                                for(var i = 0; i < elems.length; i++)
+                                if (elems[i]['href'].split('glyph/')[1].split('/')[0] === that.model.id)
                                 {
-                                    if(elems[i]['href'].split('glyph/')[1].split('/')[0] === that.model.id)
-                                    {
-                                        elems[i].scrollIntoView();
-                                    }
+                                    elems[i].scrollIntoView();
                                 }
                             }
+                            // jscs:enable
                         }
                         // If not additional and not a manual classifier glyph
                         // If the glyph is a manual classifier glyph, that means that the the pageGlyph version
@@ -115,29 +119,32 @@ export default Marionette.ItemView.extend(
                         {
                             // If it's additional, then we don't deactivate!
                             // false means deactivate
+                            // jscs:disable
                             RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, that.model.attributes.id, false);
+                            // jscs:enable
                         }
                     }
                 }
             );
             this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit, function (model)
             {
-                if (that.model.attributes.id !== model.attributes.id)
+                if (that.model.attributes.id !== model.attributes.id && !model.attributes.is_training)
                 {
                     RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, that.model.attributes.id, false);
                 }
             });
-            this.listenTo(RadioChannels.edit, ClassEvents.openClassEdit, function (className)
+            // this.listenTo(RadioChannels.edit, ClassEvents.openClassEdit, function (className)
+            this.listenTo(RadioChannels.edit, ClassEvents.openClassEdit, function ()
             {
                 RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, that.model.attributes.id, false);
             });
 
             this.listenTo(RadioChannels.edit, GlyphEvents.switchGlyphActivation,
             function (id, toActive)
-             {
-                if(id === that.model.attributes.id)
+            {
+                if (id === that.model.attributes.id)
                 {
-                    if(toActive)
+                    if (toActive)
                     {
                         that.viewModel.activate();
                     }
@@ -146,8 +153,7 @@ export default Marionette.ItemView.extend(
                         that.viewModel.deactivate();
                     }
                 }
-             });
-
+            });
         },
 
         onShow: function()

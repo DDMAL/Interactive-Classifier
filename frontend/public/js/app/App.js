@@ -1,7 +1,7 @@
 import $ from "jquery";
 import Backbone from "backbone";
 import RadioChannels from "radio/RadioChannels";
-import Radio from 'backbone.radio';
+//import Radio from 'backbone.radio';
 import Marionette from "marionette";
 import RootView from "views/Root/RootView";
 import MenuView from "views/MainMenu/MenuView";
@@ -89,7 +89,8 @@ var App = Marionette.Application.extend(
             });
 
             // A loading screen pops up.
-            this.listenTo(RadioChannels.edit, GlyphEvents.addGlyph, function (glyphModel)
+            //this.listenTo(RadioChannels.edit, GlyphEvents.addGlyph, function (glyphModel)
+            this.listenTo(RadioChannels.edit, GlyphEvents.addGlyph, function ()
             {
                 this.modals.group.close();
             });
@@ -97,22 +98,18 @@ var App = Marionette.Application.extend(
             this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs, function (glyphList, glyphName)
             {
                 var groupedGlyphs = new GlyphCollection();
-                for(var i=0; i < glyphList.length; i++)
+                for (var i = 0; i < glyphList.length; i++)
                 {
                     groupedGlyphs.add(glyphList[i]);
                 }
-                this.modals.group.open();                
+                this.modals.group.open();
                 that.groupGlyphs(groupedGlyphs, glyphName);
             });
             this.listenTo(RadioChannels.edit, GlyphEvents.splitGlyph, function (glyph, split_type)
             {
-                this.modals.split.open();                
+                this.modals.split.open();
                 that.splitGlyph(glyph, split_type);
-
             });
-
-
-
 
             this.modals.loading.open();
         },
@@ -142,11 +139,10 @@ var App = Marionette.Application.extend(
             var binaryPageImage = pageElement.attr("data-page");
             var glyphDictionary = JSON.parse(glyphsElement.attr("data-glyphs"));
             var classNames = JSON.parse(classNamesElement.attr("data-class-names"));
-            if(trainingGlyphsElement.attr("data-training-glyphs"))
+            if (trainingGlyphsElement.attr("data-training-glyphs"))
             {
                 var trainingGlyphs = JSON.parse(trainingGlyphsElement.attr("data-training-glyphs"));
             }
-
 
             timer.tick();
 
@@ -241,7 +237,7 @@ var App = Marionette.Application.extend(
             var data = JSON.stringify({
                 "complete": true,
                 "glyphs": this.changedGlyphs.toJSON(),
-                "grouped_glyphs": this.groupedGlyphs,
+                "grouped_glyphs": this.groupedGlyphs
             });
             /* Submit the corrections and close the window*/
             $.ajax({
@@ -261,43 +257,6 @@ var App = Marionette.Application.extend(
         },
 
         /**
-         *  Testing Button
-         */
-        opening: function ()
-        {
-            var x = document.getElementById("inputFile");
-            var project = window.location.href.split("/")[2];
-            Radio.channel('rodan').trigger('REQUEST__RESOURCE_CREATE', {project: project, file: x});
-            var resource = new Resource({project:project, file: x, resource_type : 'application/gamera+xml(xml)'});
-            console.log(resource);
-            var data = JSON.stringify({
-                "importXML": true,
-                "XML": x,
-                "glyphs": this.changedGlyphs.toJSON()
-            });
-            //placeholder for sending the request
-            
-            $.ajax({
-                url: this.authenticator.getWorkingUrl(),
-                type: 'POST',
-                data: data,
-                contentType: 'application/json',
-                complete: function (response)
-                {
-                    /* Close the window if successful POST*/
-                    if (response.status === 200)
-                    {
-                        alert("Success!");
-                    }
-                    else
-                    {
-                        alert("Failed!");
-                    }
-                }
-            });
-        },
-
-        /**
         * Find glyphs
         * Returns a collection full of all the original glyphs, without any grouped glyphs
         * list is the new collection of glyphs, originally empty
@@ -307,12 +266,12 @@ var App = Marionette.Application.extend(
         findGroups: function (glyphs, list)
         {
             var that = this;
-            for(var i=0; i < glyphs.length; i++)
+            for (var i = 0; i < glyphs.length; i++)
             {
                 var glyph =  glyphs.at(i)
-                if('parts' in glyph && glyph['parts'].length > 0)
+                if ('parts' in glyph && glyph.parts.length > 0)
                 {
-                    that.findGroups(glyph['parts'], list);
+                    that.findGroups(glyph.parts, list);
                 }
                 else
                 {
@@ -331,34 +290,34 @@ var App = Marionette.Application.extend(
         groupGlyphs: function (grouped_glyphs, className)
         {
             var that = this;
-
             var glyphs = that.findGroups(grouped_glyphs, new GlyphCollection());
 
-
-            if(glyphs.length > 0)
+            if (glyphs.length > 0)
             {
                 var data = JSON.stringify({
                     "group": true,
                     "glyphs": glyphs.toJSON(),
                     "class_name": className
-                });   
+                });
 
                 $.ajax({
                     url: this.authenticator.getWorkingUrl(),
                     type: 'POST',
                     data: data,
-                    headers: {
-                    Accept: "application/json; charset=utf-8",
-                    "Content-Type": "application/json; charset=utf-8"
+                    headers:
+                    {
+                        Accept: "application/json; charset=utf-8",
+                        "Content-Type": "application/json; charset=utf-8"
                     },
                     complete: function (response)
                     {
                         // Create the new glyph
                         if (response.status === 200)
-                        {
+                        { // jscs:disable
                             var responseData = JSON.parse(response.responseText);
                             var new_glyph = responseData['glyph']
-                             var g = new Glyph({
+                             var g = new Glyph(
+                             {
                                 "id": new_glyph["id"],
                                 "class_name": className,
                                 "id_state_manual": true,
@@ -368,24 +327,23 @@ var App = Marionette.Application.extend(
                                 "nrows": new_glyph["nrows"],
                                 "ncols": new_glyph["ncols"],
                                 "image_b64": (new_glyph["image"]),
-                                "rle_image": (new_glyph["rle_image"]),
+                                "rle_image": (new_glyph["rle_image"])
                             });
+                            // If the user wants to group this glyph again, they'll need to access the group parts
+                            g['parts'] = glyphs;
 
-                             // If the user wants to group this glyph again, they'll need to access the group parts
-                             g['parts'] = glyphs;
-                                                         
                             RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, g);
 
                             g.onCreate();
                             // The data gets saved to send to celery later
-                            if(className=="unclassied" || className == "UNCLASSIFIED")
+                            if (className === "unclassied" || className === "UNCLASSIFIED")
                             {
                                 g.unclassify();
                             }
+                            // Changed this one
+                            that.groupedGlyphs.push(responseData.glyph);
 
-                            that.groupedGlyphs.push(responseData['glyph']);
-
-                        }
+                        } // jscs:enable
                     }
                 });
             }
@@ -403,21 +361,20 @@ var App = Marionette.Application.extend(
         splitGlyph: function (glyph, split_type)
         {
             var that = this;
-            
+
             // If this glyph is a grouped glyph, then using split will simply undo the group
             // Provided that this is before the grouped glyphs have been submitted and reclassified
-            if('parts' in glyph  && glyph['parts'].length > 0)
+            if ('parts' in glyph  && glyph.parts.length > 0)
             {
                 var temp = new GlyphCollection();
                 temp.add(glyph);
                 var glyphs = that.findGroups(temp, new GlyphCollection()).models;
-                var i;
-                for(i in glyphs)
+                for (var i = 0; i < glyphs.length; i++)
                 {
                     var g = glyphs[i];
                     g.onCreate();
                     g.unclassify();
-                    RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, g);                                                        
+                    RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, g);
                     that.modals.split.close();
                 }
             }
@@ -426,58 +383,64 @@ var App = Marionette.Application.extend(
                 // If the glyph is the result of a recent split,
                 // then the original data of this glyph must be sent back in order
                 // to recreate it in the backend side
-                if('split' in glyph)
-                {
+                if ('split' in glyph)
+                { // jscs:disable
                     glyph = glyph['split'];
-                }
+                } //jscs:enable
 
-                var data = JSON.stringify({
+                var data = JSON.stringify(
+                    {
                         "split": true,
                         "glyph": glyph,
                         "split_type": split_type
-                    });   
+                    });
 
-                    $.ajax({
-                        url: this.authenticator.getWorkingUrl(),
-                        type: 'POST',
-                        data: data,
-                        headers: {
+                $.ajax(
+                {
+                    url: this.authenticator.getWorkingUrl(),
+                    type: 'POST',
+                    data: data,
+                    headers:
+                    {
                         Accept: "application/json; charset=utf-8",
                         "Content-Type": "application/json; charset=utf-8"
-                        },
-                        complete: function (response)
+                    },
+                    complete: function (response)
+                    {// jscs:disable
+                        if (response.status === 200)
                         {
-                            if (response.status === 200)
+                            var responseData = JSON.parse(response.responseText);
+                            var glyphs = responseData['glyphs'];
+                            for (var i = 0; i < glyphs.length; i++)
                             {
-                                var responseData = JSON.parse(response.responseText);
-                                var glyphs = responseData['glyphs'];
-                                var i;
-                                for(i in glyphs)
-                                {
-                                    var glyph = glyphs[i];
-                                    var g = new Glyph({
-                                        "id": glyph["id"],
-                                        "class_name": "UNCLASSIFIED",
-                                        "id_state_manual": false,
-                                        "confidence": 0,
-                                        "ulx": glyph["ulx"],
-                                        "uly": glyph["uly"],
-                                        "nrows": glyph["nrows"],
-                                        "ncols": glyph["ncols"],
-                                        "image_b64": (glyph["image"]),
-                                        "rle_image": (glyph["rle_image"]),
-                                    });
-                                    RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, g);                                                        
-                                    g.onCreate();
-                                    g['split'] = glyph;
-                                    that.groupedGlyphs.push(glyph);
-                                }
-                                that.modals.split.close();
+                                var glyph = glyphs[i];
+                                var g = new Glyph
+
+                                ({
+                                    "id": glyph.id,
+                                    "class_name": "UNCLASSIFIED",
+                                    "id_state_manual": false,
+                                    "confidence": 0,
+                                    "ulx": glyph["ulx"],
+                                    "uly": glyph["uly"],
+                                    "nrows": glyph["nrows"],
+                                    "ncols": glyph["ncols"],
+                                    "image_b64": (glyph["image"]),
+                                    "rle_image": (glyph["rle_image"])
+                                });
+
+                                RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, g);
+                                g.onCreate();
+                                g.split = glyph;
+                                that.groupedGlyphs.push(glyph);
+
                             }
-                        }   
+                            that.modals.split.close();
+                        }
+                    }// jscs:enable
                 });
             }
-        },        
+        },
         /**
          * Initialize all of the modals used in the application.
          */
@@ -535,7 +498,7 @@ var App = Marionette.Application.extend(
                         {"text": "Distance Threshold", "type": "input", "default": 4},
                         {"text": "Maximum number of parts per group", "type": "input", "default": 4},
                         {"text": "Maximum Solveable subgraph size", "type": "input", "default": 16},
-                        {"text": "Grouping criterion", "type": "dropdown", "options": ["min", "avg"]},
+                        {"text": "Grouping criterion", "type": "dropdown", "options": ["min", "avg"]}
                         ],
                         callback: function (userArgs)
                         {
@@ -545,11 +508,11 @@ var App = Marionette.Application.extend(
 
                             // TODO: make more elegant
 
-                            userSelections['func'] = userArgs["Grouping Function"]
-                            userSelections['distance'] = userArgs["Distance Threshold"]
-                            userSelections['parts'] = userArgs["Maximum number of parts per group"]
-                            userSelections['graph'] = userArgs["Maximum Solveable subgraph size"]
-                            userSelections['criterion'] = userArgs["Grouping criterion"]
+                            userSelections.func = userArgs["Grouping Function"]
+                            userSelections.distance = userArgs["Distance Threshold"]
+                            userSelections.parts = userArgs["Maximum number of parts per group"]
+                            userSelections.graph = userArgs["Maximum Solveable subgraph size"]
+                            userSelections.criterion = userArgs["Grouping criterion"]
 
                             that.groupReclassify(userSelections);
                         }

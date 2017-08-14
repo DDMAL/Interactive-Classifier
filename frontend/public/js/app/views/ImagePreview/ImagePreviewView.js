@@ -1,9 +1,10 @@
+import $ from "jquery";
 import Marionette from "marionette";
 import GlyphEvents from "events/GlyphEvents";
 import PageEvents from "events/PageEvents";
 import template from "./image-preview.template.html";
 import RadioChannels from "radio/RadioChannels";
-import GlyphCollection from "collections/GlyphCollection";
+// import GlyphCollection from "collections/GlyphCollection";
 
 /**
  * @class ImagePreviewView
@@ -36,12 +37,12 @@ export default Marionette.ItemView.extend(
         resizeEvent: undefined,
 
         events: {
-            "mousedown": "onMouseDown",
+            "mousedown": "onMouseDown"
         },
 
         ui: {
             "selectionBox": ".selection-box",
-            highlight: ".preview-highlight",
+            highlight: ".preview-highlight"
         },
 
         /**
@@ -54,25 +55,24 @@ export default Marionette.ItemView.extend(
             // Change the dimensions of our highlight box to match those of the
             // glyph.
 
-
             // Getting rid of all the previously selected glyphs
             var elems = document.getElementsByClassName("preview-highlight");
-            while(elems.length>0)
+            while (elems.length > 0)
             {
                 var elem = elems[0];
                 elem.parentNode.removeChild(elem);
             }
 
-            for(var i = 0; i < glyphs.length; i++)
+            for (var i = 0; i < glyphs.length; i++)
             {
                 var glyph = glyphs[i];
                 var pic = document.getElementsByClassName("preview-background")[0];
-                var zoomLevel = pic.getBoundingClientRect().height/pic.style.originalHeight;
+                var zoomLevel = pic.getBoundingClientRect().height / pic.style.originalHeight;
 
-                var top = (glyph.get("uly"))*zoomLevel;
-                var left = (glyph.get("ulx"))*zoomLevel;
-                var width = glyph.get("ncols")*zoomLevel;
-                var height = glyph.get("nrows")*zoomLevel;
+                var top = (glyph.get("uly")) * zoomLevel;
+                var left = (glyph.get("ulx")) * zoomLevel;
+                var width = glyph.get("ncols") * zoomLevel;
+                var height = glyph.get("nrows") * zoomLevel;
 
                 // Creating a box for each glyph
                 var el = document.body.appendChild(document.createElement("div"));
@@ -86,14 +86,14 @@ export default Marionette.ItemView.extend(
                 this.el.appendChild(el);
             }
 
-            if(glyphs.length>0)
+            if (glyphs.length > 0)
             {
                 // Scroll to the highlight of the first selected glyph
-                var elems = document.getElementsByClassName("preview-highlight");
+                elems = document.getElementsByClassName("preview-highlight");
 
                 // If the user selected the glyph from the preview image, the page won't shift
                 // If the user is zooming, then it will stay scroll to the highlighted glyph
-                if(!this.isHover || this.isSlider)
+                if (!this.isHover || this.isSlider)
                 {
                     elems[0].scrollIntoView();
                 }
@@ -116,12 +116,12 @@ export default Marionette.ItemView.extend(
                 width: 0,
                 height: 0
             });
-            
+
             this.isMouseDown = true;
             this.mouseDownX = event.clientX;
             this.mouseDownY = event.clientY;
 
-            if(!this.isSlider)
+            if (!this.isSlider)
             {
                 event.preventDefault();
                 this.selectionBox.style.top = this.mouseDownY + "px";
@@ -143,9 +143,9 @@ export default Marionette.ItemView.extend(
          */
         onMouseUp: function (event)
         {
-            if(this.isSlider && this.isMouseDown === true) // If the coords of the click are on the slider
+            if (this.isSlider && this.isMouseDown === true) // If the coords of the click are on the slider
             {
-                var value = document.getElementById("s1")['value'];                
+                var value = document.getElementById("s1").value;
                 RadioChannels.edit.trigger(PageEvents.zoom, value);
                 RadioChannels.edit.trigger(GlyphEvents.openMultiEdit);
                 console.log("MouseUp!");
@@ -167,7 +167,7 @@ export default Marionette.ItemView.extend(
                 {
                     // boundingBox is the dimensions of the drag selection.  We will
                     // use these dimensions to test whether or not individual glyphs
-                    // have been selected.                    
+                    // have been selected.
 
                     var pageBounds = document.getElementsByClassName("preview-background")[0].getBoundingClientRect();
                     var boundingBox = {
@@ -230,24 +230,22 @@ export default Marionette.ItemView.extend(
             var that = this;
             $(document).keypress(function (event)
             {
-                
                 var slider = document.getElementById("s1");
-                var value = slider['value'];
+                var value = slider.value;
                 // If the user's mouse is hovering over the window, then = and - act as hotkeys
                 // This is so the user can still user = and - when classifying glpyhs.
-                if(that.isHover)
+                if (that.isHover)
                 {
-                    if(event.key == "=")
+                    if (event.key === "=")
                     {
-                        var newVal = value*1.1;
-                        slider['value'] = newVal;
+                        var newVal = value * 1.1;
+                        slider.value = newVal;
                         RadioChannels.edit.trigger(PageEvents.zoom, newVal);
-                        
                     }
-                    else if(event.key == "-")
+                    else if (event.key === "-")
                     {
-                        var newVal = value/1.1;
-                        slider['value'] = newVal;
+                        newVal = value / 1.1;
+                        slider.value = newVal;
                         RadioChannels.edit.trigger(PageEvents.zoom, newVal);
                     }
                 }
@@ -265,25 +263,26 @@ export default Marionette.ItemView.extend(
                 var width = parseInt(zoom.style.width.split("px")[0]);
 
                 var xBounds = this.mouseDownX > left && this.mouseDownX < (left + width);
-                var yBounds = this.mouseDownY > (top-20) && this.mouseDownY < (top + 20);
-                var widthThing = this.mouseDownX < (left + width);
+                var yBounds = this.mouseDownY > (top - 20) && this.mouseDownY < (top + 20);
 
                 that.isSlider = (xBounds && yBounds);
 
                 // This makes sure that the height isn't stored before the image exists
                 // So it's not set to 0
-                if(pic.style.height == "" || pic.style.height == "0px")
+                if (pic.style.height === "" || pic.style.height === "0px")
                 {
                     pic = document.getElementsByClassName("preview-background")[0];
                     var h = pic.getClientRects()[0].height;
                     // Don't assign the height if h==0
-                    if(h != 0)
+                    if (h !== 0)
                     {
                         pic.style.height = h + "px";
                         pic.style.originalHeight = h;
                     }
                 }
+                // jscs:disable
                 that.isHover = (event.clientX > document.getElementById("right2").getClientRects()[0].left && event.clientY > document.getElementById("right2").getClientRects()[0].top);
+                // jscs:enable
                 if (that.isMouseDown === true)
                 {
                     // If the user has stopped holding their mouse down, execute
@@ -293,9 +292,9 @@ export default Marionette.ItemView.extend(
                     {
                         that.onMouseUp(event);
                     }
-                    else if(that.isSlider) // If the coords of the click are on the slider
+                    else if (that.isSlider) // If the coords of the click are on the slider
                     {
-                        var value = document.getElementById("s1")['value'];
+                        var value = document.getElementById("s1").value;
                         RadioChannels.edit.trigger(PageEvents.zoom, value);
                     }
                     else

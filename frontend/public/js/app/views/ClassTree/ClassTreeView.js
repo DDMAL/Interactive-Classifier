@@ -42,15 +42,15 @@ export default Marionette.LayoutView.extend(
                 var oldClassNameList = that.model.get("class_names");
 
                 //Don't display the new class if it's a part of a group or a split
-                if(newClassName.substring(0,12) != "_group._part" && newClassName.substring(0,6) != "_split")
+                if (newClassName.substring(0,12) !== "_group._part" && newClassName.substring(0,6) !== "_split")
                 {
                     var newClassNameList = _.union(oldClassNameList, [newClassName]);
 
                     if (newClassNameList.length !== oldClassNameList.length)
                     {
-                    console.log("New name!");
-                    // Set the new list
-                    that.model.set("class_names", newClassNameList.sort());
+                        console.log("New name!");
+                        // Set the new list
+                        that.model.set("class_names", newClassNameList.sort());
                         // Re-render the view
                         that.showSubTree();
                     }

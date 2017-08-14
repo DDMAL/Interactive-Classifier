@@ -44,7 +44,7 @@ export default Marionette.CompositeView.extend({
             url: "#",
             text: Strings.menuGroupLabel,
             clickEvent: MainMenuEvents.clickGroupClassify
-        }));        
+        }));
         this.collection = menuLinks;
     }
 });

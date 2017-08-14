@@ -10,7 +10,7 @@ export default {
     openMultiEdit: "open:multiEdit",
     openTrainingEdit: "open:trainingEdit",
     dragSelect: "drag:select",
-    previewSelect: "preview:select",    
+    previewSelect: "preview:select",
     setGlyphName: "change:glyph:name",
     clickGlyphName: "click:glyph:name",
     switchGlyphActivation: "switch:glyph:activation",
