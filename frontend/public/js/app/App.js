@@ -33,6 +33,7 @@ var App = Marionette.Application.extend(
         modalCollection: undefined,
         behaviors: {},
         changedGlyphs: new GlyphCollection(),
+        changedTrainingGlyphs: new GlyphCollection(),
         groupedGlyphs: [],
 
         /**
@@ -81,7 +82,14 @@ var App = Marionette.Application.extend(
             });
             this.listenTo(RadioChannels.edit, GlyphEvents.changeGlyph, function (glyphModel)
             {
-                that.changedGlyphs.add(glyphModel);
+                if (glyphModel.attributes.is_training)
+                {
+                    that.changedTrainingGlyphs.add(glyphModel);
+                }
+                else
+                {
+                    that.changedGlyphs.add(glyphModel);
+                }
             });
             this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, function (glyphModel)
             {
@@ -181,7 +189,8 @@ var App = Marionette.Application.extend(
         {
             var data = JSON.stringify({
                 "glyphs": this.changedGlyphs.toJSON(),
-                "grouped_glyphs": this.groupedGlyphs
+                "grouped_glyphs": this.groupedGlyphs,
+                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON()
             });
             // Submit the corrections and close the window
             $.ajax({
@@ -209,7 +218,8 @@ var App = Marionette.Application.extend(
                 "glyphs": this.changedGlyphs.toJSON(),
                 "grouped_glyphs": this.groupedGlyphs,
                 "auto_group": true,
-                "user_options": userSelections
+                "user_options": userSelections,
+                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON()
             });
             // Submit the corrections and close the window
             $.ajax({
@@ -237,7 +247,8 @@ var App = Marionette.Application.extend(
             var data = JSON.stringify({
                 "complete": true,
                 "glyphs": this.changedGlyphs.toJSON(),
-                "grouped_glyphs": this.groupedGlyphs
+                "grouped_glyphs": this.groupedGlyphs,
+                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON()
             });
             /* Submit the corrections and close the window*/
             $.ajax({
@@ -336,7 +347,7 @@ var App = Marionette.Application.extend(
 
                             g.onCreate();
                             // The data gets saved to send to celery later
-                            if (className === "unclassied" || className === "UNCLASSIFIED")
+                            if (className.toLowerCase() === "unclassified")
                             {
                                 g.unclassify();
                             }

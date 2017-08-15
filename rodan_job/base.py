@@ -30,6 +30,15 @@ def media_file_path_to_public_url(media_file_path):
     chars_to_remove = len(MEDIA_ROOT)
     return os.path.join(MEDIA_URL, media_file_path[chars_to_remove:])
 
+def convert_to_gamera_image(glyph):
+    return RunLengthImage(
+        glyph['ulx'],
+        glyph['uly'],
+        glyph['ncols'],
+        glyph['nrows'],
+        glyph['image']
+    ).get_gamera_image()
+
 
 def get_manual_glyphs(glyphs):
     """
@@ -40,13 +49,7 @@ def get_manual_glyphs(glyphs):
     for glyph in glyphs:
         if glyph['id_state_manual']:
             # Get the gamera image
-            gamera_image = RunLengthImage(
-                glyph['ulx'],
-                glyph['uly'],
-                glyph['ncols'],
-                glyph['nrows'],
-                glyph['image']
-            ).get_gamera_image()
+            gamera_image = convert_to_gamera_image(glyph)
             # It's a training glyph!
             gamera_image.classify_manual(glyph['class_name'])
             training_glyphs.append(gamera_image)
@@ -98,10 +101,19 @@ def prepare_classifier(training_database, glyphs, features_file_path):
     Given a training database and a list of glyph dicts, train the classifier
     """
     # Prepare the training glyphs
-    training_glyphs = get_manual_glyphs(glyphs)
+    database = get_manual_glyphs(glyphs)
+
     # The database is a mixture of the original database plus all
     # our manual corrections that we've done in the GUI.
-    database = training_database + training_glyphs
+    for g in training_database:
+        glyph = convert_to_gamera_image(g)
+
+        if g['id_state_manual']:
+            glyph.classify_manual(g['class_name'])
+        else:
+            glyph.classify_automatic(g['class_name'])
+        database.append(glyph)
+
     # Train the classifier
     classifier = gamera.knn.kNNInteractive(database=database,
                                            perform_splits=True,
@@ -244,23 +256,29 @@ def serialize_class_names_to_json(glyphs, training_database):
     Get JSON representing the list of all class names in the classifier.
     """
     name_set = set()
-    # Add the training data short codes
-    for image in training_database:
-        name_set.add(image.get_main_id())
-    # Add the current glyph short codes
-    for glyph in glyphs:
-        name_set.add(glyph['class_name'])
+    database = glyphs + training_database
+    # Add the glyph short codes
+    for image in database:
+        name_set.add(image['class_name'])
     return json.dumps(sorted(list(name_set)))
 
 
-def serialize_data(settings, training_database):
+def serialize_data(settings):
     """
     Serialize the short codes and glyphs to JSON and store them in settings.
     """
+
+    # Make sure the manual glyphs get put in the same view as training glyphs
+    manual = []
+    for glyph in settings['glyphs']:
+        if glyph['id_state_manual']:
+            manual.append(glyph)
+
     settings['class_names_json'] = serialize_class_names_to_json(
-        settings['glyphs'], training_database)
+        settings['glyphs'], settings['training_glyphs'])
     settings['glyphs_json'] = serialize_glyphs_to_json(settings['glyphs'])
-    settings['training_json'] = serialize_glyphs_to_json(settings['training_glyphs'])
+    settings['training_json'] = serialize_glyphs_to_json(settings['training_glyphs'] + manual)
+
 
 # We don't want to reclassify glyphs that are a a part of a group
 def filter_parts(settings):
@@ -305,6 +323,7 @@ def update_changed_glyphs(settings):
 
     # Build a hash of the changed glyphs by their id
     changed_glyph_hash = {g['id']: g for g in settings['@changed_glyphs']}
+    changed_training_hash = {g['id']: g for g in settings['@changed_training_glyphs']}
     # Loop through all glyphs.  Update if changed.
     for glyph in settings['glyphs']:
         if not changed_glyph_hash:
@@ -323,8 +342,29 @@ def update_changed_glyphs(settings):
                 # Pop the changed glyph from the hash
                 changed_glyph_hash.pop(key, None)
 
+    # We do the same for the changed training glyphs
+    for glyph in settings['training_glyphs']:
+        # You do get here, so that means that there are glyphs in training_data
+
+        if not changed_training_hash:
+            # No more changed glyphs, so break
+            break
+        else:
+            # There are still glyphs to update
+            key = glyph['id']
+            # Grab the changed glyph
+            if key in changed_training_hash:
+                changed_glyph = changed_training_hash[key]
+                # Update the Glyph proper
+                glyph['class_name'] = changed_glyph['class_name']
+                glyph['id_state_manual'] = changed_glyph['id_state_manual']
+                glyph['confidence'] = changed_glyph['confidence']
+                # Pop the changed glyph from the hash
+                changed_training_hash.pop(key, None)
+
     # Clear out the @changed_glyphs from the settings...
     settings['@changed_glyphs'] = []
+    settings['@changed_training_glyphs'] = []
 
 
 class InteractiveClassifier(RodanTask):
@@ -419,23 +459,6 @@ class InteractiveClassifier(RodanTask):
         else:
             features = None
 
-        # Handle importing the optional training classifier
-        if 'GameraXML - Training Data' in inputs:
-            training_database = glyphs_from_xml(
-                inputs['GameraXML - Training Data'][0]['resource_path'])
-            classifier_glyphs = GameraXML(inputs['GameraXML - Training Data'][0]['resource_path']).get_glyphs()
-            for c in classifier_glyphs:
-                c['is_training'] = True
-        elif '@XML' in settings:
-            file = settings['@XML']
-            training_database = []
-            classifier_glyphs = []  
-            # TODO - implement XML import
-            # training_database = LoadXML().parse_stream(file).glyphs # + glyphs_from_xml(inputs['GameraXML - Training Data'][0]['resource_path'])
-        else:
-            settings['@XML'] = []
-            training_database = []
-
         # Set the initial state
         if '@state' not in settings:
             settings['@state'] = ClassifierStateEnum.IMPORT_XML
@@ -444,10 +467,19 @@ class InteractiveClassifier(RodanTask):
         # Execute import state, classifying state, or output state
         if settings['@state'] == ClassifierStateEnum.IMPORT_XML:
             # IMPORT_XML Stage
+
+            # Handle importing the optional training classifier
+            if 'GameraXML - Training Data' in inputs:
+                classifier_glyphs = GameraXML(inputs['GameraXML - Training Data'][0]['resource_path']).get_glyphs()
+                for c in classifier_glyphs:
+                    c['is_training'] = True
+            else:
+                classifier_glyphs = []
+
             settings['glyphs'] = GameraXML(classifier_path).get_glyphs()
             settings['training_glyphs'] = classifier_glyphs
             settings['@state'] = ClassifierStateEnum.CLASSIFYING
-            serialize_data(settings, training_database)
+            serialize_data(settings)
             return self.WAITING_FOR_INPUT()
 
         elif settings['@state'] == ClassifierStateEnum.CLASSIFYING:
@@ -459,10 +491,10 @@ class InteractiveClassifier(RodanTask):
             # Takes out _group._parts glyphs
             filter_parts(settings)
             run_correction_stage(settings['glyphs'],
-                                 training_database,
+                                 settings['training_glyphs'],
                                  features)
 
-            serialize_data(settings, training_database)
+            serialize_data(settings)
             return self.WAITING_FOR_INPUT()
 
         elif settings['@state'] == ClassifierStateEnum.GROUP_AND_CLASSIFY:
@@ -473,10 +505,10 @@ class InteractiveClassifier(RodanTask):
             filter_parts(settings)
             group_and_correct(settings['glyphs'],
                                  settings['@user_options'],
-                                 training_database,
+                                 settings['training_glyphs'],
                                  features)
             filter_parts(settings)
-            serialize_data(settings, training_database)
+            serialize_data(settings)
             return self.WAITING_FOR_INPUT()       
   
         else:
@@ -485,7 +517,7 @@ class InteractiveClassifier(RodanTask):
             update_changed_glyphs(settings)
             # Do one final classification before quitting
             cknn = run_correction_stage(settings['glyphs'],
-                                        training_database,
+                                        settings['training_glyphs'],
                                         features)
             # No more corrections are required.  We can now output the data
             run_output_stage(cknn, settings['glyphs'], outputs)
@@ -502,11 +534,11 @@ class InteractiveClassifier(RodanTask):
         for glyph_c in glyphs:
             glyph={}
             for g in settings['glyphs']:
-                if(glyph_c['id']==g['id']):
-                    glyph = g 
+                if glyph_c['id']==g['id']:
+                    glyph = g
 
             # This means its a split glyph so a new glyph needs to be created
-            if(glyph == {}):
+            if glyph == {} :
                 glyph = GameraGlyph(
                         gid = glyph_c["id"],
                         class_name = glyph_c['class_name'],
@@ -626,15 +658,9 @@ class InteractiveClassifier(RodanTask):
             return {
                 '@state': ClassifierStateEnum.EXPORT_XML,
                 '@changed_glyphs': user_input['glyphs'],
-                '@grouped_glyphs': user_input['grouped_glyphs']
+                '@grouped_glyphs': user_input['grouped_glyphs'],
+                '@changed_training_glyphs': user_input['changed_training_glyphs']
             }
-        # If the user uploaded an XML, add these glyphs to the training data
-        elif 'importXML' in user_input:
-            data = {
-            '@changed_glyphs': user_input['glyphs'],
-            '@XML': user_input['XML'],
-            }
-            return data
 
         # If the user wants to group, group the glyphs and return the new glyph
         elif 'group' in user_input:
@@ -661,7 +687,8 @@ class InteractiveClassifier(RodanTask):
             '@state': ClassifierStateEnum.GROUP_AND_CLASSIFY,
             '@user_options': user_input['user_options'],
             '@changed_glyphs': user_input['glyphs'],
-            '@grouped_glyphs': user_input['grouped_glyphs']
+            '@grouped_glyphs': user_input['grouped_glyphs'],
+            '@changed_training_glyphs': user_input['changed_training_glyphs']
             }
 
         else:
@@ -670,5 +697,6 @@ class InteractiveClassifier(RodanTask):
             grouped_glyphs = user_input['grouped_glyphs']
             return {
                 '@changed_glyphs': changed_glyphs,
-                '@grouped_glyphs': grouped_glyphs
+                '@grouped_glyphs': grouped_glyphs,
+                '@changed_training_glyphs': user_input['changed_training_glyphs']
             }

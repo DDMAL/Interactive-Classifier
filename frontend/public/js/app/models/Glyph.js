@@ -84,16 +84,18 @@ export default Backbone.Model.extend(
             // Make sure it's a string
 
             var oldClassName = this.get("class_name");
-
-            // Update glyph table location
-            RadioChannels.edit.trigger(GlyphEvents.moveGlyph, this, oldClassName, this.get("class_name"));
-            RadioChannels.edit.trigger(GlyphEvents.changeGlyph, this);
-            RadioChannels.edit.trigger(GlyphEvents.setGlyphName, this.get("class_name"));
+            var newClassName = "UNCLASSIFIED";
 
             this.set({
                 class_name: "UNCLASSIFIED",
                 id_state_manual: false,
                 confidence: 0
             });
+
+            // Update glyph table location
+            RadioChannels.edit.trigger(GlyphEvents.moveGlyph, this, oldClassName, newClassName);
+            RadioChannels.edit.trigger(GlyphEvents.changeGlyph, this);
+            RadioChannels.edit.trigger(GlyphEvents.setGlyphName, newClassName);
+
         }
     });
