@@ -507,9 +507,9 @@ var App = Marionette.Application.extend(
                         userOptions: [
                         {"text": "Grouping Function", "type": "dropdown", "options": ["Bounding Box", "Shaped"]},
                         {"text": "Distance Threshold", "type": "input", "default": 4},
-                        {"text": "Maximum number of parts per group", "type": "input", "default": 4},
-                        {"text": "Maximum Solveable subgraph size", "type": "input", "default": 16},
-                        {"text": "Grouping criterion", "type": "dropdown", "options": ["min", "avg"]}
+                        {"text": "Maximum Number of Parts per Group", "type": "input", "default": 4},
+                        {"text": "Maximum Solvable Subgraph Size", "type": "input", "default": 16},
+                        {"text": "Grouping Criterion", "type": "dropdown", "options": ["min", "avg"]}
                         ],
                         callback: function (userArgs)
                         {
@@ -521,9 +521,9 @@ var App = Marionette.Application.extend(
 
                             userSelections.func = userArgs["Grouping Function"]
                             userSelections.distance = userArgs["Distance Threshold"]
-                            userSelections.parts = userArgs["Maximum number of parts per group"]
-                            userSelections.graph = userArgs["Maximum Solveable subgraph size"]
-                            userSelections.criterion = userArgs["Grouping criterion"]
+                            userSelections.parts = userArgs["Maximum Number of Parts per Group"]
+                            userSelections.graph = userArgs["Maximum Solvable Subgraph Size"]
+                            userSelections.criterion = userArgs["Grouping Criterion"]
 
                             that.groupReclassify(userSelections);
                         }
