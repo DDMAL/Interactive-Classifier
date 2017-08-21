@@ -677,23 +677,48 @@ html.js {
     border-left: 1px solid #444444;
 }
 
+#collapse-button {
+    float: left;
+    height: 4%;
+    width: 12%;
+    position: absolute;
+    top: 55px;
+    bottom: 50px;
+    right: 0;
+    border-top: 1px solid #444444;
+    border-left: 1px solid #444444;
+}
+
+#right0 {
+    float: left;
+    overflow-y: scroll;
+    height: 28%;
+    width: 75%;
+    position: absolute;
+    top: 90px;
+    right: 0;
+    resize: vertical;
+    border-left: 1px solid #444444;
+}
+
 #right1 {
     float: left;
     overflow-y: scroll;
-    height: 66%;
+    height: 31%;
     width: 75%;
     position: absolute;
-    top: 0;
+    top: 350px;
     right: 0;
-    padding-top: 50px;
+    border-top: 1px solid #444444;
     border-left: 1px solid #444444;
+    resize: vertical;
 }
 
 #right2 {
     float: left;
     overflow-x: scroll;
     overflow-y: scroll;
-    height: 33%;
+    height: 31%;
     width: 75%;
     position: absolute;
     bottom: 0;
