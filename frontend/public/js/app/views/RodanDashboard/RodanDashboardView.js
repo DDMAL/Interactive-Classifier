@@ -336,18 +336,26 @@ export default Marionette.LayoutView.extend(
 
             // This section deals with resizing.
 
+            $('#right0').collapse('toggle');
+
             /* TODO: the decimals here are harcoded (they are the original percentages for height/width)
              * These values should be found through the document somehow.
              * These values are all the original values for the heights/widths of certain elements
+             *
+             * The values of the client rectangles have already been reduced by the percentages shown
+             * To get the original heights of the rectangles, I have to divide by the percentage
+             * All of these values were taken from styles.scss (again, these should be accessed in this file)
              */
+
             this.classHeight = document.getElementById("left1").getClientRects()[0].height / 0.5;
             this.classWidth = document.getElementById("left1").getClientRects()[0].width / 0.25;
-            this.glyphHeight = document.getElementById("right1").getClientRects()[0].height / 0.66;
+            this.glyphHeight = document.getElementById("right1").getClientRects()[0].height / 0.31;
+            this.imgHeight = document.getElementById("right2").getClientRects()[0].height / 0.31;
+            this.collapseHeight = document.getElementById("collapse-button").getClientRects()[0].height;
+            this.collapseWidth  = document.getElementById("collapse-button").getClientRects()[0].width;
+            this.winWidth = window.innerWidth;
             this.winWidth = window.innerWidth;
             this.winHeight = window.innerHeight;
-            this.resize = true;
-
-            that = this;
 
             $(document).mousemove(function (event)
             {
@@ -356,13 +364,53 @@ export default Marionette.LayoutView.extend(
                 var glyphTable = document.getElementById("right1");
                 var imgPrev = document.getElementById("right2");
                 var classEdit = document.getElementById("left1");
+                var trainingGlyphs = document.getElementById("right0");
+                var collapseButton = document.getElementById("collapse-button");
+
+                // I make sure the height/width is the same as the original height/width
+                // (It doesn't change on resize)
+                collapseButton.style.height = that.collapseHeight + "px";
+                collapseButton.style.width = that.collapseWidth + "px";
 
                 // Current height and width of the class view
                 var currentHeight = classEdit.getClientRects()[0].height;
                 var currentWidth = classEdit.getClientRects()[0].width;
 
+                // Current height and width of the entire window
                 var currentWinHeight = window.innerHeight;
                 var currentWinWidth = window.innerWidth;
+
+                // The percentage of trainingGlyphs height. The glyph table height depends on this
+                if (trainingGlyphs.getClientRects()[0])
+                {
+                    glyphTable.style.top = trainingGlyphs.getClientRects()[0].bottom + "px";
+                }
+                else
+                {
+                    // If the classifier glyphs are collapsed,
+                    // the top of the glyph table should touch the bottom of the button
+                    glyphTable.style.top = document.getElementById("collapse-button").getClientRects()[0].bottom + "px";
+                }
+
+                imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
+
+                // We need to find the height percentage of imgPrev now;
+                // The height of imgPrev is the space between the bottom of the page and
+                // the bottom of the glyph table
+
+                imgPrev.style.height = innerHeight - glyphTable.getClientRects()[0].bottom + "px";
+
+                // Coords of right of the class view = left for the glyph view
+                var left = classEdit.getClientRects()[0].right;
+
+                // Make sure the right side has the same corner as the left side
+                imgPrev.style.left = left + "px";
+                glyphTable.style.left = left + "px";
+                trainingGlyphs.style.left = left + "px";
+                collapseButton.style.left = left + "px";
+
+                // This region deals with changing the height and width percentages on resize
+                // Resize = true when the height/width needs to be changed
 
                 // If the window has been resized, the original widths/heights must be modified
                 // By the same percentage (ratio)
@@ -387,7 +435,8 @@ export default Marionette.LayoutView.extend(
 
                     that.resize = true;
                 }
-                // Makes sure the user actually resizes a window
+
+                // Makes sure the user actually resizes a window by checking that the mouse is on the resize button
                 var resizeLeft = (classEdit.getClientRects()[0].left + classEdit.getClientRects()[0].width);
                 var resizeBottom = (classEdit.getClientRects()[0].top + classEdit.getClientRects()[0].height);
                 // jscs:disable
@@ -403,39 +452,29 @@ export default Marionette.LayoutView.extend(
                 // jscs:enable
                 {
                     that.resize = true;
-                    console.log(event.buttons);
                 }
 
                 if (that.resize)
                 {
-                    // Height percent and width percent
+                    // Height percent and width percent of the class window, (left1)
+                    // The height of the edit window depends on this height
+                    // The width of all windows depend on this width as well
                     var heightPerc = currentHeight / that.classHeight;
                     var widthPerc = currentWidth / that.classWidth;
 
+                    // The decimals need to be changed into percentages
+                    // To find the width/height of the other windows, use 1-percentage
                     classEdit.style.height = Math.round(heightPerc * 100) + "%";
                     glyphEdit.style.height = Math.round((1 - heightPerc) * 100) + "%";
                     classEdit.style.width = Math.round(widthPerc * 100) + "%";
                     glyphEdit.style.width = Math.round(widthPerc * 100) + "%";
 
-                    heightPerc = glyphTable.getClientRects()[0].height / that.glyphHeight;
-
-                    glyphTable.style.width = Math.round((1 - widthPerc) * 100) + "%";
                     imgPrev.style.width = Math.round((1 - widthPerc) * 100) + "%";
-                    glyphTable.style.height = Math.round(heightPerc * 100) + "%";
-                    imgPrev.style.height = Math.round((1 - heightPerc) * 100) + "%";
+                    trainingGlyphs.style.width = Math.round((1 - widthPerc) * 100) + "%";
+                    glyphTable.style.width = Math.round((1 - widthPerc) * 100) + "%";
 
-                    // Coords of right of the class view = left for the glyph view
-                    var left = classEdit.getClientRects()[0].right;
-
-                    // Make sure the right side has the same corner as the left side
-                    imgPrev.style.left = left + "px";
-                    glyphTable.style.left = left + "px";
-
-                    // Specifically for the windows on the right
-                    heightPerc = glyphTable.getClientRects()[0].height / that.glyphHeight;
-                    glyphTable.style.height = 100 * heightPerc + "%";
-                    imgPrev.style.height = (1 - heightPerc) * 100 + "%";
-
+                    // How the slider moves on resize
+                    // The 35 and 25 are hardcoded values that seem to place the slider in a good position
                     var slider = document.getElementById("zoom-slider");
                     var outer = document.getElementById("right2").getClientRects()[0]
                     var top = outer.top + outer.height - 35;
