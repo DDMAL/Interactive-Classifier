@@ -384,7 +384,7 @@ class InteractiveClassifier(RodanTask):
             'name': '1-Bit PNG - Preview Image',
             'resource_types': ['image/onebit+png'],
             'minimum': 1,
-            'maximum': 2,
+            'maximum': 1,
             'is_list': False
         },
         {
