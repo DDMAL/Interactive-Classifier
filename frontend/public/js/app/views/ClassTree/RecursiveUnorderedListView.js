@@ -51,11 +51,13 @@ export default Marionette.ItemView.extend(
             RadioChannels.edit.trigger(GlyphEvents.clickGlyphName, className);
 
             //the user cannot edit the unclassified class
-            if (className !== "unclassified" && className !== "UNCLASSIFIED")
+            if (className.toLowerCase() !== "unclassified")
             {
+                // TODO: store classes in a database so won't create more than once
+                // This feature is very buggy so it's commented out for now
                 var c = new Class();
                 c.set("name",className);
-                RadioChannels.edit.trigger(ClassEvents.openClassEdit, c);
+                // RadioChannels.edit.trigger(ClassEvents.openClassEdit, c);
             }
 
         },

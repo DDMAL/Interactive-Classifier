@@ -146,7 +146,15 @@ var App = Marionette.Application.extend(
             // Extract the page image URL
             var binaryPageImage = pageElement.attr("data-page");
             var glyphDictionary = JSON.parse(glyphsElement.attr("data-glyphs"));
-            var classNames = JSON.parse(classNamesElement.attr("data-class-names"));
+            // This was causing some errors so I added a check
+            if (classNamesElement.attr("data-class-names"))
+            {
+                var classNames = JSON.parse(classNamesElement.attr("data-class-names"));
+            }
+            else
+            {
+                classNames = ["UNCLASSIFIED"];
+            }
             if (trainingGlyphsElement.attr("data-training-glyphs"))
             {
                 var trainingGlyphs = JSON.parse(trainingGlyphsElement.attr("data-training-glyphs"));
