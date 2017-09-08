@@ -81,17 +81,17 @@ def output_corrected_glyphs(cknn, glyphs, output_path):
                                                 with_features=True)
     output_xml.write_filename(output_path)
 
-
 def run_output_stage(cknn, glyphs, outputs):
     """
     The job is complete, so save the results to disk.
     """
-    output_training_classifier_path = outputs['GameraXML - Training Data'][0][
-        'resource_path']
+    if 'GameraXML - Training Data' in outputs:
+        output_training_classifier_path = outputs['GameraXML - Training Data'][0][
+            'resource_path']
+        # Save the training data to disk
+        cknn.to_xml_filename(output_training_classifier_path)
     output_classified_data_path = outputs['GameraXML - Classified Glyphs'][0][
         'resource_path']
-    # Save the training data to disk
-    cknn.to_xml_filename(output_training_classifier_path)
     # Save the rest of the glyphs
     output_corrected_glyphs(cknn, glyphs, output_classified_data_path)
 
@@ -384,7 +384,7 @@ class InteractiveClassifier(RodanTask):
             'name': '1-Bit PNG - Preview Image',
             'resource_types': ['image/onebit+png'],
             'minimum': 1,
-            'maximum': 2,
+            'maximum': 1,
             'is_list': False
         },
         {
@@ -413,7 +413,7 @@ class InteractiveClassifier(RodanTask):
         {
             'name': 'GameraXML - Training Data',
             'resource_types': ['application/gamera+xml'],
-            'minimum': 1,
+            'minimum': 0,
             'maximum': 1,
             'is_list': False
         },
