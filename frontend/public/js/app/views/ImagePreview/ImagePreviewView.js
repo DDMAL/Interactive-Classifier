@@ -67,7 +67,7 @@ export default Marionette.ItemView.extend(
             {
                 var glyph = glyphs[i];
                 var pic = document.getElementsByClassName("preview-background")[0];
-                var zoomLevel = pic.getBoundingClientRect().height / pic.style.originalHeight;
+                var zoomLevel = pic.getBoundingClientRect().height / pic.dataset.originalHeight;
 
                 var top = (glyph.get("uly")) * zoomLevel;
                 var left = (glyph.get("ulx")) * zoomLevel;
@@ -277,7 +277,7 @@ export default Marionette.ItemView.extend(
                     if (h !== 0)
                     {
                         pic.style.height = h + "px";
-                        pic.style.originalHeight = h;
+                        pic.dataset.originalHeight = h;
                     }
                 }
                 // jscs:disable

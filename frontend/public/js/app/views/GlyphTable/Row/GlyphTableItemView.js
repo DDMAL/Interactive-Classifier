@@ -84,7 +84,7 @@ export default Marionette.ItemView.extend(
                 {
                     if (boundingBox)
                     {   var pic = document.getElementsByClassName("preview-background")[0];
-                        var zoomLevel = pic.getBoundingClientRect().height / pic.style.originalHeight;
+                        var zoomLevel = pic.getBoundingClientRect().height / pic.dataset.originalHeight;
                         var glyphRect =
                         {
                             left: that.model.get('ulx') * zoomLevel,

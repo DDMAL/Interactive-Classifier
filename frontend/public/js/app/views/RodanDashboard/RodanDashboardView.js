@@ -187,7 +187,7 @@ export default Marionette.LayoutView.extend(
             function (zoomLevel)
             {
                 var pic = document.getElementsByClassName("preview-background")[0];
-                var oldHeight = pic.style.originalHeight;
+                var oldHeight = pic.dataset.originalHeight;
                 var newHeight = oldHeight * zoomLevel / document.getElementById("s1").getAttribute("default"); //60 is the default value
                 pic.style.height = newHeight + "px";
                 // makes sure the boxes around the glyphs follow the zoom
