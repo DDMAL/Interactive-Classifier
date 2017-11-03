@@ -16,6 +16,7 @@ export default {
     switchGlyphActivation: "switch:glyph:activation",
     addGlyph: "add:glyph",
     splitGlyph: "split:glyph",
+    zoomGlyphs: "zoom:glyphs",
 
     // Events for glyph selection
     selectGlyph: "glyph:select",

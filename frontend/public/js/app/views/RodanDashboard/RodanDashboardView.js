@@ -40,6 +40,11 @@ export default Marionette.LayoutView.extend(
             modalTestRegion: ".modal-test"
         },
 
+        events: {
+            "mousedown": "onMouseDown"
+        },
+
+
         /**
          * @class RodanDashboardView
          *
@@ -57,13 +62,13 @@ export default Marionette.LayoutView.extend(
                     backgroundImage: this.model.get("binaryImage")
                 })
             });
-
+            this.isMouseDown = true,
             // Construct the glyph table data structure
-            this.tableRowCollection = new GlyphTableRowCollection();
-            this.tableRowCollection.setClassifier(false);
             this.trainingRowCollection = new GlyphTableRowCollection();
             this.trainingRowCollection.setClassifier(true);
-
+            this.tableRowCollection = new GlyphTableRowCollection();
+            this.tableRowCollection.setClassifier(false);
+            this.isCollapsed = false;
             this.classifierRowCollection = new GlyphTableRowCollection();
 
             this.listenTo(RadioChannels.edit, PageEvents.changeBackground,
@@ -193,6 +198,20 @@ export default Marionette.LayoutView.extend(
                 // makes sure the boxes around the glyphs follow the zoom
                 RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, that.selectedGlyphs);
 
+            }
+            );
+
+            this.listenTo(RadioChannels.edit, GlyphEvents.zoomGlyphs,
+            function (zoomLevel)
+            {
+                var elms = document.getElementsByClassName("glyph-image-container");
+
+                for(var i = 0; i < elms.length; i++)
+                {
+                    var child = elms[i].childNodes[0].childNodes[1].childNodes[1];
+                    child.width = child.dataset.originalWidth*zoomLevel;
+                    child.height = child.dataset.originalHeight*zoomLevel;
+                }
             }
             );
 
@@ -357,142 +376,171 @@ export default Marionette.LayoutView.extend(
             this.winWidth = window.innerWidth;
             this.winHeight = window.innerHeight;
 
+            var elms = document.getElementsByClassName("glyph-image-container");
+            for(i = 0; i < elms.length; i++)
+            {
+                var child = elms[i].childNodes[0].childNodes[1].childNodes[1];
+                child.dataset.originalWidth = child.getAttribute("width");
+                child.dataset.originalHeight = child.getAttribute("height");
+            }
+            var thar = this;
             $(document).mousemove(function (event)
             {
-                // Each region of the window
-                var glyphEdit = document.getElementById("left2");
-                var glyphTable = document.getElementById("right1");
-                var imgPrev = document.getElementById("right2");
-                var classEdit = document.getElementById("left1");
-                var trainingGlyphs = document.getElementById("right0");
-                var collapseButton = document.getElementById("collapse-button");
-
-                // I make sure the height/width is the same as the original height/width
-                // (It doesn't change on resize)
-                collapseButton.style.height = that.collapseHeight + "px";
-                collapseButton.style.width = that.collapseWidth + "px";
-
-                // Current height and width of the class view
-                var currentHeight = classEdit.getClientRects()[0].height;
-                var currentWidth = classEdit.getClientRects()[0].width;
-
-                // Current height and width of the entire window
-                var currentWinHeight = window.innerHeight;
-                var currentWinWidth = window.innerWidth;
-
-                // The percentage of trainingGlyphs height. The glyph table height depends on this
-                if (trainingGlyphs.getClientRects()[0])
+                if(that.isMouseDown)
                 {
-                    glyphTable.style.top = trainingGlyphs.getClientRects()[0].bottom + "px";
-                }
-                else
-                {
-                    // If the classifier glyphs are collapsed,
-                    // the top of the glyph table should touch the bottom of the button
-                    glyphTable.style.top = document.getElementById("collapse-button").getClientRects()[0].bottom + "px";
-                }
-
-                imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
-
-                // We need to find the height percentage of imgPrev now;
-                // The height of imgPrev is the space between the bottom of the page and
-                // the bottom of the glyph table
-
-                imgPrev.style.height = innerHeight - glyphTable.getClientRects()[0].bottom + "px";
-
-                // Coords of right of the class view = left for the glyph view
-                var left = classEdit.getClientRects()[0].right;
-
-                // Make sure the right side has the same corner as the left side
-                imgPrev.style.left = left + "px";
-                glyphTable.style.left = left + "px";
-                trainingGlyphs.style.left = left + "px";
-                collapseButton.style.left = left + "px";
-
-                // This region deals with changing the height and width percentages on resize
-                // Resize = true when the height/width needs to be changed
-
-                // If the window has been resized, the original widths/heights must be modified
-                // By the same percentage (ratio)
-                if (that.winWidth !== currentWinWidth)
-                {
-                    // Width percentage
-                    var wPerc = that.winWidth / currentWinWidth;
-                    that.winWidth = currentWinWidth;
-                    that.classWidth = that.classWidth / wPerc;
-
-                    that.resize = true;
-                }
-
-                if (that.winHeight !== currentWinHeight)
-                {
-                    // Height percentage
-                    var hPerc = that.winHeight / currentWinHeight;
-                    that.winHeight = currentWinHeight;
-
-                    that.classHeight = that.classHeight / hPerc;
-                    that.glyphHeight = that.glyphHeight / hPerc;
-
-                    that.resize = true;
-                }
-
-                // Makes sure the user actually resizes a window by checking that the mouse is on the resize button
-                var resizeLeft = (classEdit.getClientRects()[0].left + classEdit.getClientRects()[0].width);
-                var resizeBottom = (classEdit.getClientRects()[0].top + classEdit.getClientRects()[0].height);
-                // jscs:disable
-                if (event.clientX < resizeLeft && event.clientX > (resizeLeft - 20) && event.clientY < resizeBottom && event.clientY > (resizeBottom - 20))
-                // jscs:enable
-                {
-                    that.resize = true;
-                }
-                resizeLeft = (glyphTable.getClientRects()[0].left + glyphTable.getClientRects()[0].width);
-                resizeBottom = (glyphTable.getClientRects()[0].top + glyphTable.getClientRects()[0].height);
-                // jscs:disable
-                if (event.clientX < resizeLeft && event.clientX > (resizeLeft - 20) && event.clientY < resizeBottom && event.clientY > (resizeBottom - 20))
-                // jscs:enable
-                {
-                    that.resize = true;
-                }
-
-                if (that.resize)
-                {
-                    // Height percent and width percent of the class window, (left1)
-                    // The height of the edit window depends on this height
-                    // The width of all windows depend on this width as well
-                    var heightPerc = currentHeight / that.classHeight;
-                    var widthPerc = currentWidth / that.classWidth;
-
-                    // The decimals need to be changed into percentages
-                    // To find the width/height of the other windows, use 1-percentage
-                    classEdit.style.height = Math.round(heightPerc * 100) + "%";
-                    glyphEdit.style.height = Math.round((1 - heightPerc) * 100) + "%";
-                    classEdit.style.width = Math.round(widthPerc * 100) + "%";
-                    glyphEdit.style.width = Math.round(widthPerc * 100) + "%";
-
-                    imgPrev.style.width = Math.round((1 - widthPerc) * 100) + "%";
-                    trainingGlyphs.style.width = Math.round((1 - widthPerc) * 100) + "%";
-                    glyphTable.style.width = Math.round((1 - widthPerc) * 100) + "%";
-
-                    // How the slider moves on resize
-                    // The 35 and 25 are hardcoded values that seem to place the slider in a good position
-                    var slider = document.getElementById("zoom-slider");
-                    var outer = document.getElementById("right2").getClientRects()[0]
-                    var top = outer.top + outer.height - 35;
-                    slider.style.top = top + "px";
-                    left = outer.width + outer.left - slider.style.width.split("px")[0] - 25;
-                    slider.style.left = left + "px";
-
-                    // Mouse up, no longer resizing
+                        // Mouse up, no longer resizing
                     if (event.buttons === 0)
                     {
                         that.resize = false;
+                        that.isMouseDown = false;
+                    }
+                    if(this.isCollapsed !== $('#right0').attr("aria-expanded"))
+                    {
+                        that.resize = true;
+                        this.isCollapsed = $('#right0').attr("aria-expanded");
+                    }
+
+                    // Each region of the window
+                    var glyphEdit = document.getElementById("left2");
+                    var glyphTable = document.getElementById("right1");
+                    var imgPrev = document.getElementById("right2");
+                    var classEdit = document.getElementById("left1");
+                    var trainingGlyphs = document.getElementById("right0");
+                    var collapseButton = document.getElementById("collapse-button");
+
+                    // I make sure the height/width is the same as the original height/width
+                    // (It doesn't change on resize)
+                    collapseButton.style.height = that.collapseHeight + "px";
+                    collapseButton.style.width = that.collapseWidth + "px";
+
+
+                    // Current height and width of the class view
+                    var currentHeight = classEdit.getClientRects()[0].height;
+                    var currentWidth = classEdit.getClientRects()[0].width;
+
+                    // Current height and width of the entire window
+                    var currentWinHeight = window.innerHeight;
+                    var currentWinWidth = window.innerWidth;
+
+                    // The percentage of trainingGlyphs height. The glyph table height depends on this
+                    if (trainingGlyphs.getClientRects()[0])
+                    {
+                        glyphTable.style.top = trainingGlyphs.getClientRects()[0].bottom + "px";
+                        that.resize = true;
+                    }
+                    else
+                    {
+                        // If the classifier glyphs are collapsed,
+                        // the top of the glyph table should touch the bottom of the button
+                        glyphTable.style.top = document.getElementById("collapse-button").getClientRects()[0].bottom + "px";
+                    }
+
+                    imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
+
+                    // We need to find the height percentage of imgPrev now;
+                    // The height of imgPrev is the space between the bottom of the page and
+                    // the bottom of the glyph table
+
+                    imgPrev.style.height = innerHeight - glyphTable.getClientRects()[0].bottom + "px";
+
+                    // Coords of right of the class view = left for the glyph view
+                    var left = classEdit.getClientRects()[0].right;
+
+                    // Make sure the right side has the same corner as the left side
+                    imgPrev.style.left = left + "px";
+                    glyphTable.style.left = left + "px";
+                    trainingGlyphs.style.left = left + "px";
+                    collapseButton.style.left = left + "px";
+
+                    // This region deals with changing the height and width percentages on resize
+                    // Resize = true when the height/width needs to be changed
+
+                    // If the window has been resized, the original widths/heights must be modified
+                    // By the same percentage (ratio)
+                    if (that.winWidth !== currentWinWidth)
+                    {
+                        // Width percentage
+                        var wPerc = that.winWidth / currentWinWidth;
+                        that.winWidth = currentWinWidth;
+                        that.classWidth = that.classWidth / wPerc;
+
+                        that.resize = true;
+                    }
+
+                    if (that.winHeight !== currentWinHeight)
+                    {
+                        // Height percentage
+                        var hPerc = that.winHeight / currentWinHeight;
+                        that.winHeight = currentWinHeight;
+
+                        that.classHeight = that.classHeight / hPerc;
+                        that.glyphHeight = that.glyphHeight / hPerc;
+
+                        that.resize = true;
+                    }
+
+                    // Makes sure the user actually resizes a window by checking that the mouse is on the resize button
+                    var resizeLeft = (classEdit.getClientRects()[0].left + classEdit.getClientRects()[0].width);
+                    var resizeBottom = (classEdit.getClientRects()[0].top + classEdit.getClientRects()[0].height);
+                    // jscs:disable
+                    if (event.clientX < resizeLeft && event.clientX > (resizeLeft - 20) && event.clientY < resizeBottom && event.clientY > (resizeBottom - 20))
+                    // jscs:enable
+                    {
+                        that.resize = true;
+                    }
+                    resizeLeft = (glyphTable.getClientRects()[0].left + glyphTable.getClientRects()[0].width);
+                    resizeBottom = (glyphTable.getClientRects()[0].top + glyphTable.getClientRects()[0].height);
+                    // jscs:disable
+                    if (event.clientX < resizeLeft && event.clientX > (resizeLeft - 20) && event.clientY < resizeBottom && event.clientY > (resizeBottom - 20))
+                    // jscs:enable
+                    {
+                        that.resize = true;
+                    }
+
+                    if (that.resize)
+                    {
+                        // Height percent and width percent of the class window, (left1)
+                        // The height of the edit window depends on this height
+                        // The width of all windows depend on this width as well
+                        var heightPerc = currentHeight / that.classHeight;
+                        var widthPerc = currentWidth / that.classWidth;
+
+                        // The decimals need to be changed into percentages
+                        // To find the width/height of the other windows, use 1-percentage
+                        classEdit.style.height = Math.round(heightPerc * 100) + "%";
+                        glyphEdit.style.height = Math.round((1 - heightPerc) * 100) + "%";
+                        classEdit.style.width = Math.round(widthPerc * 100) + "%";
+                        glyphEdit.style.width = Math.round(widthPerc * 100) + "%";
+
+                        imgPrev.style.width = Math.round((1 - widthPerc) * 100) + "%";
+                        trainingGlyphs.style.width = Math.round((1 - widthPerc) * 100) + "%";
+                        glyphTable.style.width = Math.round((1 - widthPerc) * 100) + "%";
+
+                        // How the slider moves on resize
+                        // The 35 and 25 are hardcoded values that seem to place the slider in a good position
+                        var slider = document.getElementById("zoom-slider");
+                        var outer = document.getElementById("right2").getClientRects()[0];
+                        var top = outer.top + outer.height - 35;
+                        slider.style.top = top + "px";
+                        left = outer.width + outer.left - slider.style.width.split("px")[0] - 25;
+                        slider.style.left = left + "px";
+
+                        var outer2 = document.getElementById("right2").getClientRects()[0];
+                        var slider2 = document.getElementById("glyph-zoom");
+                        slider2.style.left = left + "px";
+                        slider2.style.top = outer2.top - 35 + "px";
+
                     }
                 }
-
             });
 
             timer.tick("final");
         },
+
+                onMouseDown: function (event)
+                {
+                    this.isMouseDown = true;
+                },
 
         /**
          * Open the GlyphEditView for editing a particular glyph.

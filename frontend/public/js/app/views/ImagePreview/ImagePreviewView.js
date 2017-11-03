@@ -220,10 +220,16 @@ export default Marionette.ItemView.extend(
 
             var slider = document.getElementById("zoom-slider");
             var outer = document.getElementById("right2").getClientRects()[0]
-            var left = outer.width + outer.left - slider.style.width.split("px")[0] - 25;
+            var left = outer.width + outer.left - slider.style.width.split("px")[0] - 30;
             var top = outer.top + outer.height - 35;
             slider.style.left = left + "px";
             slider.style.top = top + "px";
+
+            // This slider corresponds to the glyph zoom
+            var outer2 = document.getElementById("right2").getClientRects()[0];
+            var slider2 = document.getElementById("glyph-zoom");
+            slider2.style.left = left + "px";
+            slider2.style.top = outer2.top - 35 + "px";
 
             var pic = document.getElementsByClassName("preview-background")[0];
 
@@ -257,6 +263,8 @@ export default Marionette.ItemView.extend(
                 this.mouseDownX = event.clientX;
                 this.mouseDownY = event.clientY;
 
+
+                // This section checks whether or not the cursor is on one of the zoom sliders
                 var zoom = document.getElementById("zoom-slider");
                 var left = parseInt(zoom.style.left.split("px")[0]);
                 var top = parseInt(zoom.style.top.split("px")[0]);
@@ -265,7 +273,15 @@ export default Marionette.ItemView.extend(
                 var xBounds = this.mouseDownX > left && this.mouseDownX < (left + width);
                 var yBounds = this.mouseDownY > (top - 20) && this.mouseDownY < (top + 20);
 
-                that.isSlider = (xBounds && yBounds);
+                var zoom2 = document.getElementById("glyph-zoom");
+                var left2 = parseInt(zoom2.style.left.split("px")[0]);
+                var top2 = parseInt(zoom2.style.top.split("px")[0]);
+                var width2 = parseInt(zoom2.style.width.split("px")[0]);
+
+                var xBounds2 = this.mouseDownX > left2 && this.mouseDownX < (left2 + width2);
+                var yBounds2 = this.mouseDownY > (top2 - 20) && this.mouseDownY < (top2 + 20);
+
+                that.isSlider = (xBounds && yBounds || xBounds2 && yBounds2);
 
                 // This makes sure that the height isn't stored before the image exists
                 // So it's not set to 0
@@ -295,7 +311,9 @@ export default Marionette.ItemView.extend(
                     else if (that.isSlider) // If the coords of the click are on the slider
                     {
                         var value = document.getElementById("s1").value;
+                        var value2 = parseInt(document.getElementById("s2").value)/100;
                         RadioChannels.edit.trigger(PageEvents.zoom, value);
+                        RadioChannels.edit.trigger(GlyphEvents.zoomGlyphs, value2);
                     }
                     else
                     {
