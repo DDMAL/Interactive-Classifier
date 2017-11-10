@@ -73,7 +73,7 @@ export default Marionette.CollectionView.extend(
             this.mouseDownX = event.clientX;
             this.mouseDownY = event.clientY;
 
-            if(!this.isSlider)
+            if (!this.isSlider)
             {
                 this.selectionBox.style.top = this.mouseDownY + "px";
                 this.selectionBox.style.left = this.mouseDownX + "px";
@@ -152,35 +152,34 @@ export default Marionette.CollectionView.extend(
          */
         onShow: function ()
         {
-            this.selectionBox = document.body.appendChild(document.createElement("div"));
-            this.selectionBox.style.background = "#337ab7";
-            this.selectionBox.style.position = "absolute";
-            this.selectionBox.style.opacity = 0.4;
-            this.selectionBox.style.filter = "alpha(opacity=40)"; // IE8
-            this.selectionBox.style.visibility = "hidden";
 
-            var that = this;
-            $(document).mousemove(function (event)
+        this.selectionBox = document.body.appendChild(document.createElement("div"));
+        this.selectionBox.style.background = "#337ab7";
+        this.selectionBox.style.position = "absolute";
+        this.selectionBox.style.opacity = 0.4;
+        this.selectionBox.style.filter = "alpha(opacity=40)"; // IE8
+        this.selectionBox.style.visibility = "hidden";
+        var that = this;
+        $(document).mousemove(function (event)
             {
-                if (that.isMouseDown === true)
+            if (that.isMouseDown === true)
+            {
+                // If the user has stopped holding their mouse down, execute
+                // the onMouseUp() procedure.
+                if (event.buttons === 0)
                 {
-                    // If the user has stopped holding their mouse down, execute
-                    // the onMouseUp() procedure.
-                    if (event.buttons === 0)
-                    {
-                        that.onMouseUp(event);
-                    }
-                    else
-                    {
-                        var x = event.pageX,
-                            y = event.pageY;
-
-                        that.selectionBox.style.left = Math.min(x, that.mouseDownX) + "px";
-                        that.selectionBox.style.top = Math.min(y, that.mouseDownY) + "px";
-                        that.selectionBox.style.width = Math.abs(x - that.mouseDownX) + "px";
-                        that.selectionBox.style.height = Math.abs(y - that.mouseDownY) + "px";
-                    }
+                    that.onMouseUp(event);
                 }
-            });
+                else
+                {
+                    var x = event.pageX,
+                    y = event.pageY;
+                    that.selectionBox.style.left = Math.min(x, that.mouseDownX) + "px";
+                    that.selectionBox.style.top = Math.min(y, that.mouseDownY) + "px";
+                    that.selectionBox.style.width = Math.abs(x - that.mouseDownX) + "px";
+                    that.selectionBox.style.height = Math.abs(y - that.mouseDownY) + "px";
+                }
+            }
+        });
     }
     });

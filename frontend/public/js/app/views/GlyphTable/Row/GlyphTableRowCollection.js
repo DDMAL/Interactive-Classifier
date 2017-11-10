@@ -64,7 +64,6 @@ export default Backbone.Collection.extend(
                 var newRow = this.findWhere({
                     class_name: newClassName
                 });
-
                 if (newRow)
                 {
                     // There is already a row, so we add to it

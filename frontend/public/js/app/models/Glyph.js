@@ -48,11 +48,17 @@ export default Backbone.Model.extend(
          *
          * @param {string} newClassName - The new name for the class.
          */
-        changeClass: function (newClassName)
+        changeClass: function (newClassName, isManual = true)
         {
             // Make sure it's a string
             newClassName = String(newClassName);
             var oldClassName = this.get("class_name");
+            var confidence = 1.0;
+            // In case of grouping, we don't want the glyph to be manual
+            if (!isManual)
+            {
+                confidence = 0;
+            }
 
             // do the sanitization step
             var sanitizedClassName = ClassNameUtils.sanitizeClassName(newClassName);
@@ -61,7 +67,7 @@ export default Backbone.Model.extend(
             {
                 class_name: sanitizedClassName,
                 id_state_manual: true,
-                confidence: 1.0
+                confidence: confidence
             });
 
             // Update glyph table location

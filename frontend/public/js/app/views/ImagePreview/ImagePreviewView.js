@@ -25,7 +25,6 @@ export default Marionette.ItemView.extend(
         isMouseDown: false,
         mouseDownX: 0,
         mouseDownY: 0,
-        isHover: false,
         isSlider: false,
 
         /**
@@ -259,10 +258,8 @@ export default Marionette.ItemView.extend(
 
             $(document).mousemove(function (event)
             {
-
                 this.mouseDownX = event.clientX;
                 this.mouseDownY = event.clientY;
-
 
                 // This section checks whether or not the cursor is on one of the zoom sliders
                 var zoom = document.getElementById("zoom-slider");
@@ -311,7 +308,7 @@ export default Marionette.ItemView.extend(
                     else if (that.isSlider) // If the coords of the click are on the slider
                     {
                         var value = document.getElementById("s1").value;
-                        var value2 = parseInt(document.getElementById("s2").value)/100;
+                        var value2 = parseInt(document.getElementById("s2").value) / 100;
                         RadioChannels.edit.trigger(PageEvents.zoom, value);
                         RadioChannels.edit.trigger(GlyphEvents.zoomGlyphs, value2);
                     }

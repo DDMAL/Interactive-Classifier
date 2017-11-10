@@ -29,7 +29,6 @@ export default Marionette.LayoutView.extend(
      */
     {
         template,
-
         regions: {
             classCreateRegion: ".glyph-class-create-region",
             glyphTreeRegion: ".glyph-class-tree-region",
@@ -43,7 +42,6 @@ export default Marionette.LayoutView.extend(
         events: {
             "mousedown": "onMouseDown"
         },
-
 
         /**
          * @class RodanDashboardView
@@ -206,11 +204,11 @@ export default Marionette.LayoutView.extend(
             {
                 var elms = document.getElementsByClassName("glyph-image-container");
 
-                for(var i = 0; i < elms.length; i++)
+                for (var i = 0; i < elms.length; i++)
                 {
                     var child = elms[i].childNodes[0].childNodes[1].childNodes[1];
-                    child.width = child.dataset.originalWidth*zoomLevel;
-                    child.height = child.dataset.originalHeight*zoomLevel;
+                    child.width = child.dataset.originalWidth * zoomLevel;
+                    child.height = child.dataset.originalHeight * zoomLevel;
                 }
             }
             );
@@ -377,24 +375,23 @@ export default Marionette.LayoutView.extend(
             this.winHeight = window.innerHeight;
 
             var elms = document.getElementsByClassName("glyph-image-container");
-            for(i = 0; i < elms.length; i++)
+            for (i = 0; i < elms.length; i++)
             {
                 var child = elms[i].childNodes[0].childNodes[1].childNodes[1];
                 child.dataset.originalWidth = child.getAttribute("width");
                 child.dataset.originalHeight = child.getAttribute("height");
             }
-            var thar = this;
             $(document).mousemove(function (event)
             {
-                if(that.isMouseDown)
+                if (that.isMouseDown)
                 {
-                        // Mouse up, no longer resizing
+                    // Mouse up, no longer resizing
                     if (event.buttons === 0)
                     {
                         that.resize = false;
                         that.isMouseDown = false;
                     }
-                    if(this.isCollapsed !== $('#right0').attr("aria-expanded"))
+                    if (this.isCollapsed !== $('#right0').attr("aria-expanded"))
                     {
                         that.resize = true;
                         this.isCollapsed = $('#right0').attr("aria-expanded");
@@ -412,7 +409,6 @@ export default Marionette.LayoutView.extend(
                     // (It doesn't change on resize)
                     collapseButton.style.height = that.collapseHeight + "px";
                     collapseButton.style.width = that.collapseWidth + "px";
-
 
                     // Current height and width of the class view
                     var currentHeight = classEdit.getClientRects()[0].height;
@@ -432,7 +428,9 @@ export default Marionette.LayoutView.extend(
                     {
                         // If the classifier glyphs are collapsed,
                         // the top of the glyph table should touch the bottom of the button
+                        // jscs:disable
                         glyphTable.style.top = document.getElementById("collapse-button").getClientRects()[0].bottom + "px";
+                        //jscs:enable
                     }
 
                     imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
@@ -537,10 +535,10 @@ export default Marionette.LayoutView.extend(
             timer.tick("final");
         },
 
-                onMouseDown: function (event)
-                {
-                    this.isMouseDown = true;
-                },
+        onMouseDown: function (event)
+        {
+            this.isMouseDown = true;
+        },
 
         /**
          * Open the GlyphEditView for editing a particular glyph.

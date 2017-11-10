@@ -92,7 +92,9 @@ export default Marionette.ItemView.extend(
                             right: (that.model.get('ulx') + that.model.get('ncols')) * zoomLevel,
                             bottom: (that.model.get('uly') + that.model.get('nrows')) * zoomLevel
                         }
-                        if (Geometry.rectangleOverlap(glyphRect, boundingBox) && !(this.model.attributes.is_training))
+                        var is_split = this.model.attributes.class_name.startsWith("_split.");
+                        var is_train = this.model.attributes.is_training;
+                        if (Geometry.rectangleOverlap(glyphRect, boundingBox) && !(is_train) && !(is_split))
                         {
                             // Add this glyph to the collection
                             RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);

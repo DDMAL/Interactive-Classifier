@@ -114,7 +114,7 @@ export default Marionette.LayoutView.extend(
             this.collection.each(function (model)
             {
                 glyphs.push(model);
-                model.changeClass("_group._part." + className);
+                model.changeClass("_group._part." + className, false);
             });
             RadioChannels.edit.trigger(GlyphEvents.groupGlyphs, glyphs, className)
         },
