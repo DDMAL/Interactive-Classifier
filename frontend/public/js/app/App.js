@@ -380,10 +380,9 @@ var App = Marionette.Application.extend(
         splitGlyph: function (glyph, split_type)
         {
             var that = this;
-
             // If this glyph is a grouped glyph, then using split will simply undo the group
             // Provided that this is before the grouped glyphs have been submitted and reclassified
-            if ('parts' in glyph  && glyph.parts.length > 0)
+            if ('parts' in glyph.attributes  && glyph.attributes.parts.length > 0)
             {
                 var temp = new GlyphCollection();
                 temp.add(glyph);
@@ -399,12 +398,13 @@ var App = Marionette.Application.extend(
             }
             else
             {
+                // TODO: This if statement doesn't seem to do anything. Try deleting it
                 // If the glyph is the result of a recent split,
                 // then the original data of this glyph must be sent back in order
                 // to recreate it in the backend side
-                if ('split' in glyph)
+                if ("class_name" in glyph.attributes.split)
                 { // jscs:disable
-                    glyph = glyph['split'];
+                    glyph = glyph.attributes.split;
                 } //jscs:enable
 
                 var data = JSON.stringify(
@@ -432,27 +432,27 @@ var App = Marionette.Application.extend(
                             var glyphs = responseData['glyphs'];
                             for (var i = 0; i < glyphs.length; i++)
                             {
-                                var glyph = glyphs[i];
+                                var new_glyph = glyphs[i];
                                 var g = new Glyph
 
                                 ({
-                                    "id": glyph.id,
+                                    "id": new_glyph.id,
                                     "class_name": "UNCLASSIFIED",
                                     "id_state_manual": false,
                                     "confidence": 0,
-                                    "ulx": glyph["ulx"],
-                                    "uly": glyph["uly"],
-                                    "nrows": glyph["nrows"],
-                                    "ncols": glyph["ncols"],
-                                    "image_b64": (glyph["image"]),
-                                    "rle_image": (glyph["rle_image"])
+                                    "ulx": new_glyph["ulx"],
+                                    "uly": new_glyph["uly"],
+                                    "nrows": new_glyph["nrows"],
+                                    "ncols": new_glyph["ncols"],
+                                    "image_b64": (new_glyph["image"]),
+                                    "rle_image": (new_glyph["rle_image"])
                                 });
 
                                 RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, g);
                                 g.onCreate();
-                                g.split = glyph;
-                                that.groupedGlyphs.push(glyph);
-
+                                g.attributes.split = glyph;
+                                that.changedGlyphs.push(glyph);
+                                that.groupedGlyphs.push(g);
                             }
                             that.modals.split.close();
                         }
