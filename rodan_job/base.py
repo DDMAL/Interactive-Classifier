@@ -280,24 +280,29 @@ def serialize_data(settings):
     settings['training_json'] = serialize_glyphs_to_json(settings['training_glyphs'] + manual)
 
 
-# We don't want to reclassify glyphs that are a a part of a group
+# We don't want to reclassify glyphs that are a part of a group or split
 def filter_parts(settings):
-    glyphs = settings['glyphs']
-    parts=[]
-    i=0
-    while i < len(glyphs):
-        g = glyphs[i]
-        if g['class_name'].startswith("_group._part.") or g['class_name'].startswith("_split"):
-            glyphs.remove(g)
-            parts.append(g)
-        else:
-            i=i+1
+    parts = []
+    temp = copy.copy(settings['glyphs'])
+    for glyph in settings['glyphs']:
+        name = glyph['class_name']
+        if name.startswith("_split") or name.startswith("_group"):
+            parts.append(glyph)
+            temp.remove(glyph)
+    settings['glyphs'] = temp
+    # Remove from the training glyphs as well
+    temp2 = copy.copy(settings['training_glyphs'])
+    for glyph in settings['training_glyphs']:
+        name = glyph['class_name']
+        if name.startswith("_split") or name.startswith("_group"):
+            temp.remove(glyph)
+    settings['training_glyphs'] = temp2
     return parts
 
 
 def add_grouped_glyphs(settings):
 
-    grouped_glyphs=settings['@grouped_glyphs']
+    grouped_glyphs = settings['@grouped_glyphs']
 
     for glyph in grouped_glyphs:
         new_glyph = GameraGlyph(
@@ -471,6 +476,7 @@ class InteractiveClassifier(RodanTask):
             # Handle importing the optional training classifier
             if 'GameraXML - Training Data' in inputs:
                 classifier_glyphs = GameraXML(inputs['GameraXML - Training Data'][0]['resource_path']).get_glyphs()
+
                 for c in classifier_glyphs:
                     c['is_training'] = True
             else:
@@ -482,43 +488,62 @@ class InteractiveClassifier(RodanTask):
             serialize_data(settings)
             return self.WAITING_FOR_INPUT()
 
-        elif settings['@state'] == ClassifierStateEnum.CLASSIFYING:
+        if settings['@state'] == ClassifierStateEnum.CLASSIFYING:
             # CLASSIFYING STAGE
+
+
             # Update any changed glyphs
             add_grouped_glyphs(settings)
+
             update_changed_glyphs(settings)
 
-            # Takes out _group._parts glyphs
+            # Takes out _group._parts glyphs and split glyphs TODO: save split glyphs
             filter_parts(settings)
+
             run_correction_stage(settings['glyphs'],
                                  settings['training_glyphs'],
                                  features)
+
+            filter_parts(settings)
 
             serialize_data(settings)
             return self.WAITING_FOR_INPUT()
 
         elif settings['@state'] == ClassifierStateEnum.GROUP_AND_CLASSIFY:
             # CLASSIFYING STAGE
+
             # Update any changed glyphs
             add_grouped_glyphs(settings)
+
             update_changed_glyphs(settings)
+
+            # Takes out _group._parts glyphs
             filter_parts(settings)
+
             group_and_correct(settings['glyphs'],
-                                 settings['@user_options'],
-                                 settings['training_glyphs'],
-                                 features)
+                              settings['@user_options'],
+                              settings['training_glyphs'],
+                              features)
             filter_parts(settings)
             serialize_data(settings)
-            return self.WAITING_FOR_INPUT()       
-  
+            return self.WAITING_FOR_INPUT()
+
         else:
             # EXPORT_XML STAGE
+
+            # Takes out _group._parts glyphs
+            filter_parts(settings)
+
             # Update changed glyphs
+            add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
             # Do one final classification before quitting
             cknn = run_correction_stage(settings['glyphs'],
                                         settings['training_glyphs'],
                                         features)
+
+            filter_parts(settings)
+
             # No more corrections are required.  We can now output the data
             run_output_stage(cknn, settings['glyphs'], outputs)
             # Remove the cached JSON from the settings
@@ -527,7 +552,7 @@ class InteractiveClassifier(RodanTask):
 
     # Grouping the glyphs manually
     def manual_group(self, glyphs, settings, class_name):
-        import image_utilities
+        import image_utilities  #TODO put at top
         gamera_glyphs=[]
 
         # Finding the glyphs that match the incoming ids          
@@ -551,7 +576,7 @@ class InteractiveClassifier(RodanTask):
                         confidence = glyph_c['confidence']
                         ).to_dict()
 
-            gamera_glyph=RunLengthImage(
+            gamera_glyph = RunLengthImage(
             glyph['ulx'],
             glyph['uly'],
             glyph['ncols'],
@@ -574,7 +599,7 @@ class InteractiveClassifier(RodanTask):
             confidence = 1
             ).to_dict()
 
-        g={
+        g = {
             'class_name': class_name,
             'id': new_glyph['id'],
             'image': new_glyph['image_b64'],
@@ -599,7 +624,7 @@ class InteractiveClassifier(RodanTask):
                 glyph = g
 
         # This means its a split glyph so a new glyph needs to be created
-        if(glyph == {}):
+        if glyph == {}:
             glyph = GameraGlyph(
                     gid = glyph_to_split["id"],
                     class_name = glyph_to_split['class_name'],
