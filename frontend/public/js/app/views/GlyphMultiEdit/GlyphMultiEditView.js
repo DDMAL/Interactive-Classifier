@@ -67,6 +67,7 @@ export default Marionette.LayoutView.extend(
             var glyphs = this.collection.models;
             for (var i = 0; i < glyphs.length - 1; i++)
             {
+                // If all the glyphs have the same glyph name, then show that name in the text box
                 if (glyphs[i].get('class_name') !== glyphs[i + 1].get('class_name'))
                 {
                     sameName = false;
@@ -74,6 +75,7 @@ export default Marionette.LayoutView.extend(
             }
             if (sameName && glyphs.length > 0)
             {
+                // Show the name in the text box if all glyphs are the same
                 this.ui.classInput.val(glyphs[0].get('class_name'));
             }
             this.ui.classInput.select();
@@ -113,8 +115,8 @@ export default Marionette.LayoutView.extend(
             var glyphs = []
             this.collection.each(function (model)
             {
-                glyphs.push(model);
                 model.changeClass("_group._part." + className, false);
+                glyphs.push(model);
             });
             RadioChannels.edit.trigger(GlyphEvents.groupGlyphs, glyphs, className)
         },

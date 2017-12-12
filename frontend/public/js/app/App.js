@@ -109,6 +109,7 @@ var App = Marionette.Application.extend(
                 for (var i = 0; i < glyphList.length; i++)
                 {
                     groupedGlyphs.add(glyphList[i]);
+                    that.changedGlyphs.add(glyphList[i]);
                 }
                 this.modals.group.open();
                 that.groupGlyphs(groupedGlyphs, glyphName);

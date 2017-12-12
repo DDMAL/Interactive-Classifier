@@ -174,14 +174,10 @@ export default Marionette.LayoutView.extend(
                     {
                         that.trainingRowCollection.moveGlyph(glyph, oldClassName, newClassName);
                     }
-                    else if (glyph.attributes.id_state_manual)
-                    {
-                        that.tableRowCollection.moveGlyph(glyph, oldClassName, newClassName);
-                        that.trainingRowCollection.moveGlyph(glyph, oldClassName, newClassName);
-                    }
                     else
                     {
                         that.tableRowCollection.moveGlyph(glyph, oldClassName, newClassName);
+                        that.trainingRowCollection.moveGlyph(glyph, oldClassName, newClassName);
                     }
                 }
             );
@@ -235,7 +231,12 @@ export default Marionette.LayoutView.extend(
                     for (var i = 0; i < that.selectedGlyphs.length; i++)
                     {
                         var glyph = that.selectedGlyphs.at(i);
-                        if (glyph.attributes.is_training === true)
+                        var name = glyph.attributes.class_name;
+                        if(name.startsWith("_group") || name.startsWith("_split"))
+                        {
+                            // don't add to either window
+                        }
+                        else if (glyph.attributes.is_training)
                         {
                             training_glyphs.add(glyph);
                         }

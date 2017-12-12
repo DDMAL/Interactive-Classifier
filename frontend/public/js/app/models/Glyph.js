@@ -54,10 +54,17 @@ export default Backbone.Model.extend(
             newClassName = String(newClassName);
             var oldClassName = this.get("class_name");
             var confidence = 1.0;
+            var id_state_manual = true;
             // In case of grouping, we don't want the glyph to be manual
             if (!isManual)
             {
                 confidence = 0;
+                id_state_manual = false;
+            } // TODO: this is redundant, should be fixed
+            else
+            {
+                confidence = 1.0;
+                id_state_manual = true;
             }
 
             // do the sanitization step
@@ -66,7 +73,7 @@ export default Backbone.Model.extend(
             this.set(
             {
                 class_name: sanitizedClassName,
-                id_state_manual: true,
+                id_state_manual: id_state_manual,
                 confidence: confidence
             });
 

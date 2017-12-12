@@ -112,8 +112,8 @@ export default Marionette.ItemView.extend(
                     val = "splity_top";
                     break;
             }
-
-            this.model.changeClass("_split." + val);
+            // False meaning isManual is false
+            this.model.changeClass("_split." + val, false);
             RadioChannels.edit.trigger(GlyphEvents.splitGlyph, this.model, val);
         },
 

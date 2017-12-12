@@ -68,6 +68,7 @@ export default Marionette.ItemView.extend(
                             // jscs:enable
                         }
                         // make sure not to deactivate if it's a top manual glyph
+                        // TODO : the training glyphs sometimes stay selected for too long
                         else if (!additional && (!(that.is_classifier) || this.model.attributes.is_training))
                         {
                             // If it's additional, then we don't deactivate!

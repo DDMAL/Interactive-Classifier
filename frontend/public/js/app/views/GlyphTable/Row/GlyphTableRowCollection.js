@@ -40,8 +40,6 @@ export default Backbone.Collection.extend(
          */
         moveGlyph: function (glyph, oldClassName, newClassName)
         {
-            if (!this.is_classifier || glyph.attributes.id_state_manual)
-            {
                 var oldRow = this.findWhere({
                     class_name: oldClassName
                 });
@@ -60,6 +58,10 @@ export default Backbone.Collection.extend(
                     }
                 }
 
+            // If the glyph is manual, it will be in both the classifier and the glyph table
+           // Otherwise, the glyph shouldn't be in the classifier glyphs so a new row shouldn't be created
+            if (!this.is_classifier || glyph.attributes.id_state_manual)
+            {
                 // Add to the new class name collection
                 var newRow = this.findWhere({
                     class_name: newClassName
@@ -69,7 +71,7 @@ export default Backbone.Collection.extend(
                     // There is already a row, so we add to it
                     newRow.get("glyphs").add(glyph);
                 }
-                else if (newClassName.substring(0,12) !== "_group._part" && newClassName.substring(0,6) !== "_split")
+                else if (newClassName.substring(0,12) !== "_group._part" && newClassName.substring(0,6) !== "_split") // TODO: use startswith instead
                 {
                     // There is no row, so we add a new row
                     this.add({
