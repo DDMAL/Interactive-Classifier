@@ -295,7 +295,7 @@ def filter_parts(settings):
     for glyph in settings['training_glyphs']:
         name = glyph['class_name']
         if name.startswith("_split") or name.startswith("_group"):
-            temp.remove(glyph)
+            temp2.remove(glyph)
     settings['training_glyphs'] = temp2
     return parts
 
