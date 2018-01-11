@@ -5,6 +5,7 @@ import gamera.classify
 import gamera.core
 import gamera.gamera_xml
 import gamera.knn
+import image_utilities
 from celery import uuid
 from gamera.plugins.image_utilities import union_images
 import gamera.plugins.segmentation
@@ -325,7 +326,6 @@ def update_changed_glyphs(settings):
     """
     Update the glyph objects that have been changed since the last round of classification
     """
-
     # Build a hash of the changed glyphs by their id
     changed_glyph_hash = {g['id']: g for g in settings['@changed_glyphs']}
     changed_training_hash = {g['id']: g for g in settings['@changed_training_glyphs']}
@@ -349,8 +349,7 @@ def update_changed_glyphs(settings):
 
     # We do the same for the changed training glyphs
     for glyph in settings['training_glyphs']:
-        # You do get here, so that means that there are glyphs in training_data
-
+        
         if not changed_training_hash:
             # No more changed glyphs, so break
             break
@@ -481,9 +480,9 @@ class InteractiveClassifier(RodanTask):
                     c['is_training'] = True
             else:
                 classifier_glyphs = []
-
-            settings['glyphs'] = GameraXML(classifier_path).get_glyphs()
+            
             settings['training_glyphs'] = classifier_glyphs
+            settings['glyphs'] = GameraXML(classifier_path).get_glyphs()
             settings['@state'] = ClassifierStateEnum.CLASSIFYING
             serialize_data(settings)
             return self.WAITING_FOR_INPUT()
@@ -494,32 +493,33 @@ class InteractiveClassifier(RodanTask):
 
             # Update any changed glyphs
             add_grouped_glyphs(settings)
-
             update_changed_glyphs(settings)
 
-            # Takes out _group._parts glyphs and split glyphs TODO: save split glyphs
+            # Takes out _group._parts glyphs and split glyphs TODO: save split glyphs for automatic splitting
             filter_parts(settings)
-
+            
+            # Automatically classify the glyphs
             run_correction_stage(settings['glyphs'],
                                  settings['training_glyphs'],
                                  features)
-
+            
+            # Filter any remaining parts
             filter_parts(settings)
 
             serialize_data(settings)
             return self.WAITING_FOR_INPUT()
 
+        # Automatic grouping and reclassifying
         elif settings['@state'] == ClassifierStateEnum.GROUP_AND_CLASSIFY:
             # CLASSIFYING STAGE
 
             # Update any changed glyphs
             add_grouped_glyphs(settings)
-
             update_changed_glyphs(settings)
 
             # Takes out _group._parts glyphs
             filter_parts(settings)
-
+            # grouping and reclassifying
             group_and_correct(settings['glyphs'],
                               settings['@user_options'],
                               settings['training_glyphs'],
@@ -552,17 +552,19 @@ class InteractiveClassifier(RodanTask):
 
     # Grouping the glyphs manually
     def manual_group(self, glyphs, settings, class_name):
-        import image_utilities  #TODO put at top
         gamera_glyphs=[]
 
-        # Finding the glyphs that match the incoming ids          
+        # Finding the glyphs that match the incoming ids
+        # TODO: this should be more efficient
         for glyph_c in glyphs:
             glyph={}
             for g in settings['glyphs']:
                 if glyph_c['id']==g['id']:
                     glyph = g
-
-            # This means its a split glyph so a new glyph needs to be created
+            
+            # No glyph with this id exists
+            # This means its a split glyph
+            # A new glyph needs to be created temporarily
             if glyph == {} :
                 glyph = GameraGlyph(
                         gid = glyph_c["id"],
@@ -585,9 +587,11 @@ class InteractiveClassifier(RodanTask):
             ).get_gamera_image()
 
             gamera_glyphs.append(gamera_glyph)
-
+        
+        # creating the new grouped glyph image
         grouped = image_utilities.union_images(gamera_glyphs)                
-
+        
+        # turning the grouped image into a new glyph
         new_glyph = GameraGlyph(
             class_name = class_name,
             rle_image = grouped.to_rle(),
@@ -598,7 +602,8 @@ class InteractiveClassifier(RodanTask):
             id_state_manual = True,
             confidence = 1
             ).to_dict()
-
+        
+        # turning the new glyph into a dictionary that can be returned
         g = {
             'class_name': class_name,
             'id': new_glyph['id'],
@@ -613,17 +618,17 @@ class InteractiveClassifier(RodanTask):
             }
 
         return g
-
+    
     def manual_split(self, glyph_to_split, split_type, settings):
         import segmentation
         # Finding the glyphs that match the incoming ids          
-
         glyph={}
         for g in settings['glyphs']:
             if(glyph_to_split['id']==g['id']):
                 glyph = g
 
-        # This means its a split glyph so a new glyph needs to be created
+        # No glyph matches the id so the glyph that is being split is also a split glyph
+        # A new glyph must be created temporarily so it can be split again
         if glyph == {}:
             glyph = GameraGlyph(
                     gid = glyph_to_split["id"],
@@ -636,7 +641,7 @@ class InteractiveClassifier(RodanTask):
                     id_state_manual = glyph_to_split['id_state_manual'],
                     confidence = glyph_to_split['confidence']
                     ).to_dict()
-
+        # Getting the image of the glyph
         gamera_glyph=RunLengthImage(
             glyph['ulx'],
             glyph['uly'],
@@ -644,9 +649,11 @@ class InteractiveClassifier(RodanTask):
             glyph['nrows'],
             glyph['image'],
             ).get_gamera_image()
-
+        
+        # Splitting the glyph into numerous image segments
         splits = getattr(segmentation, split_type).__call__(gamera_glyph)
-
+        
+        # Turning the images into a glyph
         glyphs = []
         for split in splits:
             new_glyph = GameraGlyph(
@@ -659,7 +666,7 @@ class InteractiveClassifier(RodanTask):
                 id_state_manual = False,
                 confidence = 0
                 ).to_dict()
-
+            # Transforming the glyph into a dictionary so it can be returned
             g={
                 'class_name': "UNCLASSIFIED",
                 'id': new_glyph['id'],
@@ -689,7 +696,6 @@ class InteractiveClassifier(RodanTask):
 
         # If the user wants to group, group the glyphs and return the new glyph
         elif 'group' in user_input:
-
             new_glyph = self.manual_group(user_input['glyphs'], settings, user_input['class_name'])
 
             data = {
