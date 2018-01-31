@@ -475,7 +475,9 @@ class InteractiveClassifier(RodanTask):
             # Handle importing the optional training classifier
             if 'GameraXML - Training Data' in inputs:
                 classifier_glyphs = GameraXML(inputs['GameraXML - Training Data'][0]['resource_path']).get_glyphs()
-
+                # Discard glyphs that were not classified manually
+                classifier_glyphs = [c for c in classifier_glyphs if c['id_state_manual'] == True]
+                
                 for c in classifier_glyphs:
                     c['is_training'] = True
             else:
