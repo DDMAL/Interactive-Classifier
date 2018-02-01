@@ -492,6 +492,10 @@ class InteractiveClassifier(RodanTask):
         if settings['@state'] == ClassifierStateEnum.CLASSIFYING:
             # CLASSIFYING STAGE
 
+            # If training data is imported in the workflow, run the correction
+            # on the data.
+            if 'GameraXML - Training Data' in inputs:
+                run_correction_stage(settings['glyphs'], settings['training_glyphs'], features)
 
             # Update any changed glyphs
             add_grouped_glyphs(settings)
