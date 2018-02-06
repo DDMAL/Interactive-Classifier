@@ -477,16 +477,24 @@ class InteractiveClassifier(RodanTask):
                 classifier_glyphs = GameraXML(inputs['GameraXML - Training Data'][0]['resource_path']).get_glyphs()
                 # Discard glyphs that were not classified manually
                 classifier_glyphs = [c for c in classifier_glyphs if c['id_state_manual'] == True]
-                
+
                 for c in classifier_glyphs:
                     c['is_training'] = True
             else:
                 classifier_glyphs = []
-            
+
             settings['training_glyphs'] = classifier_glyphs
             settings['glyphs'] = GameraXML(classifier_path).get_glyphs()
             settings['@state'] = ClassifierStateEnum.CLASSIFYING
+
+            # Run a first classification if training data in input port
+            if 'GameraXML - Training Data' in inputs:
+                run_correction_stage(settings['glyphs'],
+                                     settings['training_glyphs'],
+                                     features)
+
             serialize_data(settings)
+
             return self.WAITING_FOR_INPUT()
 
         if settings['@state'] == ClassifierStateEnum.CLASSIFYING:
