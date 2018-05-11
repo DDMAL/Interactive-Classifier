@@ -20,7 +20,8 @@ export default Marionette.ItemView.extend(
         template,
 
         events: {
-            "click .class-name": "onClickNode"
+            "click .class-name": "onClickNode",
+            "contextmenu .class-name": "onRightClickName"
         },
 
         onShow: function ()
@@ -57,8 +58,48 @@ export default Marionette.ItemView.extend(
                 // This feature is very buggy so it's commented out for now
                 var c = new Class();
                 c.set("name",className);
-                // RadioChannels.edit.trigger(ClassEvents.openClassEdit, c);
+                //RadioChannels.edit.trigger(ClassEvents.openClassEdit, c);
             }
+
+        },
+
+        /**
+         * Right-clicking one of the class names in the tree fires an event.
+         * This event causes the class name to display a renaming textbox.
+         *
+         *
+         * @param rightClickEvent
+         */
+        onRightClickName: function (rightClickEvent)
+        {
+          rightClickEvent.preventDefault();
+
+          //Extract the class name from the HTML5 data attribute
+          var className = rightClickEvent.target.dataset.name;
+
+          if (className === "unclassified")
+          {
+              return;
+          }
+          var renameElem;
+
+          //get the HTML element that corresponds to the class name
+          var classList = document.getElementsByClassName("class-name");
+          for (var i = 0; i < classList.length; i++)
+          {
+              if (classList[i].getAttribute('data-name') === className)
+              {
+                renameElem = classList[i];
+              }
+          }
+
+          if (renameElem){
+            var tmpClass = new Class({
+              name: className
+            })
+            console.log("tmpClass", tmpClass);
+            RadioChannels.edit.trigger(ClassEvents.openClassEdit, tmpClass);
+          }
 
         },
 
@@ -120,7 +161,6 @@ export default Marionette.ItemView.extend(
                     {
                         recursiveName += value + "."
                     }
-
                     output += this.constructListHtml(children[i], recursiveName);
                 }
                 output += "</ul>";
@@ -130,7 +170,6 @@ export default Marionette.ItemView.extend(
             {
                 output += "</li>";
             }
-
             return output;
         }
     });
