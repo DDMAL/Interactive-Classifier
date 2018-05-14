@@ -583,7 +583,7 @@ export default Marionette.LayoutView.extend(
         /**
          * Open the ClassEditView for editing a class.
          *
-         * @param {model} - a class model
+         * @param {Class} model - a Class model
          */
         openClassEdit: function(model)
         {
