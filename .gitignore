@@ -81,3 +81,7 @@ frontend/public/node_modules
 docs/
 
 Interactive-Classifier.iml
+rodan_job/static/js/compiled/classifier-static.min.js
+rodan_job/static/js/compiled/classifier-static.min.js.map
+rodan_job/static/js/compiled/classifier.min.js
+rodan_job/static/js/compiled/classifier.min.js.map
