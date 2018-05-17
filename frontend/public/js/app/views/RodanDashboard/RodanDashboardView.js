@@ -128,6 +128,17 @@ export default Marionette.LayoutView.extend(
                     // jscs:enable
                 }
             );
+            this.listenTo(RadioChannels.edit, GlyphEvents.setGlyphName,
+              function(className)
+              {
+                var index = that.model.get('classNames').findIndex(name => name === className);
+                if (index === -1){
+                  var classNameList = that.model.get('classNames').push(className);
+                  classNameList = that.model.get('classNames').sort();
+                  that.model.set('classNames', classNameList);
+                }
+              }
+            );
             // Class editing events
             this.listenTo(RadioChannels.edit, ClassEvents.openClassEdit,
                 function (className)
@@ -139,16 +150,19 @@ export default Marionette.LayoutView.extend(
                 function(className)
                 {
                     var classes = this.model.get('classNames');
-                    that.tableRowCollection.deleteClass(className);
                     for (var i = 0; i < classes.length; i++)
                     {
                         var name = classes[i];
-                        if (name.startsWith(className + "."))
+                        if (name.startsWith(className))
                         {
-                            that.tableRowCollection.deleteClass(className);
+                            that.tableRowCollection.deleteClass(name);
                         }
                     }
-
+                    var newClasses = this.model.get('classNames').filter(function (name)
+                    {
+                      return !name.startsWith(className);
+                    });
+                    this.model.set('classNames', newClasses);
                 });
 
             // Glyph Editing Events
@@ -287,9 +301,10 @@ export default Marionette.LayoutView.extend(
             var trainingGlyphs = this.model.get("trainingGlyphs");
 
             // Show the tree
+            //TODO: change class_names ?
             this.glyphTreeRegion.show(new ClassTreeView({
                 model: new ClassTreeViewModel({
-                    class_names: classNames
+                    class_names: ["UNCLASSIFIED"]
                 })
             }));
 
