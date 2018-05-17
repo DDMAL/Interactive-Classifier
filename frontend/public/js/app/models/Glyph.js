@@ -108,7 +108,7 @@ export default Backbone.Model.extend(
             // Update glyph table location
             RadioChannels.edit.trigger(GlyphEvents.moveGlyph, this, oldClassName, newClassName);
             RadioChannels.edit.trigger(GlyphEvents.changeGlyph, this);
-            RadioChannels.edit.trigger(GlyphEvents.setGlyphName, newClassName);
+            //RadioChannels.edit.trigger(GlyphEvents.setGlyphName, newClassName);
 
         }
     });
