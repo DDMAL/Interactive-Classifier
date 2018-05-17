@@ -64,11 +64,10 @@ export default Marionette.LayoutView.extend(
                 // Add the model to the class_names
                 console.log("Delete class!", deletedClassName);
                 var classNameList = that.model.get("class_names");
-                var index = classNameList.indexOf(deletedClassName);
-                classNameList.splice(index, 1);
+                var filteredList = classNameList.filter(name => !name.startsWith(deletedClassName));
                 // Set the new list
                 that.model = new ClassTreeViewModel({
-                  class_names: classNameList.sort()
+                  class_names: filteredList.sort()
                 });
                 // Re-render the view
                 that.showSubTree();
@@ -86,9 +85,12 @@ export default Marionette.LayoutView.extend(
         showSubTree: function ()
         {
             var classNames = this.model.get("class_names");
-            var mod = new RecursiveUnorderedListViewModel();
+            var mod = new RecursiveUnorderedListViewModel({
+              value: undefined,
+              children: []
+            });
             classNameArrayToRecursiveTree(classNames, mod);
             this.classTreeRegion.show(new RecursiveUnorderedListView({model: mod}));
         }
     }
-););
+);
