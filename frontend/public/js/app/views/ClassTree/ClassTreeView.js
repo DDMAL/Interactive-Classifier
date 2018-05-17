@@ -4,6 +4,7 @@ import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
 import ClassEvents from "events/ClassEvents";
 import classNameArrayToRecursiveTree from "./classNameArrayToRecursiveTree";
+import ClassTreeViewModel from "views/ClassTree/ClassTreeViewModel"
 import RecursiveUnorderedListView from "./RecursiveUnorderedListView";
 import RecursiveUnorderedListViewModel from "./RecursiveUnorderedListViewModel";
 import template from "./class-tree.template.html";
@@ -48,9 +49,11 @@ export default Marionette.LayoutView.extend(
 
                     if (newClassNameList.length !== oldClassNameList.length)
                     {
-                        console.log("New name!");
+                        console.log("New name!", newClassName);
                         // Set the new list
-                        that.model.set("class_names", newClassNameList.sort());
+                        that.model = new ClassTreeViewModel({
+                          class_names: newClassNameList.sort()
+                        });
                         // Re-render the view
                         that.showSubTree();
                     }
@@ -59,12 +62,14 @@ export default Marionette.LayoutView.extend(
             this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, function (deletedClassName)
             {
                 // Add the model to the class_names
-                console.log("Delete class!");
+                console.log("Delete class!", deletedClassName);
                 var classNameList = that.model.get("class_names");
                 var index = classNameList.indexOf(deletedClassName);
                 classNameList.splice(index, 1);
                 // Set the new list
-                that.model.set("class_names", classNameList.sort());
+                that.model = new ClassTreeViewModel({
+                  class_names: classNameList.sort()
+                });
                 // Re-render the view
                 that.showSubTree();
             })
@@ -86,4 +91,4 @@ export default Marionette.LayoutView.extend(
             this.classTreeRegion.show(new RecursiveUnorderedListView({model: mod}));
         }
     }
-);
+););
