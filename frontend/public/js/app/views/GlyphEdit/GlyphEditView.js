@@ -73,7 +73,7 @@ export default Marionette.ItemView.extend(
             {
                 event.preventDefault();
             }
-            if (this.ui.classInput.val() !== "UNCLASSIFIED")
+            if (this.ui.classInput.val() !== "UNCLASSIFIED" && this.ui.classInput.val() !== "")
             {
               this.model.changeClass(this.ui.classInput.val());
             }
