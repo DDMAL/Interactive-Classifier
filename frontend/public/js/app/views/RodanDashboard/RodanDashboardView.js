@@ -160,6 +160,7 @@ export default Marionette.LayoutView.extend(
                         if (name.startsWith(className))
                         {
                             that.tableRowCollection.deleteClass(name);
+                            that.trainingRowCollection.deleteClass(name);
                         }
                     }
                     var newClasses = this.model.get('classNames').filter(function (name)
