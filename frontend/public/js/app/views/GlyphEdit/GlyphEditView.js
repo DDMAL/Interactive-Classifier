@@ -42,7 +42,7 @@ export default Marionette.ItemView.extend(
             this.listenTo(RadioChannels.edit, GlyphEvents.clickGlyphName,
                 function (className)
                 {
-                    if (className !== "UNCLASSIFIED")
+                    if (className !== "UNCLASSIFIED" && className !== "")
                     {
                       that.ui.classInput.val(className);
                       that.onSubmitForm();
@@ -73,7 +73,7 @@ export default Marionette.ItemView.extend(
             {
                 event.preventDefault();
             }
-            if (this.ui.classInput.val() !== "UNCLASSIFIED")
+            if (this.ui.classInput.val() !== "UNCLASSIFIED" && this.ui.classInput.val() !== "")
             {
               this.model.changeClass(this.ui.classInput.val());
             }
