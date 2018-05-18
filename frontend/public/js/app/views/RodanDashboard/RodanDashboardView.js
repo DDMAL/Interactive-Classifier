@@ -305,10 +305,9 @@ export default Marionette.LayoutView.extend(
             var trainingGlyphs = this.model.get("trainingGlyphs");
 
             // Show the tree
-            //TODO: change class_names ?
             this.glyphTreeRegion.show(new ClassTreeView({
                 model: new ClassTreeViewModel({
-                    class_names: ["UNCLASSIFIED"]
+                    class_names: classNames
                 })
             }));
 
