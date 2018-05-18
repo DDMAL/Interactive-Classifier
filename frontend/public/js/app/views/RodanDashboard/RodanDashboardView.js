@@ -131,11 +131,15 @@ export default Marionette.LayoutView.extend(
             this.listenTo(RadioChannels.edit, GlyphEvents.setGlyphName,
               function(className)
               {
-                var index = that.model.get('classNames').findIndex(name => name === className);
-                if (index === -1){
-                  var classNameList = that.model.get('classNames').push(className);
-                  classNameList = that.model.get('classNames').sort();
-                  that.model.set('classNames', classNameList);
+                //Don't display the new class if it's a part of a group or a split
+                if (className.substring(0,12) !== "_group._part" && className.substring(0,6) !== "_split")
+                {
+                  var index = that.model.get('classNames').findIndex(name => name === className);
+                  if (index === -1){
+                    var classNameList = that.model.get('classNames').push(className);
+                    classNameList = that.model.get('classNames').sort();
+                    that.model.set('classNames', classNameList);
+                  }
                 }
               }
             );
