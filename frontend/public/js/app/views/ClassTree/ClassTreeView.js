@@ -57,6 +57,10 @@ export default Marionette.LayoutView.extend(
                         // Re-render the view
                         that.showSubTree();
                     }
+                    else
+                    {
+                        that.showSubTree();
+                    }
                 }
             }),
             this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, function (deletedClassName)
