@@ -132,7 +132,7 @@ export default Marionette.LayoutView.extend(
               function(className)
               {
                 //Don't display the new class if it's a part of a group or a split
-                if (className.substring(0,12) !== "_group._part" && className.substring(0,6) !== "_split")
+                if (!className.startsWith("_group._part") && !className.startsWith("_split"))
                 {
                   var index = that.model.get('classNames').findIndex(name => name === className);
                   if (index === -1){
