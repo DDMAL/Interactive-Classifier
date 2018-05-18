@@ -15,7 +15,10 @@ export default {
         // Enforce string
         input = String(input);
         // Lowercase
-        input = input.toLowerCase();
+        if (input !== "UNCLASSIFIED")
+        {
+          input = input.toLowerCase();
+        }
         // Remove everything other than letters and periods
         input = input.replace(/[^a-z\.\_0-9]/g, "");
         // Remove periods from beginning and end
