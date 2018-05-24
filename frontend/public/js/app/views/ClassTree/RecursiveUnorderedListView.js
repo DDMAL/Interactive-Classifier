@@ -77,7 +77,7 @@ export default Marionette.ItemView.extend(
           //Extract the class name from the HTML5 data attribute
           var className = rightClickEvent.target.dataset.name;
 
-          if (className === "unclassified")
+          if (className === "UNCLASSIFIED")
           {
               return;
           }
@@ -105,7 +105,7 @@ export default Marionette.ItemView.extend(
 
         onDelete: function(className)
         {
-            if (className === "unclassified")
+            if (className === "UNCLASSIFIED")
             {
                 return;
             }

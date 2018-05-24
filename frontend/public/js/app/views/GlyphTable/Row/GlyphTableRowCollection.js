@@ -52,7 +52,7 @@ export default Backbone.Collection.extend(
                     {
                         if (!this.is_classifier)
                         {
-                            RadioChannels.edit.trigger(ClassEvents.deleteClass, oldClassName);
+                            //RadioChannels.edit.trigger(ClassEvents.deleteClass, oldClassName);
                         }
                         this.remove(oldRow);
                     }

@@ -3,6 +3,7 @@ import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
 import Strings from "localization/Strings";
 import template from "./glyph-edit.template.html";
+import ClassNameUtils from "utils/ClassNameUtils"
 
 export default Marionette.ItemView.extend(
     /**
@@ -42,8 +43,11 @@ export default Marionette.ItemView.extend(
             this.listenTo(RadioChannels.edit, GlyphEvents.clickGlyphName,
                 function (className)
                 {
-                    that.ui.classInput.val(className);
-                    that.onSubmitForm();
+                    if (ClassNameUtils.sanitizeClassName(className) !== "unclassified" && ClassNameUtils.sanitizeClassName(className) !== "")
+                    {
+                      that.ui.classInput.val(className);
+                      that.onSubmitForm();
+                    }
                 }
             );
         },
@@ -70,8 +74,11 @@ export default Marionette.ItemView.extend(
             {
                 event.preventDefault();
             }
-
-            this.model.changeClass(this.ui.classInput.val());
+            var className = this.ui.classInput.val();
+            if (ClassNameUtils.sanitizeClassName(className) !== "unclassified" && ClassNameUtils.sanitizeClassName(className) !== "")
+            {
+              this.model.changeClass(this.ui.classInput.val());
+            }
 
         },
 

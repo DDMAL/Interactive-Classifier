@@ -6,13 +6,13 @@ import Backbone from "backbone";
 //import Glyph from "./Glyph";
 
 /**
- * A Glyph object within the interactive classifier.
+ * A Class object within the interactive classifier.
  *
- * @class Glyph
+ * @class Class
  */
 export default Backbone.Model.extend(
     /**
-     * @lends Glyph.prototype
+     * @lends Class.prototype
      */
     {
 
