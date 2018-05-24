@@ -146,15 +146,15 @@ def group_and_correct(glyphs, user_options, training_database, features_file_pat
                 glyph['nrows'],
                 glyph['image']
             ).get_gamera_image()
-            
-            gamera_glyphs.append(gamera_glyph)            
+
+            gamera_glyphs.append(gamera_glyph)
         else:
             manual.append(glyph)
 
     distance = int(user_options['distance'])
     parts = int(user_options['parts'])
     graph = int(user_options['graph'])
-    criterion = user_options['criterion']    
+    criterion = user_options['criterion']
     if(user_options['func'] == "Shaped"):
         func = gamera.classify.ShapedGroupingFunction(distance)
     else:
@@ -477,6 +477,7 @@ class InteractiveClassifier(RodanTask):
                 classifier_glyphs = GameraXML(inputs['GameraXML - Training Data'][0]['resource_path']).get_glyphs()
                 # Discard glyphs that were not classified manually
                 classifier_glyphs = [c for c in classifier_glyphs if c['id_state_manual'] == True]
+                classifier_glyphs = [c for c in classifier_glyphs if c['class_name'] != "UNCLASSIFIED"]
 
                 for c in classifier_glyphs:
                     c['is_training'] = True
@@ -500,19 +501,24 @@ class InteractiveClassifier(RodanTask):
         if settings['@state'] == ClassifierStateEnum.CLASSIFYING:
             # CLASSIFYING STAGE
 
-
             # Update any changed glyphs
             add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
 
+            # filter out training glyphs with class name "UNCLASSIFIED"
+            if 'GameraXML - Training Data' in inputs:
+                copyList = settings['training_glyphs']
+                filteredGlyphs = [g for g in copyList if g['class_name'] != "UNCLASSIFIED"]
+                settings['training_glyphs'] = filteredGlyphs
+
             # Takes out _group._parts glyphs and split glyphs TODO: save split glyphs for automatic splitting
             filter_parts(settings)
-            
+
             # Automatically classify the glyphs
             run_correction_stage(settings['glyphs'],
                                  settings['training_glyphs'],
                                  features)
-            
+
             # Filter any remaining parts
             filter_parts(settings)
 
@@ -526,6 +532,12 @@ class InteractiveClassifier(RodanTask):
             # Update any changed glyphs
             add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
+
+            # filter out training glyphs with class name "UNCLASSIFIED"
+            if 'GameraXML - Training Data' in inputs:
+                copyList = settings['training_glyphs']
+                filteredGlyphs = [g for g in copyList if g['class_name'] != "UNCLASSIFIED"]
+                settings['training_glyphs'] = filteredGlyphs
 
             # Takes out _group._parts glyphs
             filter_parts(settings)
@@ -547,6 +559,13 @@ class InteractiveClassifier(RodanTask):
             # Update changed glyphs
             add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
+
+            # filter out training glyphs with class name "UNCLASSIFIED"
+            if 'GameraXML - Training Data' in inputs:
+                copyList = settings['training_glyphs']
+                filteredGlyphs = [g for g in copyList if g['class_name'] != "UNCLASSIFIED"]
+                settings['training_glyphs'] = filteredGlyphs
+
             # Do one final classification before quitting
             cknn = run_correction_stage(settings['glyphs'],
                                         settings['training_glyphs'],
@@ -571,7 +590,7 @@ class InteractiveClassifier(RodanTask):
             for g in settings['glyphs']:
                 if glyph_c['id']==g['id']:
                     glyph = g
-            
+
             # No glyph with this id exists
             # This means its a split glyph
             # A new glyph needs to be created temporarily
@@ -597,10 +616,10 @@ class InteractiveClassifier(RodanTask):
             ).get_gamera_image()
 
             gamera_glyphs.append(gamera_glyph)
-        
+
         # creating the new grouped glyph image
-        grouped = image_utilities.union_images(gamera_glyphs)                
-        
+        grouped = image_utilities.union_images(gamera_glyphs)
+
         # turning the grouped image into a new glyph
         new_glyph = GameraGlyph(
             class_name = class_name,
@@ -612,13 +631,13 @@ class InteractiveClassifier(RodanTask):
             id_state_manual = True,
             confidence = 1
             ).to_dict()
-        
+
         # turning the new glyph into a dictionary that can be returned
         g = {
             'class_name': class_name,
             'id': new_glyph['id'],
             'image': new_glyph['image_b64'],
-            'rle_image': new_glyph['image'], 
+            'rle_image': new_glyph['image'],
             'ncols': new_glyph['ncols'],
             'nrows': new_glyph['nrows'],
             'ulx': new_glyph['ulx'],
@@ -628,10 +647,10 @@ class InteractiveClassifier(RodanTask):
             }
 
         return g
-    
+
     def manual_split(self, glyph_to_split, split_type, settings):
         import segmentation
-        # Finding the glyphs that match the incoming ids          
+        # Finding the glyphs that match the incoming ids
         glyph={}
         for g in settings['glyphs']:
             if(glyph_to_split['id']==g['id']):
@@ -659,10 +678,10 @@ class InteractiveClassifier(RodanTask):
             glyph['nrows'],
             glyph['image'],
             ).get_gamera_image()
-        
+
         # Splitting the glyph into numerous image segments
         splits = getattr(segmentation, split_type).__call__(gamera_glyph)
-        
+
         # Turning the images into a glyph
         glyphs = []
         for split in splits:
@@ -681,7 +700,7 @@ class InteractiveClassifier(RodanTask):
                 'class_name': "UNCLASSIFIED",
                 'id': new_glyph['id'],
                 'image': new_glyph['image_b64'],
-                'rle_image': new_glyph['image'], 
+                'rle_image': new_glyph['image'],
                 'ncols': new_glyph['ncols'],
                 'nrows': new_glyph['nrows'],
                 'ulx': new_glyph['ulx'],
