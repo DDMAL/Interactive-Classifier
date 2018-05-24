@@ -75,7 +75,29 @@ export default Marionette.LayoutView.extend(
                 });
                 // Re-render the view
                 that.showSubTree();
-            })
+            }),
+            this.listenTo(RadioChannels.edit, ClassEvents.renameClass, function (oldClassName, newClassName)
+            {
+              var classNameList = that.model.get("class_names");
+              for (var i = 0; i < classNameList.length; i++)
+              {
+                if (classNameList[i].startsWith(oldClassName))
+                {
+                  classNameList[i] = classNameList[i].replace(oldClassName, newClassName);
+                }
+              }
+              // remove duplicates from the list
+              var uniqueList = classNameList.filter(function(item, pos)
+              {
+                return classNameList.indexOf(item) === pos;
+              });
+              // Set the new list
+              that.model = new ClassTreeViewModel({
+                class_names: uniqueList.sort()
+              });
+              // Re-render the view
+              that.showSubTree();
+            });
         },
 
         onShow: function ()
