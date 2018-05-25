@@ -171,6 +171,17 @@ export default Marionette.LayoutView.extend(
                     this.model.set('classNames', newClasses);
                 });
 
+            this.listenTo(RadioChannels.edit, ClassEvents.renameClass,
+                        var name = classes[i];
+                        if (name.startsWith(oldName))
+                        {
+                          that.tableRowCollection.renameClass(name, oldName, newName);
+                        }
+                    }
+                    for (var j = 0; j < classes.length; j++)
+                    {
+                      if (classes[j].startsWith(oldName))
+                      {
             // Glyph Editing Events
             this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
                 function (model)
@@ -568,7 +579,7 @@ export default Marionette.LayoutView.extend(
          */
         openGlyphEdit: function (model)
         {
-            console.log("Open glyphedit!", model);
+            console.log("Open glyphEdit!");
             this.glyphEditRegion.show(new GlyphEditView({
                 model: model
             }));

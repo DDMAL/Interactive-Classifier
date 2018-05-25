@@ -107,6 +107,31 @@ export default Backbone.Collection.extend(
         },
 
         /**
+         * Rename a class and its subclasses in the right pane.
+         *
+         * @param {string} name
+         * @param {string} oldName
+         * @param {string} newName
+         */
+         renameClass: function (name, oldName, newName)
+         {
+            var row = this.findWhere(
+            {
+                class_name: name
+            });
+            if (row)
+            {
+              var glyphs = row.get("glyphs");
+              while (glyphs.length > 0)
+              {
+                  var glyph = glyphs.pop();
+                  var renamed = name.replace(oldName, newName)
+                  glyph.changeClass(renamed);
+              }
+            }
+         },
+
+        /**
          * Add a new glyph to the table.
          *
          * @param {Glyph} glyph - Glyph model.
