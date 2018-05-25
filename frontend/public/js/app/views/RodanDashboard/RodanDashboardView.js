@@ -121,7 +121,7 @@ export default Marionette.LayoutView.extend(
                 {
                     that.tableRowCollection.addGlyph(glyph, className);
                     // jscs:disable
-                    if (className.toLowerCase() !== "unclassified" && className.substring(0,12) !== "_group._part" && className.substring(0,6) !== "_split")
+                    if (className.toLowerCase() !== "unclassified" && !className.startsWith("_group._part") && !className.startsWith("_split"))
                     {
                         that.trainingRowCollection.addGlyph(glyph, className);
                     }

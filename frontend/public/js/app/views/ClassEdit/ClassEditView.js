@@ -44,7 +44,7 @@ export default Marionette.ItemView.extend({
         {
             event.preventDefault();
         }
-        //trigger renameClass event with parameters (newName, oldName)
+        //trigger renameClass event with parameters (old name, new name)
         RadioChannels.edit.trigger(ClassEvents.renameClass, this.model.get("name"), this.ui.classInput.val());
       },
 
