@@ -172,6 +172,11 @@ export default Marionette.LayoutView.extend(
                 });
 
             this.listenTo(RadioChannels.edit, ClassEvents.renameClass,
+                function(oldName, newName)
+                {
+                    var classes = this.model.get('classNames');
+                    for (var i = 0; i < classes.length; i++)
+                    {
                         var name = classes[i];
                         if (name.startsWith(oldName))
                         {
@@ -182,6 +187,17 @@ export default Marionette.LayoutView.extend(
                     {
                       if (classes[j].startsWith(oldName))
                       {
+                        classes[j] = classes[j].replace(oldName, newName);
+                      }
+                    }
+                    //remove duplicates
+                    var renamedClasses = classes.filter(function(item, pos)
+                    {
+                      return classes.indexOf(item) === pos;
+                    });
+                    this.model.set('classNames', renamedClasses);
+                });
+
             // Glyph Editing Events
             this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit,
                 function (model)
