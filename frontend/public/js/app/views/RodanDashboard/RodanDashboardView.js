@@ -392,7 +392,6 @@ export default Marionette.LayoutView.extend(
             this.glyphTableRegion.show(new GlyphTableView({
                 collection: this.tableRowCollection
             }));
-
             this.classifierTableRegion.show(new GlyphTableView({
                 collection: this.trainingRowCollection
             }));

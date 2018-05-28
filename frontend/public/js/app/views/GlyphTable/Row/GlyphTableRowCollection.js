@@ -126,7 +126,7 @@ export default Backbone.Collection.extend(
               {
                   var glyph = glyphs.pop();
                   var renamed = name.replace(oldName, newName)
-                  glyph.changeClass(renamed);
+                  glyph.renameGlyph(renamed);
               }
             }
          },
