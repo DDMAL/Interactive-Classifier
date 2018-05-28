@@ -181,6 +181,7 @@ export default Marionette.LayoutView.extend(
                         if (name.startsWith(oldName))
                         {
                           that.tableRowCollection.renameClass(name, oldName, newName);
+                          that.trainingRowCollection.renameClass(name, oldName, newName);
                         }
                     }
                     for (var j = 0; j < classes.length; j++)
