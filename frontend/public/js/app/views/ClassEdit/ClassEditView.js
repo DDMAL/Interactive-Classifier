@@ -35,15 +35,18 @@ export default Marionette.ItemView.extend({
         var output = this.model.toJSON();
         // Add strings for the localized GUI.
         output.gui = Strings.editClass;
-        console.log(output.gui);
         return output;
     },
 
-    //update(event)
-    update()
+    update: function(event)
     {
-        console.log("Updating class name... " + this.ui.classInput.val());
-    },
+        if (event)
+        {
+            event.preventDefault();
+        }
+        //trigger renameClass event with parameters (old name, new name)
+        RadioChannels.edit.trigger(ClassEvents.renameClass, this.model.get("name"), this.ui.classInput.val());
+      },
 
     delete: function(event)
     {

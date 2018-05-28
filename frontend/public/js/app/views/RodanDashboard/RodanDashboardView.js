@@ -121,7 +121,7 @@ export default Marionette.LayoutView.extend(
                 {
                     that.tableRowCollection.addGlyph(glyph, className);
                     // jscs:disable
-                    if (className.toLowerCase() !== "unclassified" && className.substring(0,12) !== "_group._part" && className.substring(0,6) !== "_split")
+                    if (className.toLowerCase() !== "unclassified" && !className.startsWith("_group._part") && !className.startsWith("_split"))
                     {
                         that.trainingRowCollection.addGlyph(glyph, className);
                     }
@@ -169,6 +169,34 @@ export default Marionette.LayoutView.extend(
                       return !name.startsWith(className);
                     });
                     this.model.set('classNames', newClasses);
+                });
+
+            this.listenTo(RadioChannels.edit, ClassEvents.renameClass,
+                function(oldName, newName)
+                {
+                    var classes = this.model.get('classNames');
+                    for (var i = 0; i < classes.length; i++)
+                    {
+                        var name = classes[i];
+                        if (name.startsWith(oldName))
+                        {
+                          that.tableRowCollection.renameClass(name, oldName, newName);
+                          that.trainingRowCollection.renameClass(name, oldName, newName);
+                        }
+                    }
+                    for (var j = 0; j < classes.length; j++)
+                    {
+                      if (classes[j].startsWith(oldName))
+                      {
+                        classes[j] = classes[j].replace(oldName, newName);
+                      }
+                    }
+                    //remove duplicates
+                    var renamedClasses = classes.filter(function(item, pos)
+                    {
+                      return classes.indexOf(item) === pos;
+                    });
+                    this.model.set('classNames', renamedClasses);
                 });
 
             // Glyph Editing Events
@@ -365,7 +393,6 @@ export default Marionette.LayoutView.extend(
             this.glyphTableRegion.show(new GlyphTableView({
                 collection: this.tableRowCollection
             }));
-
             this.classifierTableRegion.show(new GlyphTableView({
                 collection: this.trainingRowCollection
             }));
@@ -568,7 +595,7 @@ export default Marionette.LayoutView.extend(
          */
         openGlyphEdit: function (model)
         {
-            console.log("Open glyphedit!", model);
+            console.log("Open glyphEdit!");
             this.glyphEditRegion.show(new GlyphEditView({
                 model: model
             }));

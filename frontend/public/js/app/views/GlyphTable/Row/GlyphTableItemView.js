@@ -184,7 +184,6 @@ export default Marionette.ItemView.extend(
         {
             event.preventDefault();
 
-            console.log(event);
             if (event.shiftKey)
             {
                 // If the glyph is already active, then deactivate it.

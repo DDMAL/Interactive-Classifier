@@ -71,7 +71,7 @@ export default Backbone.Collection.extend(
                     // There is already a row, so we add to it
                     newRow.get("glyphs").add(glyph);
                 }
-                else if (newClassName.substring(0,12) !== "_group._part" && newClassName.substring(0,6) !== "_split") // TODO: use startswith instead
+                else if (!newClassName.startsWith("_group._part") && !newClassName.startsWith("_split"))
                 {
                     // There is no row, so we add a new row
                     this.add({
@@ -105,6 +105,31 @@ export default Backbone.Collection.extend(
                 }
             }
         },
+
+        /**
+         * Rename a class and its subclasses in the right pane.
+         *
+         * @param {string} name
+         * @param {string} oldName
+         * @param {string} newName
+         */
+         renameClass: function (name, oldName, newName)
+         {
+            var row = this.findWhere(
+            {
+                class_name: name
+            });
+            if (row)
+            {
+              var glyphs = row.get("glyphs");
+              while (glyphs.length > 0)
+              {
+                  var glyph = glyphs.pop();
+                  var renamed = name.replace(oldName, newName)
+                  glyph.renameGlyph(renamed);
+              }
+            }
+         },
 
         /**
          * Add a new glyph to the table.

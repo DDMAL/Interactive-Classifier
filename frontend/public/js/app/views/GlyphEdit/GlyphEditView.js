@@ -135,7 +135,6 @@ export default Marionette.ItemView.extend(
             var output = this.model.toJSON();
             // Add strings for the localized GUI.
             output.gui = Strings.editGlyph;
-            console.log(output.gui);
             return output;
         }
     });

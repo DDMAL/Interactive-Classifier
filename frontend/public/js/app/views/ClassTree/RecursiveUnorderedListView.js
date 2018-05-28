@@ -97,7 +97,6 @@ export default Marionette.ItemView.extend(
             var tmpClass = new Class({
               name: className
             })
-            console.log("tmpClass", tmpClass);
             RadioChannels.edit.trigger(ClassEvents.openClassEdit, tmpClass);
           }
 

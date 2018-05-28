@@ -83,6 +83,24 @@ export default Backbone.Model.extend(
             RadioChannels.edit.trigger(GlyphEvents.setGlyphName, this.get("class_name"));
 
         },
+        /**
+         * Rename the glyph's name according to the user input
+         *
+         * This method moves the glyphs with this name from one row collection to a new row
+         *
+         * @param {string} renamedName - The renamed class.
+         */
+        renameGlyph: function (renamedName)
+        {
+          var oldClassName = this.get("class_name");
+          renamedName = String(renamedName);
+          var sanitizedName = ClassNameUtils.sanitizeClassName(renamedName);
+          this.set('class_name', sanitizedName);
+
+          RadioChannels.edit.trigger(GlyphEvents.moveGlyph, this, oldClassName, this.get("class_name"));
+          RadioChannels.edit.trigger(GlyphEvents.changeGlyph, this);
+          RadioChannels.edit.trigger(GlyphEvents.setGlyphName, this.get("class_name"));
+        },
 
         /**
          * Unclassify a glyph
