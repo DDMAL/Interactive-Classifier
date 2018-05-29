@@ -195,7 +195,7 @@ def group_and_correct(glyphs, user_options, training_database, features_file_pat
             confidence = elem.get_confidence()).to_dict()
 
         glyphs.append(new_glyph)
-    
+
     # Put the manual glyphs back
     for g in manual:
         glyphs.append(g)
@@ -349,7 +349,7 @@ def update_changed_glyphs(settings):
 
     # We do the same for the changed training glyphs
     for glyph in settings['training_glyphs']:
-        
+
         if not changed_training_hash:
             # No more changed glyphs, so break
             break
@@ -527,7 +527,7 @@ class InteractiveClassifier(RodanTask):
 
         # Automatic grouping and reclassifying
         elif settings['@state'] == ClassifierStateEnum.GROUP_AND_CLASSIFY:
-            # CLASSIFYING STAGE
+            # GROUP AND CLASSIFY STAGE
 
             # Update any changed glyphs
             add_grouped_glyphs(settings)
@@ -565,6 +565,16 @@ class InteractiveClassifier(RodanTask):
                 copyList = settings['training_glyphs']
                 filteredGlyphs = [g for g in copyList if g['class_name'] != "UNCLASSIFIED"]
                 settings['training_glyphs'] = filteredGlyphs
+
+            # Takes out _group._parts glyphs
+            filter_parts(settings)
+            # grouping and reclassifying
+            group_and_correct(settings['glyphs'],
+                              settings['@user_options'],
+                              settings['training_glyphs'],
+                              features)
+            filter_parts(settings)
+            serialize_data(settings)
 
             # Do one final classification before quitting
             cknn = run_correction_stage(settings['glyphs'],
@@ -718,6 +728,7 @@ class InteractiveClassifier(RodanTask):
             # We are complete.  Advance to the final stage
             return {
                 '@state': ClassifierStateEnum.EXPORT_XML,
+                '@user_options': user_input['user_options'],
                 '@changed_glyphs': user_input['glyphs'],
                 '@grouped_glyphs': user_input['grouped_glyphs'],
                 '@changed_training_glyphs': user_input['changed_training_glyphs']
