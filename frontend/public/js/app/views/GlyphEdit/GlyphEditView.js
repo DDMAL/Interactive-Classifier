@@ -19,7 +19,8 @@ export default Marionette.ItemView.extend(
 
         events: {
             "submit": "onSubmitForm",
-            "click .split": "split"
+            "click .split": "split",
+            "click #delete": "delete"
         },
 
         modelEvents: {
@@ -122,6 +123,15 @@ export default Marionette.ItemView.extend(
             // False meaning isManual is false
             this.model.changeClass("_split." + val, false);
             RadioChannels.edit.trigger(GlyphEvents.splitGlyph, this.model, val);
+        },
+
+        delete: function(event)
+        {
+          if(event)
+          {
+            event.preventDefault();
+          }
+          RadioChannels.edit.trigger(GlyphEvents.deleteGlyph, this.model);
         },
 
         /**

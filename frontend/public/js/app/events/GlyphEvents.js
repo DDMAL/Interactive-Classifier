@@ -17,6 +17,7 @@ export default {
     addGlyph: "add:glyph",
     splitGlyph: "split:glyph",
     zoomGlyphs: "zoom:glyphs",
+    deleteGlyph: "delete:glyph",
 
     // Events for glyph selection
     selectGlyph: "glyph:select",
