@@ -10,7 +10,7 @@
                     <input type="text" class="form-control"
                            value="<%- name %>" title="class-name"
                            onfocus="this.value = this.value;">
-                    <button class="update" type="button"><%-
+                    <button id="update" type="button" class="btn btn-default"><%-
                         gui.update %>
                     </button>
                 </td>
@@ -18,7 +18,7 @@
             <tr>
                 <td>
                     <form class="form-inline">
-                        <button class="delete" class="btn btn-danger"><%-
+                        <button id="delete" type="button" class="btn btn-danger"><%-
                             gui.deleteClass %>
                         </button>
                     </form>

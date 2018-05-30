@@ -16,8 +16,8 @@ export default Marionette.ItemView.extend({
     },
 
     events: {
-        "click .delete": "delete",
-        "click .update": "update"
+        "click #delete": "delete",
+        "click #update": "update"
     },
 
     modelEvents: {
