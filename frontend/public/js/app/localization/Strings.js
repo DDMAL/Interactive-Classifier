@@ -44,7 +44,8 @@ export default {
         position: "Position",
         dimensions: "Dimensions",
         glyphPreview: "Glyph Preview",
-        split: "Split"
+        split: "Split",
+        delete: "Delete Glyph"
     },
     editClass: {
         update: "Update",

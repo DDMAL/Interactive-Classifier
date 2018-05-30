@@ -35,7 +35,7 @@
                         gui.split %>
                     </button>
                 </td>
-            </tr>        
+            </tr>
             <tr>
                 <td><%- gui.manualID %></td>
                 <td><%- id_state_manual %></td>
@@ -51,6 +51,15 @@
             <tr>
                 <td><%- gui.dimensions %></td>
                 <td>(<%- ncols %>, <%- nrows %>)</td>
+            </tr>
+            <tr>
+                <td>
+                    <form class="form-inline">
+                        <button id="delete" type="button" class="btn btn-danger"><%-
+                            gui.delete %>
+                        </button>
+                    </form>
+                </td>
             </tr>
         </table>
     </div>
