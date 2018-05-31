@@ -74,7 +74,8 @@ def output_corrected_glyphs(cknn, glyphs, output_path):
         if glyph['id_state_manual']:
             gamera_image.classify_manual(glyph['class_name'])
         else:
-            cknn.classify_glyph_automatic(gamera_image)
+            if not glyph['class_name'] == "UNCLASSIFIED":
+                cknn.classify_glyph_automatic(gamera_image)
         output_images.append(gamera_image)
         # Dump all the glyphs to disk
     cknn.generate_features_on_glyphs(output_images)
@@ -566,20 +567,7 @@ class InteractiveClassifier(RodanTask):
                 filteredGlyphs = [g for g in copyList if g['class_name'] != "UNCLASSIFIED"]
                 settings['training_glyphs'] = filteredGlyphs
 
-            # Takes out _group._parts glyphs
-            filter_parts(settings)
-            # grouping and reclassifying
-            group_and_correct(settings['glyphs'],
-                              settings['@user_options'],
-                              settings['training_glyphs'],
-                              features)
-            filter_parts(settings)
-            serialize_data(settings)
-
-            # Do one final classification before quitting
-            cknn = run_correction_stage(settings['glyphs'],
-                                        settings['training_glyphs'],
-                                        features)
+            cknn = prepare_classifier(settings['training_glyphs'], settings['glyphs'], features)
 
             filter_parts(settings)
 
@@ -728,7 +716,6 @@ class InteractiveClassifier(RodanTask):
             # We are complete.  Advance to the final stage
             return {
                 '@state': ClassifierStateEnum.EXPORT_XML,
-                '@user_options': user_input['user_options'],
                 '@changed_glyphs': user_input['glyphs'],
                 '@grouped_glyphs': user_input['grouped_glyphs'],
                 '@changed_training_glyphs': user_input['changed_training_glyphs']

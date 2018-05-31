@@ -253,11 +253,8 @@ var App = Marionette.Application.extend(
          */
         finalizeAndQuit: function ()
         {
-            // Assume default parameters for grouping before finalizing 
-            var userSelections = {'distance': '4', 'parts': '4', 'criterion': 'min', 'func': 'Bounding Box', 'graph': '16'}
             var data = JSON.stringify({
                 "complete": true,
-                "user_options": userSelections,
                 "glyphs": this.changedGlyphs.toJSON(),
                 "grouped_glyphs": this.groupedGlyphs,
                 "changed_training_glyphs": this.changedTrainingGlyphs.toJSON()
