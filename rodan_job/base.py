@@ -57,7 +57,7 @@ def get_manual_glyphs(glyphs):
     return training_glyphs
 
 
-def output_corrected_glyphs(cknn, glyphs, output_path):
+def output_corrected_glyphs(cknn, glyphs, inputs, output_path):
     """
     Output the corrected data to disk.  This includes both the manually
     corrected and the automatically corrected glyphs.
@@ -74,8 +74,15 @@ def output_corrected_glyphs(cknn, glyphs, output_path):
         if glyph['id_state_manual']:
             gamera_image.classify_manual(glyph['class_name'])
         else:
-            if not glyph['class_name'] == "UNCLASSIFIED":
-                cknn.classify_glyph_automatic(gamera_image)
+            if 'GameraXML - Training Data' in inputs:
+                if (glyph['class_name'] != "UNCLASSIFIED"):
+                    gamera_image.classification_state = gamera.core.AUTOMATIC
+                    gamera_image.id_name = [(glyph['confidence'],glyph['class_name'])]
+                if gamera_image.classification_state == gamera.core.UNCLASSIFIED:
+                    cknn.classify_glyph_automatic(gamera_image)
+            else:
+                if (glyph['class_name'] != "UNCLASSIFIED"):
+                    cknn.classify_glyph_automatic(gamera_image)
         output_images.append(gamera_image)
         # Dump all the glyphs to disk
     cknn.generate_features_on_glyphs(output_images)
@@ -83,7 +90,8 @@ def output_corrected_glyphs(cknn, glyphs, output_path):
                                                 with_features=True)
     output_xml.write_filename(output_path)
 
-def run_output_stage(cknn, glyphs, outputs):
+
+def run_output_stage(cknn, glyphs, inputs, outputs):
     """
     The job is complete, so save the results to disk.
     """
@@ -95,7 +103,7 @@ def run_output_stage(cknn, glyphs, outputs):
     output_classified_data_path = outputs['GameraXML - Classified Glyphs'][0][
         'resource_path']
     # Save the rest of the glyphs
-    output_corrected_glyphs(cknn, glyphs, output_classified_data_path)
+    output_corrected_glyphs(cknn, glyphs, inputs, output_classified_data_path)
 
 
 def prepare_classifier(training_database, glyphs, features_file_path):
@@ -572,7 +580,7 @@ class InteractiveClassifier(RodanTask):
             filter_parts(settings)
 
             # No more corrections are required.  We can now output the data
-            run_output_stage(cknn, settings['glyphs'], outputs)
+            run_output_stage(cknn, settings['glyphs'], inputs, outputs)
             # Remove the cached JSON from the settings
             settings['glyphs_json'] = None
             settings['class_names_json'] = None
