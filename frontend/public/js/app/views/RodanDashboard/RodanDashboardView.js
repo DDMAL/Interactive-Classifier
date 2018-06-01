@@ -128,6 +128,14 @@ export default Marionette.LayoutView.extend(
                     // jscs:enable
                 }
             );
+
+            this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyph,
+                function (glyph)
+                {
+                  that.tableRowCollection.deleteGlyph(glyph);
+                }
+            );
+
             this.listenTo(RadioChannels.edit, GlyphEvents.setGlyphName,
               function(className)
               {
