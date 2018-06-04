@@ -103,6 +103,11 @@ var App = Marionette.Application.extend(
                 this.modals.group.close();
             });
 
+            this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyph, function (glyphModel)
+            {
+                that.changedGlyphs.remove(glyphModel);
+            });
+
             this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs, function (glyphList, glyphName)
             {
                 var groupedGlyphs = new GlyphCollection();
