@@ -46,10 +46,19 @@ export default Marionette.ItemView.extend({
             event.preventDefault();
         }
         var className = this.ui.classInput.val();
-        //trigger renameClass event with parameters (old name, new name)
-        if (ClassNameUtils.sanitizeClassName(className) !== "unclassified" && ClassNameUtils.sanitizeClassName(className) !== "")
+        if (ClassNameUtils.sanitizeClassName(className) === "unclassified")
         {
-          RadioChannels.edit.trigger(ClassEvents.renameClass, this.model.get("name"), className);
+            alert("UNCLASSIFIED is a reserved keyword.");
+        }
+        else if (ClassNameUtils.sanitizeClassName(className) === "")
+        {
+            var message = className + " is not a valid class name.";
+            alert(message);
+        }
+        //trigger renameClass event with parameters (old name, new name)
+        else
+        {
+            RadioChannels.edit.trigger(ClassEvents.renameClass, this.model.get("name"), className);
         }
       },
 

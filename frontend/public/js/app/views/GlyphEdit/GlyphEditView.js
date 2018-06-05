@@ -76,9 +76,18 @@ export default Marionette.ItemView.extend(
                 event.preventDefault();
             }
             var className = this.ui.classInput.val();
-            if (ClassNameUtils.sanitizeClassName(className) !== "unclassified" && ClassNameUtils.sanitizeClassName(className) !== "")
+            if (ClassNameUtils.sanitizeClassName(className) === "unclassified")
             {
-              this.model.changeClass(this.ui.classInput.val());
+                alert("UNCLASSIFIED is a reserved keyword.");
+            }
+            else if (ClassNameUtils.sanitizeClassName(className) === "")
+            {
+                var message = className + " is not a valid class name.";
+                alert(message);
+            }
+            else
+            {
+                this.model.changeClass(this.ui.classInput.val());
             }
 
         },
