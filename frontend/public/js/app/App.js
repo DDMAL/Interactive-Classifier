@@ -105,7 +105,7 @@ var App = Marionette.Application.extend(
 
             this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyph, function (glyphModel)
             {
-                that.changedGlyphs.remove(glyphModel);
+                that.deleteGlyph(glyphModel);
             });
 
             this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs, function (glyphList, glyphName)
@@ -466,6 +466,56 @@ var App = Marionette.Application.extend(
                 });
             }
         },
+
+        /**
+         *  Delete glyph
+         *
+         */
+        deleteGlyph: function (glyph)
+        {
+            var that = this;
+            var data = JSON.stringify({
+                "delete": true,
+                "glyph": glyph
+            });
+
+            $.ajax({
+                url: this.authenticator.getWorkingUrl(),
+                type: 'POST',
+                data: data,
+                headers:
+                {
+                    Accept: "application/json; charset=utf-8",
+                    "Content-Type": "application/json; charset=utf-8"
+                },
+                complete: function(response)
+                {// jscs:disable
+                  if (response.status === 200)
+                  {
+                      var responseData = JSON.parse(response.responseText);
+                      var glyph = responseData['glyph'];
+
+                      var newGlyph = glyph;
+                      var g = new Glyph
+                      ({
+                          "id": newGlyph.id,
+                          "class_name": newGlyph["class_name"],
+                          "id_state_manual": newGlyph["id_state_manual"],
+                          "is_training": newGlyph["is_training"],
+                          "confidence": newGlyph["confidence"],
+                          "ulx": newGlyph["ulx"],
+                          "uly": newGlyph["uly"],
+                          "nrows": newGlyph["nrows"],
+                          "ncols": newGlyph["ncols"],
+                          "image_b64": (newGlyph["image_b64"]),
+                          "image": (newGlyph["image"])
+                      });
+                      that.changedGlyphs.push(g);
+                  }// jscs:enable
+                }
+            });
+        },
+
         /**
          * Initialize all of the modals used in the application.
          */
