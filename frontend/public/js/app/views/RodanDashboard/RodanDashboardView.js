@@ -132,8 +132,8 @@ export default Marionette.LayoutView.extend(
             this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyph,
                 function (glyph)
                 {
-                  that.tableRowCollection.deleteGlyph(glyph);
-                  that.trainingRowCollection.deleteGlyph(glyph);
+                    that.tableRowCollection.deleteGlyph(glyph);
+                    that.trainingRowCollection.deleteGlyph(glyph);
                 }
             );
 

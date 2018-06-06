@@ -55,7 +55,8 @@ export default {
     },
     glyphMultiEdit: {
         updateAllSelected: "Update All Selected",
-        groupAllSelected: "Group All Selected"
+        groupAllSelected: "Group All Selected",
+        deleteAllSelected: "Delete All Selected"
     }
 };
 //jscs:enable maximumLineLength
