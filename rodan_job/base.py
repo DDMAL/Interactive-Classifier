@@ -766,6 +766,17 @@ class InteractiveClassifier(RodanTask):
             }
             return data
 
+        elif "multi_delete" in user_input:
+            glyphs = user_input['glyphs']
+            for g in glyphs:
+                g['class_name'] = "_delete"
+
+            data = {
+            'manual': True,
+            'glyphs': glyphs
+            }
+            return data
+
         else:
             # We are not complete.  Run another correction stage
             changed_glyphs = user_input['glyphs']
