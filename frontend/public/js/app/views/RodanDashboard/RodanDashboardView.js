@@ -137,6 +137,17 @@ export default Marionette.LayoutView.extend(
                 }
             );
 
+            this.listenTo(RadioChannels.edit, GlyphEvents.deleteMultiGlyphs,
+                function (glyphs)
+                {
+                    for (var i = 0; i < glyphs.length; i++)
+                    {
+                        var glyph = glyphs[i];
+                        that.tableRowCollection.deleteGlyph(glyph);
+                    }
+                }
+            );
+
             this.listenTo(RadioChannels.edit, GlyphEvents.setGlyphName,
               function(className)
               {
