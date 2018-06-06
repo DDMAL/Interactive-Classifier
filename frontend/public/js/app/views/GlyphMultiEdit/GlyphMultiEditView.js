@@ -23,7 +23,8 @@ export default Marionette.LayoutView.extend(
 
         events: {
             "submit": "onSubmitForm",
-            "click .group": "group"
+            "click .group": "group",
+            "click #delete": "delete"
         },
 
         /**
@@ -140,6 +141,22 @@ export default Marionette.LayoutView.extend(
                     glyphs.push(model);
                 });
                 RadioChannels.edit.trigger(GlyphEvents.groupGlyphs, glyphs, className);
+            }
+        },
+
+        delete (event)
+        {
+            if (event)
+            {
+                event.preventDefault();
+            }
+            if (confirm(Strings.deleteWarning))
+            {
+                this.collection.each(function (glyph)
+                {
+                    console.log(glyph.get("id"));
+                    RadioChannels.edit.trigger(GlyphEvents.deleteGlyph, glyph);
+                });
             }
         },
 
