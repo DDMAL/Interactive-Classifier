@@ -21,7 +21,8 @@ export default Marionette.LayoutView.extend(
         },
 
         events: {
-            "submit": "onSubmitForm"
+            "submit": "onSubmitForm",
+            "click #delete": "delete"
         },
 
         /**
@@ -93,6 +94,28 @@ export default Marionette.LayoutView.extend(
                 model.changeClass(that.ui.classInput.val());
             });
         },
+
+        /**
+         * Delete the training glyph
+         *
+         * @param event
+         */
+         delete: function (event)
+         {
+            if (event)
+            {
+                event.preventDefault();
+            }
+            if (confirm (Strings.deleteWarning))
+            {
+                var glyphs = []
+                this.collection.each(function (model)
+                {
+                    glyphs.push(model);
+                });
+            }
+            RadioChannels.edit.trigger(GlyphEvents.deleteMultiGlyphs, glyphs);
+         },
 
         /**
          * Include some localized strings.

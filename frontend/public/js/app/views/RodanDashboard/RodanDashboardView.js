@@ -144,6 +144,7 @@ export default Marionette.LayoutView.extend(
                     {
                         var glyph = glyphs[i];
                         that.tableRowCollection.deleteGlyph(glyph);
+                        that.trainingRowCollection.deleteGlyph(glyph);
                     }
                 }
             );
