@@ -133,6 +133,7 @@ export default Marionette.LayoutView.extend(
                 function (glyph)
                 {
                   that.tableRowCollection.deleteGlyph(glyph);
+                  that.trainingRowCollection.deleteGlyph(glyph);
                 }
             );
 

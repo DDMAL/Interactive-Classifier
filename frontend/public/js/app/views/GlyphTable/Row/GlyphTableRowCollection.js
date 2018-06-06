@@ -180,6 +180,10 @@ export default Backbone.Collection.extend(
             {
                 row.get("glyphs").remove(matchingGlyph);
             }
+            if (row.get("glyphs").length === 0)
+            {
+                this.remove(row);
+            }
          }
 
     });
