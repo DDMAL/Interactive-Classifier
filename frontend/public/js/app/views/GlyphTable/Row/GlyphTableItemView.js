@@ -150,6 +150,24 @@ export default Marionette.ItemView.extend(
                 }
             });
 
+            this.listenTo(RadioChannels.edit, GlyphEvents.deleteMultiGlyphs, function (glyphs)
+            {
+                // NOTE: glyphs is an array of Glyph model, not a Backbone collection
+                for (var i = 0; i < glyphs.length; i++)
+                {
+                    var glyph = glyphs[i];
+                    var elems = Array.from(document.getElementsByClassName("glyph img-thumbnail bg-warning glyph-image"));
+                    elems.concat(Array.from(document.getElementsByClassName("glyph img-thumbnail bg-success glyph-image")));
+                    for (var j = 0; j < elems.length; j++)
+                    {
+                        if (elems[j]['href'].split('glyph/')[1].split('/')[0] === glyph.attributes.id)
+                        {
+                            elems[j].parentNode.remove();
+                        }
+                    }
+                }
+            });
+
             // this.listenTo(RadioChannels.edit, ClassEvents.openClassEdit, function (className)
             this.listenTo(RadioChannels.edit, ClassEvents.openClassEdit, function ()
             {

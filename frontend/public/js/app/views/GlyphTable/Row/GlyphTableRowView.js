@@ -30,7 +30,21 @@ export default Marionette.LayoutView.extend({
             var matchingGlyph = glyphs.findWhere({id: glyph.get("id")});
             if (matchingGlyph)
             {
-              this.model.get("glyphs").remove(matchingGlyph);
+                this.model.get("glyphs").remove(matchingGlyph);
+            }
+        });
+
+        this.listenTo(RadioChannels.edit, GlyphEvents.deleteMultiGlyphs, function (deletedGlyphs)
+        {
+            for (var i = 0; i < deletedGlyphs.length; i++)
+            {
+                var glyph = deletedGlyphs[i];
+                var glyphs = this.model.get("glyphs");
+                var matchingGlyph = glyphs.findWhere({id: glyph.get("id")});
+                if (matchingGlyph)
+                {
+                    this.model.get("glyphs").remove(matchingGlyph);
+                }
             }
         });
     },
