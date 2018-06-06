@@ -108,6 +108,16 @@ var App = Marionette.Application.extend(
                 that.deleteGlyph(glyphModel);
             });
 
+            this.listenTo(RadioChannels.edit, GlyphEvents.deleteMultiGlyphs, function (glyphs)
+            {
+                var deletedGlyphCollection = new GlyphCollection();
+                for (var i = 0; i < glyphs.length; i++)
+                {
+                    deletedGlyphCollection.add(glyphs[i]);
+                }
+                that.deleteMultipleGlyphs(deletedGlyphCollection);
+            });
+
             this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs, function (glyphList, glyphName)
             {
                 var groupedGlyphs = new GlyphCollection();
@@ -514,6 +524,55 @@ var App = Marionette.Application.extend(
                   }// jscs:enable
                 }
             });
+        },
+
+        deleteMultipleGlyphs: function (glyphs)
+        {
+            var that = this;
+            var data = JSON.stringify({
+                "multi_delete": true,
+                "glyphs": glyphs.toJSON()
+            });
+
+            $.ajax({
+                url: this.authenticator.getWorkingUrl(),
+                type: 'POST',
+                data: data,
+                headers:
+                {
+                    Accept: "application/json; charset=utf-8",
+                    "Content-Type": "application/json; charset=utf-8"
+                },
+                complete: function (response)
+                {// jscs:disable
+                    if (response.status === 200)
+                    {
+                        var responseData = JSON.parse(response.responseText);
+                        var glyphs = responseData['glyphs'];
+                        for (var i = 0; i < glyphs.length; i++)
+                        {
+                            var deletedGlyph = glyphs[i];
+                            var g = new Glyph
+                            ({
+                                "id": deletedGlyph.id,
+                                "class_name": deletedGlyph["class_name"],
+                                "id_state_manual": deletedGlyph["id_state_manual"],
+                                "is_training": deletedGlyph["is_training"],
+                                "confidence": deletedGlyph["confidence"],
+                                "ulx": deletedGlyph["ulx"],
+                                "uly": deletedGlyph["uly"],
+                                "nrows": deletedGlyph["nrows"],
+                                "ncols": deletedGlyph["ncols"],
+                                "image_b64": (deletedGlyph["image_b64"]),
+                                "image": (deletedGlyph["image"])
+                            });
+                            that.changedGlyphs.push(g);
+                        }
+                        console.log("changed glyphs:")
+                        console.log(that.changedGlyphs);
+                    }
+                }// jscs:enable
+            })
         },
 
         /**
