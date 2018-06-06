@@ -296,7 +296,7 @@ def filter_parts(settings):
     temp = copy.copy(settings['glyphs'])
     for glyph in settings['glyphs']:
         name = glyph['class_name']
-        if name.startswith("_split") or name.startswith("_group"):
+        if name.startswith("_split") or name.startswith("_group") or name.startswith("_delete"):
             parts.append(glyph)
             temp.remove(glyph)
     settings['glyphs'] = temp
@@ -304,7 +304,7 @@ def filter_parts(settings):
     temp2 = copy.copy(settings['training_glyphs'])
     for glyph in settings['training_glyphs']:
         name = glyph['class_name']
-        if name.startswith("_split") or name.startswith("_group"):
+        if name.startswith("_split") or name.startswith("_group") or name.startswith("_delete"):
             temp2.remove(glyph)
     settings['training_glyphs'] = temp2
     return parts
@@ -756,6 +756,15 @@ class InteractiveClassifier(RodanTask):
             '@grouped_glyphs': user_input['grouped_glyphs'],
             '@changed_training_glyphs': user_input['changed_training_glyphs']
             }
+
+        elif "delete" in user_input:
+            glyph = user_input['glyph']
+            glyph['class_name'] = "_delete"
+            data = {
+            'manual': True,
+            'glyph': glyph
+            }
+            return data
 
         else:
             # We are not complete.  Run another correction stage
