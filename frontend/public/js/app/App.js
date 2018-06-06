@@ -568,8 +568,6 @@ var App = Marionette.Application.extend(
                             });
                             that.changedGlyphs.push(g);
                         }
-                        console.log("changed glyphs:")
-                        console.log(that.changedGlyphs);
                     }
                 }// jscs:enable
             })
