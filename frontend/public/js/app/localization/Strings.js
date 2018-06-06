@@ -34,7 +34,6 @@ export default {
     splitTitle: "Splitting",
     groupingGlyphs: "The Glyphs are being grouped...",
     splittingGlyph: "The Glyph is being split...",
-    deleteWarning: "Are you sure you wish to delete multiple glyphs?",
     // Strings for GlyphEditview
     editGlyph: {
         update: "Update",
