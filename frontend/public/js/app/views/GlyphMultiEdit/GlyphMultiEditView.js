@@ -114,6 +114,11 @@ export default Marionette.LayoutView.extend(
             }
         },
 
+        /**
+         * Group the selected glyphs into one
+         *
+         * @param event
+         */
         group(event)
         {
             if (event)
@@ -144,6 +149,11 @@ export default Marionette.LayoutView.extend(
             }
         },
 
+        /**
+         * Delete all selected glyphs and trigger event
+         *
+         * @param event
+         */
         delete (event)
         {
             if (event)
