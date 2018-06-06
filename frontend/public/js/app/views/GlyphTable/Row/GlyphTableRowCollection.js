@@ -172,17 +172,20 @@ export default Backbone.Collection.extend(
             var row = this.findWhere({
                 class_name: glyph.get("class_name")
             });
-            var glyphs = row.get("glyphs");
-            var matchingGlyph = glyphs.findWhere({
-                id: glyph.get("id")
-            });
-            if (matchingGlyph)
+            if (row !== undefined)
             {
-                row.get("glyphs").remove(matchingGlyph);
-            }
-            if (row.get("glyphs").length === 0)
-            {
-                this.remove(row);
+                var glyphs = row.get("glyphs");
+                var matchingGlyph = glyphs.findWhere({
+                    id: glyph.get("id")
+                });
+                if (matchingGlyph)
+                {
+                    row.get("glyphs").remove(matchingGlyph);
+                }
+                if (row.get("glyphs").length === 0)
+                {
+                    this.remove(row);
+                }
             }
          }
 
