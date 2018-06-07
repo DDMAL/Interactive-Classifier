@@ -379,6 +379,12 @@ def update_changed_glyphs(settings):
     settings['@changed_glyphs'] = []
     settings['@changed_training_glyphs'] = []
 
+def remove_deleted_glyphs(settings, inputs):
+    # filter out training glyphs with class name "UNCLASSIFIED" or deleted glyphs
+    if 'GameraXML - Training Data' in inputs:
+        copyList = settings['training_glyphs']
+        filteredGlyphs = [g for g in copyList if g['class_name'] != "UNCLASSIFIED" and g['class_name'] != "_delete"]
+        settings['training_glyphs'] = filteredGlyphs
 
 class InteractiveClassifier(RodanTask):
     #############
@@ -486,7 +492,7 @@ class InteractiveClassifier(RodanTask):
                 classifier_glyphs = GameraXML(inputs['GameraXML - Training Data'][0]['resource_path']).get_glyphs()
                 # Discard glyphs that were not classified manually
                 classifier_glyphs = [c for c in classifier_glyphs if c['id_state_manual'] == True]
-                classifier_glyphs = [c for c in classifier_glyphs if c['class_name'] != "UNCLASSIFIED"]
+                classifier_glyphs = [c for c in classifier_glyphs if c['class_name'] != "UNCLASSIFIED" and c['class_name'] != "_delete"]
 
                 for c in classifier_glyphs:
                     c['is_training'] = True
@@ -514,12 +520,7 @@ class InteractiveClassifier(RodanTask):
             add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
 
-            # filter out training glyphs with class name "UNCLASSIFIED"
-            if 'GameraXML - Training Data' in inputs:
-                copyList = settings['training_glyphs']
-                filteredGlyphs = [g for g in copyList if g['class_name'] != "UNCLASSIFIED"]
-                settings['training_glyphs'] = filteredGlyphs
-
+            remove_deleted_glyphs(settings, inputs)
             # Takes out _group._parts glyphs and split glyphs TODO: save split glyphs for automatic splitting
             filter_parts(settings)
 
@@ -541,12 +542,7 @@ class InteractiveClassifier(RodanTask):
             # Update any changed glyphs
             add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
-
-            # filter out training glyphs with class name "UNCLASSIFIED"
-            if 'GameraXML - Training Data' in inputs:
-                copyList = settings['training_glyphs']
-                filteredGlyphs = [g for g in copyList if g['class_name'] != "UNCLASSIFIED"]
-                settings['training_glyphs'] = filteredGlyphs
+            remove_deleted_glyphs(settings, inputs)
 
             # Takes out _group._parts glyphs
             filter_parts(settings)
@@ -568,12 +564,7 @@ class InteractiveClassifier(RodanTask):
             # Update changed glyphs
             add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
-
-            # filter out training glyphs with class name "UNCLASSIFIED"
-            if 'GameraXML - Training Data' in inputs:
-                copyList = settings['training_glyphs']
-                filteredGlyphs = [g for g in copyList if g['class_name'] != "UNCLASSIFIED"]
-                settings['training_glyphs'] = filteredGlyphs
+            remove_deleted_glyphs(settings, inputs)
 
             cknn = prepare_classifier(settings['training_glyphs'], settings['glyphs'], features)
 
