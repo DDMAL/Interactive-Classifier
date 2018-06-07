@@ -129,14 +129,6 @@ export default Marionette.LayoutView.extend(
                 }
             );
 
-            this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyph,
-                function (glyph)
-                {
-                    that.tableRowCollection.deleteGlyph(glyph);
-                    that.trainingRowCollection.deleteGlyph(glyph);
-                }
-            );
-
             this.listenTo(RadioChannels.edit, GlyphEvents.deleteMultiGlyphs,
                 function (glyphs)
                 {

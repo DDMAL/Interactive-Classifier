@@ -3,7 +3,7 @@ import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
 import Strings from "localization/Strings";
 import template from "./glyph-edit.template.html";
-import ClassNameUtils from "utils/ClassNameUtils"
+import ClassNameUtils from "utils/ClassNameUtils";
 
 export default Marionette.ItemView.extend(
     /**
@@ -140,7 +140,8 @@ export default Marionette.ItemView.extend(
           {
             event.preventDefault();
           }
-          RadioChannels.edit.trigger(GlyphEvents.deleteGlyph, this.model);
+          var glyph = [this.model];
+          RadioChannels.edit.trigger(GlyphEvents.deleteMultiGlyphs, glyph);
         },
 
         /**

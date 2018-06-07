@@ -24,16 +24,6 @@ export default Marionette.LayoutView.extend({
 
         this.tableViewModel = options.tableViewModel;
 
-        this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyph, function (glyph)
-        {
-            var glyphs = this.model.get("glyphs");
-            var matchingGlyph = glyphs.findWhere({id: glyph.get("id")});
-            if (matchingGlyph)
-            {
-                this.model.get("glyphs").remove(matchingGlyph);
-            }
-        });
-
         this.listenTo(RadioChannels.edit, GlyphEvents.deleteMultiGlyphs, function (deletedGlyphs)
         {
             for (var i = 0; i < deletedGlyphs.length; i++)

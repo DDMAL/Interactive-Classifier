@@ -129,24 +129,12 @@ export default Marionette.ItemView.extend(
                     }
                 }
             );
+            
             this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit, function (model)
             {
                 if (that.model.attributes.id !== model.attributes.id && !model.attributes.is_training)
                 {
                     RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, that.model.attributes.id, false);
-                }
-            });
-
-            this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyph, function (model)
-            {
-                var elems = Array.from(document.getElementsByClassName("glyph img-thumbnail bg-warning glyph-image"));
-                elems.concat(Array.from(document.getElementsByClassName("glyph img-thumbnail bg-success glyph-image")));
-                for (var i = 0; i < elems.length; i++)
-                {
-                    if (elems[i]['href'].split('glyph/')[1].split('/')[0] === model.attributes.id)
-                    {
-                        elems[i].parentNode.remove();
-                    }
                 }
             });
 
