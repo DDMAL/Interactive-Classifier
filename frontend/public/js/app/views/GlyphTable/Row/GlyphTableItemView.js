@@ -129,7 +129,7 @@ export default Marionette.ItemView.extend(
                     }
                 }
             );
-            
+
             this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit, function (model)
             {
                 if (that.model.attributes.id !== model.attributes.id && !model.attributes.is_training)
@@ -138,7 +138,7 @@ export default Marionette.ItemView.extend(
                 }
             });
 
-            this.listenTo(RadioChannels.edit, GlyphEvents.deleteMultiGlyphs, function (glyphs)
+            this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyphs, function (glyphs)
             {
                 // NOTE: glyphs is an array of Glyph model, not a Backbone collection
                 for (var i = 0; i < glyphs.length; i++)

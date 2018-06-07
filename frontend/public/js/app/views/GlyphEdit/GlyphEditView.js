@@ -141,7 +141,7 @@ export default Marionette.ItemView.extend(
             event.preventDefault();
           }
           var glyph = [this.model];
-          RadioChannels.edit.trigger(GlyphEvents.deleteMultiGlyphs, glyph);
+          RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyph);
         },
 
         /**

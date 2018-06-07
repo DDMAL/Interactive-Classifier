@@ -167,7 +167,7 @@ export default Marionette.LayoutView.extend(
                 {
                     glyphs.push(model);
                 });
-                RadioChannels.edit.trigger(GlyphEvents.deleteMultiGlyphs, glyphs);
+                RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyphs);
             }
         },
 

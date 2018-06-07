@@ -103,14 +103,14 @@ var App = Marionette.Application.extend(
                 this.modals.group.close();
             });
 
-            this.listenTo(RadioChannels.edit, GlyphEvents.deleteMultiGlyphs, function (glyphs)
+            this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyphs, function (glyphs)
             {
                 var deletedGlyphCollection = new GlyphCollection();
                 for (var i = 0; i < glyphs.length; i++)
                 {
                     deletedGlyphCollection.add(glyphs[i]);
                 }
-                that.deleteMultipleGlyphs(deletedGlyphCollection);
+                that.deleteGlyphs(deletedGlyphCollection);
             });
 
             this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs, function (glyphList, glyphName)
@@ -476,7 +476,7 @@ var App = Marionette.Application.extend(
          *  Delete selected glyph or glyphs
          *
          */
-        deleteMultipleGlyphs: function (glyphs)
+        deleteGlyphs: function (glyphs)
         {
             var that = this;
             var data = JSON.stringify({
