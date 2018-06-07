@@ -106,15 +106,22 @@ export default Marionette.LayoutView.extend(
             {
                 event.preventDefault();
             }
-            if (confirm (Strings.deleteWarning))
+            var glyphs = []
+            this.collection.each(function (model)
             {
-                var glyphs = []
-                this.collection.each(function (model)
+                glyphs.push(model);
+            });
+            if (glyphs.length > 1)
+            {
+                if (confirm (Strings.deleteWarning))
                 {
-                    glyphs.push(model);
-                });
+                    RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyphs);
+                }
             }
-            RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyphs);
+            else
+            {
+                RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyphs);
+            }
          },
 
         /**
