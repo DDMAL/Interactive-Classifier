@@ -98,11 +98,11 @@ export default Marionette.LayoutView.extend(
             var className = this.ui.classInput.val();
             if (ClassNameUtils.sanitizeClassName(className) === "unclassified")
             {
-                alert("UNCLASSIFIED is a reserved keyword.");
+                alert(Strings.unclassifiedClass);
             }
             else if (ClassNameUtils.sanitizeClassName(className) === "")
             {
-                var message = className + " is not a valid class name.";
+                var message = className + Strings.invalidClass;
                 alert(message);
             }
             else
@@ -129,11 +129,11 @@ export default Marionette.LayoutView.extend(
             var className = that.ui.classInput.val();
             if (ClassNameUtils.sanitizeClassName(className) === "unclassified")
             {
-                alert("UNCLASSIFIED is a reserved keyword.");
+                alert(Strings.unclassifiedClass);
             }
             else if (ClassNameUtils.sanitizeClassName(className) === "")
             {
-                var message = className + " is not a valid class name.";
+                var message = className + Strings.invalidClass;
                 alert(message);
             }
             else

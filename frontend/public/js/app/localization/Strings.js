@@ -35,6 +35,8 @@ export default {
     groupingGlyphs: "The Glyphs are being grouped...",
     splittingGlyph: "The Glyph is being split...",
     deleteWarning: "Are you sure you wish to delete multiple glyphs?",
+    unclassifiedClass: "UNCLASSIFIED is a reserved keyword.",
+    invalidClass: " is not a valid class name.",
     // Strings for GlyphEditview
     editGlyph: {
         update: "Update",
