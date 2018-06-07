@@ -516,7 +516,14 @@ var App = Marionette.Application.extend(
                                 "image_b64": (deletedGlyph["image_b64"]),
                                 "image": (deletedGlyph["image"])
                             });
-                            that.changedGlyphs.push(g);
+                            if (g.get("is_training"))
+                            {
+                                that.changedTrainingGlyphs.push(g);
+                            }
+                            else
+                            {
+                                that.changedGlyphs.push(g);
+                            }
                         }
                     }
                 }// jscs:enable
