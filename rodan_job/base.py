@@ -261,7 +261,7 @@ def serialize_glyphs_to_json(glyphs):
     return json.dumps(output)
 
 
-def serialize_class_names_to_json(glyphs, training_database):
+def serialize_class_names_to_json(glyphs, training_database, inputs):
     """
     Get JSON representing the list of all class names in the classifier.
     """
@@ -270,10 +270,17 @@ def serialize_class_names_to_json(glyphs, training_database):
     # Add the glyph short codes
     for image in database:
         name_set.add(image['class_name'])
+
+    if 'Plain Text - Class Names' in inputs:
+        classes_path = inputs['Plain Text - Class Names'][0]['resource_path']
+        with open(classes_path) as f:
+            for line in f:
+                name_set.add(line.strip())
+
     return json.dumps(sorted(list(name_set)))
 
 
-def serialize_data(settings):
+def serialize_data(settings, inputs):
     """
     Serialize the short codes and glyphs to JSON and store them in settings.
     """
@@ -285,7 +292,7 @@ def serialize_data(settings):
             manual.append(glyph)
 
     settings['class_names_json'] = serialize_class_names_to_json(
-        settings['glyphs'], settings['training_glyphs'])
+        settings['glyphs'], settings['training_glyphs'], inputs)
     settings['glyphs_json'] = serialize_glyphs_to_json(settings['glyphs'])
     settings['training_json'] = serialize_glyphs_to_json(settings['training_glyphs'] + manual)
 
@@ -439,6 +446,13 @@ class InteractiveClassifier(RodanTask):
             'minimum': 0,
             'maximum': 1,
             'is_list': False
+        },
+        {
+        	'name': 'Plain Text - Class Names',
+        	'resource_types': ['text/plain'],
+        	'minimum': 0,
+        	'maximum': 1,
+        	'is_list': False
         }
     ]
     output_port_types = [
@@ -522,7 +536,7 @@ class InteractiveClassifier(RodanTask):
                                      settings['training_glyphs'],
                                      features)
 
-            serialize_data(settings)
+            serialize_data(settings, inputs)
 
             return self.WAITING_FOR_INPUT()
 
@@ -545,7 +559,7 @@ class InteractiveClassifier(RodanTask):
             # Filter any remaining parts
             filter_parts(settings)
 
-            serialize_data(settings)
+            serialize_data(settings, inputs)
             return self.WAITING_FOR_INPUT()
 
         # Automatic grouping and reclassifying
@@ -565,7 +579,7 @@ class InteractiveClassifier(RodanTask):
                               settings['training_glyphs'],
                               features)
             filter_parts(settings)
-            serialize_data(settings)
+            serialize_data(settings, inputs)
             return self.WAITING_FOR_INPUT()
 
         else:
