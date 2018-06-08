@@ -3,7 +3,7 @@ import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
 import Strings from "localization/Strings";
 import template from "./glyph-edit.template.html";
-import ClassNameUtils from "utils/ClassNameUtils"
+import ClassNameUtils from "utils/ClassNameUtils";
 
 export default Marionette.ItemView.extend(
     /**
@@ -19,7 +19,8 @@ export default Marionette.ItemView.extend(
 
         events: {
             "submit": "onSubmitForm",
-            "click .split": "split"
+            "click .split": "split",
+            "click #delete": "delete"
         },
 
         modelEvents: {
@@ -75,9 +76,18 @@ export default Marionette.ItemView.extend(
                 event.preventDefault();
             }
             var className = this.ui.classInput.val();
-            if (ClassNameUtils.sanitizeClassName(className) !== "unclassified" && ClassNameUtils.sanitizeClassName(className) !== "")
+            if (ClassNameUtils.sanitizeClassName(className) === "unclassified")
             {
-              this.model.changeClass(this.ui.classInput.val());
+                alert(Strings.unclassifiedClass);
+            }
+            else if (ClassNameUtils.sanitizeClassName(className) === "")
+            {
+                var message = className + Strings.invalidClass;
+                alert(message);
+            }
+            else
+            {
+                this.model.changeClass(this.ui.classInput.val());
             }
 
         },
@@ -122,6 +132,16 @@ export default Marionette.ItemView.extend(
             // False meaning isManual is false
             this.model.changeClass("_split." + val, false);
             RadioChannels.edit.trigger(GlyphEvents.splitGlyph, this.model, val);
+        },
+
+        delete: function(event)
+        {
+          if(event)
+          {
+            event.preventDefault();
+          }
+          var glyph = [this.model];
+          RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyph);
         },
 
         /**

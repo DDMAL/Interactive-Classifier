@@ -160,6 +160,33 @@ export default Backbone.Collection.extend(
 
             RadioChannels.edit.trigger(PageEvents.changeBackground);
 
-        }
+        },
+
+        /**
+         * Delete a glyph from the table
+         *
+         * @param {Glyph} glyph - Glyph model.
+         */
+         deleteGlyph: function(glyph)
+         {
+            var row = this.findWhere({
+                class_name: glyph.get("class_name")
+            });
+            if (row !== undefined)
+            {
+                var glyphs = row.get("glyphs");
+                var matchingGlyph = glyphs.findWhere({
+                    id: glyph.get("id")
+                });
+                if (matchingGlyph)
+                {
+                    row.get("glyphs").remove(matchingGlyph);
+                }
+                if (row.get("glyphs").length === 0)
+                {
+                    this.remove(row);
+                }
+            }
+         }
 
     });

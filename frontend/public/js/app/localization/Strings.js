@@ -34,6 +34,9 @@ export default {
     splitTitle: "Splitting",
     groupingGlyphs: "The Glyphs are being grouped...",
     splittingGlyph: "The Glyph is being split...",
+    deleteWarning: "Are you sure you wish to delete multiple glyphs?",
+    unclassifiedClass: "UNCLASSIFIED is a reserved keyword.",
+    invalidClass: " is not a valid class name.",
     // Strings for GlyphEditview
     editGlyph: {
         update: "Update",
@@ -44,7 +47,8 @@ export default {
         position: "Position",
         dimensions: "Dimensions",
         glyphPreview: "Glyph Preview",
-        split: "Split"
+        split: "Split",
+        delete: "Delete Glyph"
     },
     editClass: {
         update: "Update",
@@ -54,7 +58,8 @@ export default {
     },
     glyphMultiEdit: {
         updateAllSelected: "Update All Selected",
-        groupAllSelected: "Group All Selected"
+        groupAllSelected: "Group All Selected",
+        deleteAllSelected: "Delete All Selected"
     }
 };
 //jscs:enable maximumLineLength

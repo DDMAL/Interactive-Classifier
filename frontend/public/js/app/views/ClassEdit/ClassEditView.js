@@ -4,6 +4,7 @@ import Strings from "localization/Strings";
 import ClassEvents from "events/ClassEvents";
 import RadioChannels from "radio/RadioChannels";
 import template from "./class-edit.template.html";
+import ClassNameUtils from "utils/ClassNameUtils"
 /**
  * The detailed class view
  */
@@ -16,8 +17,8 @@ export default Marionette.ItemView.extend({
     },
 
     events: {
-        "click .delete": "delete",
-        "click .update": "update"
+        "click #delete": "delete",
+        "click #update": "update"
     },
 
     modelEvents: {
@@ -44,8 +45,21 @@ export default Marionette.ItemView.extend({
         {
             event.preventDefault();
         }
+        var className = this.ui.classInput.val();
+        if (ClassNameUtils.sanitizeClassName(className) === "unclassified")
+        {
+            alert(Strings.unclassifiedClass);
+        }
+        else if (ClassNameUtils.sanitizeClassName(className) === "")
+        {
+            var message = className + Strings.invalidClass;
+            alert(message);
+        }
         //trigger renameClass event with parameters (old name, new name)
-        RadioChannels.edit.trigger(ClassEvents.renameClass, this.model.get("name"), this.ui.classInput.val());
+        else
+        {
+            RadioChannels.edit.trigger(ClassEvents.renameClass, this.model.get("name"), className);
+        }
       },
 
     delete: function(event)

@@ -128,6 +128,19 @@ export default Marionette.LayoutView.extend(
                     // jscs:enable
                 }
             );
+
+            this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyphs,
+                function (glyphs)
+                {
+                    for (var i = 0; i < glyphs.length; i++)
+                    {
+                        var glyph = glyphs[i];
+                        that.tableRowCollection.deleteGlyph(glyph);
+                        that.trainingRowCollection.deleteGlyph(glyph);
+                    }
+                }
+            );
+
             this.listenTo(RadioChannels.edit, GlyphEvents.setGlyphName,
               function(className)
               {
@@ -158,7 +171,7 @@ export default Marionette.LayoutView.extend(
                     for (var i = 0; i < classes.length; i++)
                     {
                         var name = classes[i];
-                        if (name.startsWith(className))
+                        if (name === className || name.startsWith(className + "."))
                         {
                             that.tableRowCollection.deleteClass(name);
                             that.trainingRowCollection.deleteClass(name);
@@ -166,7 +179,7 @@ export default Marionette.LayoutView.extend(
                     }
                     var newClasses = this.model.get('classNames').filter(function (name)
                     {
-                      return !name.startsWith(className);
+                      return !name.startsWith(className + ".") && name !== className;
                     });
                     this.model.set('classNames', newClasses);
                 });
@@ -178,7 +191,7 @@ export default Marionette.LayoutView.extend(
                     for (var i = 0; i < classes.length; i++)
                     {
                         var name = classes[i];
-                        if (name.startsWith(oldName))
+                        if (name === oldName || name.startsWith(oldName + "."))
                         {
                           that.tableRowCollection.renameClass(name, oldName, newName);
                           that.trainingRowCollection.renameClass(name, oldName, newName);
@@ -186,7 +199,7 @@ export default Marionette.LayoutView.extend(
                     }
                     for (var j = 0; j < classes.length; j++)
                     {
-                      if (classes[j].startsWith(oldName))
+                      if (classes[j] === oldName || classes[j].startsWith(oldName + "."))
                       {
                         classes[j] = classes[j].replace(oldName, newName);
                       }

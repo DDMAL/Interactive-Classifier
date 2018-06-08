@@ -22,5 +22,6 @@ export default {
     selectGlyph: "glyph:select",
     deselectGlyph: "glyph:deselect",
     deselectAllGlyphs: "glyph:deselect:all",
-    highlightGlyphs: "glyph:highlight"
+    highlightGlyphs: "glyph:highlight",
+    deleteGlyphs: "glyph:delete:all"
 }

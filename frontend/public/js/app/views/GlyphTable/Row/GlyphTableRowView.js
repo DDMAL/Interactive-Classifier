@@ -1,6 +1,8 @@
 import Marionette from "marionette";
 import GlyphTableItemView from "views/GlyphTable/Row/GlyphTableItemView";
 import template from "./table-row.template.html";
+import RadioChannels from "radio/RadioChannels";
+import GlyphEvents from "events/GlyphEvents";
 
 export default Marionette.LayoutView.extend({
     template,
@@ -21,6 +23,20 @@ export default Marionette.LayoutView.extend({
         Marionette.ItemView.prototype.initialize.call(this, options);
 
         this.tableViewModel = options.tableViewModel;
+
+        this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyphs, function (deletedGlyphs)
+        {
+            for (var i = 0; i < deletedGlyphs.length; i++)
+            {
+                var glyph = deletedGlyphs[i];
+                var glyphs = this.model.get("glyphs");
+                var matchingGlyph = glyphs.findWhere({id: glyph.get("id")});
+                if (matchingGlyph)
+                {
+                    this.model.get("glyphs").remove(matchingGlyph);
+                }
+            }
+        });
     },
 
     regions: {

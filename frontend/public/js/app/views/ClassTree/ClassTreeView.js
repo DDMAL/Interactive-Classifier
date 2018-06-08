@@ -68,7 +68,7 @@ export default Marionette.LayoutView.extend(
                 // Add the model to the class_names
                 console.log("Delete class!", deletedClassName);
                 var classNameList = that.model.get("class_names");
-                var filteredList = classNameList.filter(name => !name.startsWith(deletedClassName));
+                var filteredList = classNameList.filter(name => name !== deletedClassName && !name.startsWith(deletedClassName + "."));
                 // Set the new list
                 that.model = new ClassTreeViewModel({
                   class_names: filteredList.sort()
@@ -81,7 +81,7 @@ export default Marionette.LayoutView.extend(
               var classNameList = that.model.get("class_names");
               for (var i = 0; i < classNameList.length; i++)
               {
-                if (classNameList[i].startsWith(oldClassName))
+                if (classNameList[i].startsWith(oldClassName + ".") || classNameList[i] === oldClassName)
                 {
                   classNameList[i] = classNameList[i].replace(oldClassName, newClassName);
                 }

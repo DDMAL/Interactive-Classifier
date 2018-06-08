@@ -4,6 +4,7 @@ import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
 import Strings from "localization/Strings";
 import template from "views/GlyphMultiEdit/glyph-multi-edit.template.html";
+import ClassNameUtils from "utils/ClassNameUtils"
 
 export default Marionette.LayoutView.extend(
     /**
@@ -22,7 +23,8 @@ export default Marionette.LayoutView.extend(
 
         events: {
             "submit": "onSubmitForm",
-            "click .group": "group"
+            "click .group": "group",
+            "click #delete": "delete"
         },
 
         /**
@@ -93,12 +95,30 @@ export default Marionette.LayoutView.extend(
                 event.preventDefault();
             }
             var that = this;
-            this.collection.each(function (model)
+            var className = this.ui.classInput.val();
+            if (ClassNameUtils.sanitizeClassName(className) === "unclassified")
             {
-                model.changeClass(that.ui.classInput.val());
-            });
+                alert(Strings.unclassifiedClass);
+            }
+            else if (ClassNameUtils.sanitizeClassName(className) === "")
+            {
+                var message = className + Strings.invalidClass;
+                alert(message);
+            }
+            else
+            {
+                this.collection.each(function (model)
+                {
+                    model.changeClass(that.ui.classInput.val());
+                });
+            }
         },
 
+        /**
+         * Group the selected glyphs into one
+         *
+         * @param event
+         */
         group(event)
         {
             if (event)
@@ -107,18 +127,48 @@ export default Marionette.LayoutView.extend(
             }
             var that = this;
             var className = that.ui.classInput.val();
-            if (className === "")
+            if (ClassNameUtils.sanitizeClassName(className) === "unclassified")
             {
-                className = "UNCLASSIFIED";
+                alert(Strings.unclassifiedClass);
             }
-            console.log("Glyphs will be grouped to " + className);
-            var glyphs = []
-            this.collection.each(function (model)
+            else if (ClassNameUtils.sanitizeClassName(className) === "")
             {
-                model.changeClass("_group._part." + className, false);
-                glyphs.push(model);
-            });
-            RadioChannels.edit.trigger(GlyphEvents.groupGlyphs, glyphs, className)
+                var message = className + Strings.invalidClass;
+                alert(message);
+            }
+            else
+            {
+                console.log("Glyphs will be grouped to " + className);
+                var glyphs = []
+                this.collection.each(function (model)
+                {
+                    model.changeClass("_group._part." + className, false);
+                    glyphs.push(model);
+                });
+                RadioChannels.edit.trigger(GlyphEvents.groupGlyphs, glyphs, className);
+            }
+        },
+
+        /**
+         * Delete all selected glyphs and trigger event
+         *
+         * @param event
+         */
+        delete (event)
+        {
+            if (event)
+            {
+                event.preventDefault();
+            }
+            if (confirm(Strings.deleteWarning))
+            {
+                var glyphs = []
+                this.collection.each(function (model)
+                {
+                    glyphs.push(model);
+                });
+                RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyphs);
+            }
         },
 
         /**

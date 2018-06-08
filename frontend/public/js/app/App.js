@@ -34,6 +34,8 @@ var App = Marionette.Application.extend(
         behaviors: {},
         changedGlyphs: new GlyphCollection(),
         changedTrainingGlyphs: new GlyphCollection(),
+        deletedGlyphs: new GlyphCollection(),
+        deletedTrainingGlyphs: new GlyphCollection(),
         groupedGlyphs: [],
 
         /**
@@ -101,6 +103,16 @@ var App = Marionette.Application.extend(
             this.listenTo(RadioChannels.edit, GlyphEvents.addGlyph, function ()
             {
                 this.modals.group.close();
+            });
+
+            this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyphs, function (glyphs)
+            {
+                var deletedGlyphCollection = new GlyphCollection();
+                for (var i = 0; i < glyphs.length; i++)
+                {
+                    deletedGlyphCollection.add(glyphs[i]);
+                }
+                that.deleteGlyphs(deletedGlyphCollection);
             });
 
             this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs, function (glyphList, glyphName)
@@ -199,7 +211,9 @@ var App = Marionette.Application.extend(
             var data = JSON.stringify({
                 "glyphs": this.changedGlyphs.toJSON(),
                 "grouped_glyphs": this.groupedGlyphs,
-                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON()
+                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON(),
+                "deleted_glyphs": this.deletedGlyphs.toJSON(),
+                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON()
             });
             // Submit the corrections and close the window
             $.ajax({
@@ -228,7 +242,9 @@ var App = Marionette.Application.extend(
                 "grouped_glyphs": this.groupedGlyphs,
                 "auto_group": true,
                 "user_options": userSelections,
-                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON()
+                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON(),
+                "deleted_glyphs": this.deletedGlyphs.toJSON(),
+                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON()
             });
             // Submit the corrections and close the window
             $.ajax({
@@ -257,7 +273,9 @@ var App = Marionette.Application.extend(
                 "complete": true,
                 "glyphs": this.changedGlyphs.toJSON(),
                 "grouped_glyphs": this.groupedGlyphs,
-                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON()
+                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON(),
+                "deleted_glyphs": this.deletedGlyphs.toJSON(),
+                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON()
             });
             /* Submit the corrections and close the window*/
             $.ajax({
@@ -461,6 +479,71 @@ var App = Marionette.Application.extend(
                 });
             }
         },
+
+        /**
+         *  Delete selected glyph or glyphs
+         *
+         */
+        deleteGlyphs: function (glyphs)
+        {
+            var that = this;
+            var data = JSON.stringify({
+                "delete": true,
+                "glyphs": glyphs.toJSON()
+            });
+
+            $.ajax({
+                url: this.authenticator.getWorkingUrl(),
+                type: 'POST',
+                data: data,
+                headers:
+                {
+                    Accept: "application/json; charset=utf-8",
+                    "Content-Type": "application/json; charset=utf-8"
+                },
+                complete: function (response)
+                {// jscs:disable
+                    if (response.status === 200)
+                    {
+                        var responseData = JSON.parse(response.responseText);
+                        var glyphs = responseData['glyphs'];
+                        for (var i = 0; i < glyphs.length; i++)
+                        {
+                            var deletedGlyph = glyphs[i];
+                            var g = new Glyph
+                            ({
+                                "id": deletedGlyph.id,
+                                "class_name": deletedGlyph["class_name"],
+                                "id_state_manual": deletedGlyph["id_state_manual"],
+                                "is_training": deletedGlyph["is_training"],
+                                "confidence": deletedGlyph["confidence"],
+                                "ulx": deletedGlyph["ulx"],
+                                "uly": deletedGlyph["uly"],
+                                "nrows": deletedGlyph["nrows"],
+                                "ncols": deletedGlyph["ncols"],
+                                "image_b64": (deletedGlyph["image_b64"]),
+                                "image": (deletedGlyph["image"])
+                            });
+                            if (g.get("is_training"))
+                            {
+                                that.deletedTrainingGlyphs.push(g);
+                                that.deletedTrainingGlyphs.each(function (g){
+                                    g.set("class_name", "_delete");
+                                });
+                            }
+                            else
+                            {
+                                that.deletedGlyphs.push(g);
+                                that.deletedGlyphs.each(function (g){
+                                    g.set("class_name", "_delete");
+                                });
+                            }
+                        }
+                    }
+                }// jscs:enable
+            })
+        },
+
         /**
          * Initialize all of the modals used in the application.
          */
