@@ -34,6 +34,8 @@ var App = Marionette.Application.extend(
         behaviors: {},
         changedGlyphs: new GlyphCollection(),
         changedTrainingGlyphs: new GlyphCollection(),
+        deletedGlyphs: new GlyphCollection(),
+        deletedTrainingGlyphs: new GlyphCollection(),
         groupedGlyphs: [],
 
         /**
@@ -209,7 +211,9 @@ var App = Marionette.Application.extend(
             var data = JSON.stringify({
                 "glyphs": this.changedGlyphs.toJSON(),
                 "grouped_glyphs": this.groupedGlyphs,
-                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON()
+                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON(),
+                "deleted_glyphs": this.deletedGlyphs.toJSON(),
+                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON()
             });
             // Submit the corrections and close the window
             $.ajax({
@@ -238,7 +242,9 @@ var App = Marionette.Application.extend(
                 "grouped_glyphs": this.groupedGlyphs,
                 "auto_group": true,
                 "user_options": userSelections,
-                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON()
+                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON(),
+                "deleted_glyphs": this.deletedGlyphs.toJSON(),
+                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON()
             });
             // Submit the corrections and close the window
             $.ajax({
@@ -267,7 +273,9 @@ var App = Marionette.Application.extend(
                 "complete": true,
                 "glyphs": this.changedGlyphs.toJSON(),
                 "grouped_glyphs": this.groupedGlyphs,
-                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON()
+                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON(),
+                "deleted_glyphs": this.deletedGlyphs.toJSON(),
+                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON()
             });
             /* Submit the corrections and close the window*/
             $.ajax({
@@ -480,7 +488,7 @@ var App = Marionette.Application.extend(
         {
             var that = this;
             var data = JSON.stringify({
-                "multi_delete": true,
+                "delete": true,
                 "glyphs": glyphs.toJSON()
             });
 
@@ -518,11 +526,17 @@ var App = Marionette.Application.extend(
                             });
                             if (g.get("is_training"))
                             {
-                                that.changedTrainingGlyphs.push(g);
+                                that.deletedTrainingGlyphs.push(g);
+                                that.deletedTrainingGlyphs.each(function (g){
+                                    g.set("class_name", "_delete");
+                                });
                             }
                             else
                             {
-                                that.changedGlyphs.push(g);
+                                that.deletedGlyphs.push(g);
+                                that.deletedGlyphs.each(function (g){
+                                    g.set("class_name", "_delete");
+                                });
                             }
                         }
                     }
