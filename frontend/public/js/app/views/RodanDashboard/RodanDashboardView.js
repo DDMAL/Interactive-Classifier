@@ -147,13 +147,13 @@ export default Marionette.LayoutView.extend(
                 //Don't add the new class if it's already in the list or if it's a part of a group or a split
                 if (!className.startsWith("_group._part") && !className.startsWith("_split"))
                 {
-                  var index = that.model.get('classNames').findIndex(name => name === className);
-                  if (index === -1)
-                  {
-                    var classNameList = that.model.get('classNames').push(className);
-                    classNameList = that.model.get('classNames').sort();
-                    that.model.set('classNames', classNameList);
-                  }
+                    var index = that.model.get('classNames').findIndex(name => name === className);
+                    if (index === -1)
+                    {
+                        var classNameList = that.model.get('classNames').push(className);
+                        classNameList = that.model.get('classNames').sort();
+                        that.model.set('classNames', classNameList);
+                    }
                 }
               }
             );
@@ -179,7 +179,7 @@ export default Marionette.LayoutView.extend(
                     }
                     var newClasses = this.model.get('classNames').filter(function (name)
                     {
-                      return !name.startsWith(className + ".") && name !== className;
+                        return !name.startsWith(className + ".") && name !== className;
                     });
                     this.model.set('classNames', newClasses);
                 });
@@ -193,21 +193,21 @@ export default Marionette.LayoutView.extend(
                         var name = classes[i];
                         if (name === oldName || name.startsWith(oldName + "."))
                         {
-                          that.tableRowCollection.renameClass(name, oldName, newName);
-                          that.trainingRowCollection.renameClass(name, oldName, newName);
+                            that.tableRowCollection.renameClass(name, oldName, newName);
+                            that.trainingRowCollection.renameClass(name, oldName, newName);
                         }
                     }
                     for (var j = 0; j < classes.length; j++)
                     {
-                      if (classes[j] === oldName || classes[j].startsWith(oldName + "."))
-                      {
-                        classes[j] = classes[j].replace(oldName, newName);
-                      }
+                        if (classes[j] === oldName || classes[j].startsWith(oldName + "."))
+                        {
+                            classes[j] = classes[j].replace(oldName, newName);
+                        }
                     }
                     //remove duplicates
                     var renamedClasses = classes.filter(function(item, pos)
                     {
-                      return classes.indexOf(item) === pos;
+                        return classes.indexOf(item) === pos;
                     });
                     this.model.set('classNames', renamedClasses);
                 });
@@ -293,7 +293,7 @@ export default Marionette.LayoutView.extend(
                     {
                         var glyph = that.selectedGlyphs.at(i);
                         var name = glyph.attributes.class_name;
-                        if(name.startsWith("_group") || name.startsWith("_split"))
+                        if (name.startsWith("_group") || name.startsWith("_split"))
                         {
                             // don't add to either window
                         }
