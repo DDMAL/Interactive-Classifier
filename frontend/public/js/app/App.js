@@ -37,6 +37,7 @@ var App = Marionette.Application.extend(
         deletedGlyphs: new GlyphCollection(),
         deletedTrainingGlyphs: new GlyphCollection(),
         groupedGlyphs: [],
+        deletedClasses: [],
 
         /**
          * @class App
@@ -93,9 +94,9 @@ var App = Marionette.Application.extend(
                     that.changedGlyphs.add(glyphModel);
                 }
             });
-            this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, function (glyphModel)
+            this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, function (className)
             {
-                that.changedGlyphs.add(glyphModel);
+                that.deletedClasses.push(className);
             });
 
             // A loading screen pops up.
@@ -213,7 +214,8 @@ var App = Marionette.Application.extend(
                 "grouped_glyphs": this.groupedGlyphs,
                 "changed_training_glyphs": this.changedTrainingGlyphs.toJSON(),
                 "deleted_glyphs": this.deletedGlyphs.toJSON(),
-                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON()
+                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON(),
+                "deleted_classes": this.deletedClasses
             });
             // Submit the corrections and close the window
             $.ajax({
