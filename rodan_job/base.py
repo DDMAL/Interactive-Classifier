@@ -261,7 +261,7 @@ def serialize_glyphs_to_json(glyphs):
     return json.dumps(output)
 
 
-def serialize_class_names_to_json(glyphs, training_database, inputs):
+def serialize_class_names_to_json(glyphs, training_database, imported_class_names):
     """
     Get JSON representing the list of all class names in the classifier.
     """
@@ -271,16 +271,13 @@ def serialize_class_names_to_json(glyphs, training_database, inputs):
     for image in database:
         name_set.add(image['class_name'])
 
-    if 'Plain Text - Class Names' in inputs:
-        classes_path = inputs['Plain Text - Class Names'][0]['resource_path']
-        with open(classes_path) as f:
-            for line in f:
-                name_set.add(line.strip())
+    for name in imported_class_names:
+        name_set.add(name)
 
     return json.dumps(sorted(list(name_set)))
 
 
-def serialize_data(settings, inputs):
+def serialize_data(settings):
     """
     Serialize the short codes and glyphs to JSON and store them in settings.
     """
@@ -292,7 +289,7 @@ def serialize_data(settings, inputs):
             manual.append(glyph)
 
     settings['class_names_json'] = serialize_class_names_to_json(
-        settings['glyphs'], settings['training_glyphs'], inputs)
+        settings['glyphs'], settings['training_glyphs'], settings['imported_class_names'])
     settings['glyphs_json'] = serialize_glyphs_to_json(settings['glyphs'])
     settings['training_json'] = serialize_glyphs_to_json(settings['training_glyphs'] + manual)
 
@@ -526,6 +523,18 @@ class InteractiveClassifier(RodanTask):
             else:
                 classifier_glyphs = []
 
+
+            # Handle importing optional class names from text file
+            if 'Plain Text - Class Names' in inputs:
+                class_set = set()
+                classes_path = inputs['Plain Text - Class Names'][0]['resource_path']
+                with open(classes_path) as f:
+                    for line in f:
+                        class_set.add(line.strip())
+            else:
+                class_set = set()
+
+            settings['imported_class_names'] = list(class_set)
             settings['training_glyphs'] = classifier_glyphs
             settings['glyphs'] = GameraXML(classifier_path).get_glyphs()
             settings['@state'] = ClassifierStateEnum.CLASSIFYING
@@ -536,7 +545,7 @@ class InteractiveClassifier(RodanTask):
                                      settings['training_glyphs'],
                                      features)
 
-            serialize_data(settings, inputs)
+            serialize_data(settings)
 
             return self.WAITING_FOR_INPUT()
 
@@ -558,8 +567,9 @@ class InteractiveClassifier(RodanTask):
 
             # Filter any remaining parts
             filter_parts(settings)
+            remove_deleted_classes(settings)
 
-            serialize_data(settings, inputs)
+            serialize_data(settings)
             return self.WAITING_FOR_INPUT()
 
         # Automatic grouping and reclassifying
@@ -579,7 +589,7 @@ class InteractiveClassifier(RodanTask):
                               settings['training_glyphs'],
                               features)
             filter_parts(settings)
-            serialize_data(settings, inputs)
+            serialize_data(settings)
             return self.WAITING_FOR_INPUT()
 
         else:
