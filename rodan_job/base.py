@@ -402,6 +402,13 @@ def remove_deleted_glyphs(settings, inputs):
     validGlyphs = [g for g in copyList if not g['class_name'].startswith("_delete")]
     settings['glyphs'] = validGlyphs
 
+def remove_deleted_classes(settings):
+    copyClasses = settings['imported_class_names']
+    deletedClasses = settings['@deleted_classes']
+    validClasses = [c for c in copyClasses if not c in deletedClasses]
+    settings['imported_class_names'] = validClasses
+    settings['@deleted_classes'] = []
+
 
 class InteractiveClassifier(RodanTask):
     #############
@@ -810,5 +817,6 @@ class InteractiveClassifier(RodanTask):
                 '@grouped_glyphs': grouped_glyphs,
                 '@changed_training_glyphs': user_input['changed_training_glyphs'],
                 '@deleted_glyphs': user_input['deleted_glyphs'],
-                '@deleted_training_glyphs': user_input['deleted_training_glyphs']
+                '@deleted_training_glyphs': user_input['deleted_training_glyphs'],
+                '@deleted_classes': user_input['deleted_classes']
             }
