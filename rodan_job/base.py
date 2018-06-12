@@ -767,7 +767,9 @@ class InteractiveClassifier(RodanTask):
                 '@grouped_glyphs': user_input['grouped_glyphs'],
                 '@changed_training_glyphs': user_input['changed_training_glyphs'],
                 '@deleted_glyphs': user_input['deleted_glyphs'],
-                '@deleted_training_glyphs': user_input['deleted_training_glyphs']
+                '@deleted_training_glyphs': user_input['deleted_training_glyphs'],
+                '@deleted_classes': user_input['deleted_classes']
+
             }
 
         # If the user wants to group, group the glyphs and return the new glyph
@@ -797,7 +799,8 @@ class InteractiveClassifier(RodanTask):
             '@grouped_glyphs': user_input['grouped_glyphs'],
             '@changed_training_glyphs': user_input['changed_training_glyphs'],
             '@deleted_glyphs': user_input['deleted_glyphs'],
-            '@deleted_training_glyphs': user_input['deleted_training_glyphs']
+            '@deleted_training_glyphs': user_input['deleted_training_glyphs'],
+            '@deleted_classes': user_input['deleted_classes']
             }
 
         elif 'delete' in user_input:
