@@ -38,6 +38,7 @@ var App = Marionette.Application.extend(
         deletedTrainingGlyphs: new GlyphCollection(),
         groupedGlyphs: [],
         deletedClasses: [],
+        renamedClasses: {},
 
         /**
          * @class App
@@ -130,6 +131,11 @@ var App = Marionette.Application.extend(
             {
                 that.deletedClasses.push(className);
             });
+            this.listenTo(RadioChannels.edit, ClassEvents.renameClass, function (oldName, newName)
+            {
+                that.renamedClasses[oldName] = newName;
+            });
+
             this.modals.loading.open();
         },
 
@@ -212,7 +218,8 @@ var App = Marionette.Application.extend(
                 "changed_training_glyphs": this.changedTrainingGlyphs.toJSON(),
                 "deleted_glyphs": this.deletedGlyphs.toJSON(),
                 "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON(),
-                "deleted_classes": this.deletedClasses
+                "deleted_classes": this.deletedClasses,
+                "renamed_classes": this.renamedClasses
             });
             // Submit the corrections and close the window
             $.ajax({
@@ -244,7 +251,8 @@ var App = Marionette.Application.extend(
                 "changed_training_glyphs": this.changedTrainingGlyphs.toJSON(),
                 "deleted_glyphs": this.deletedGlyphs.toJSON(),
                 "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON(),
-                "deleted_classes": this.deletedClasses
+                "deleted_classes": this.deletedClasses,
+                "renamed_classes": this.renamedClasses
             });
             // Submit the corrections and close the window
             $.ajax({
@@ -276,7 +284,8 @@ var App = Marionette.Application.extend(
                 "changed_training_glyphs": this.changedTrainingGlyphs.toJSON(),
                 "deleted_glyphs": this.deletedGlyphs.toJSON(),
                 "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON(),
-                "deleted_classes": this.deletedClasses
+                "deleted_classes": this.deletedClasses,
+                "renamed_classes": this.renamedClasses
             });
             /* Submit the corrections and close the window*/
             $.ajax({
