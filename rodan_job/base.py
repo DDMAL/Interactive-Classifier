@@ -403,9 +403,11 @@ def remove_deleted_glyphs(settings, inputs):
     settings['glyphs'] = validGlyphs
 
 def remove_deleted_classes(settings):
-    copyClasses = settings['imported_class_names']
+    validClasses = settings['imported_class_names']
     deletedClasses = settings['@deleted_classes']
-    validClasses = [c for c in copyClasses if not c in deletedClasses]
+    for deletedName in deletedClasses:
+        validClasses = [c for c in validClasses if not c == deletedName]
+        validClasses = [c for c in validClasses if not c.startswith(deletedName + ".")]
     settings['imported_class_names'] = validClasses
     settings['@deleted_classes'] = []
 
@@ -562,8 +564,9 @@ class InteractiveClassifier(RodanTask):
             # Update any changed glyphs
             add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
-
             remove_deleted_glyphs(settings, inputs)
+            remove_deleted_classes(settings)
+
             # Takes out _group._parts glyphs and split glyphs TODO: save split glyphs for automatic splitting
             filter_parts(settings)
 
@@ -574,7 +577,6 @@ class InteractiveClassifier(RodanTask):
 
             # Filter any remaining parts
             filter_parts(settings)
-            remove_deleted_classes(settings)
 
             serialize_data(settings)
             return self.WAITING_FOR_INPUT()
@@ -587,6 +589,7 @@ class InteractiveClassifier(RodanTask):
             add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
             remove_deleted_glyphs(settings, inputs)
+            remove_deleted_classes(settings)
 
             # Takes out _group._parts glyphs
             filter_parts(settings)
@@ -609,6 +612,7 @@ class InteractiveClassifier(RodanTask):
             add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
             remove_deleted_glyphs(settings, inputs)
+            remove_deleted_classes(settings)
 
             cknn = prepare_classifier(settings['training_glyphs'], settings['glyphs'], features)
 
