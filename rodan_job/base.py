@@ -493,6 +493,13 @@ class InteractiveClassifier(RodanTask):
             'minimum': 1,
             'maximum': 1,
             'is_list': False
+        },
+        {
+            'name': 'Plain Text - Class Names',
+            'resource_types': ['text/plain'],
+            'minimum': 0,
+            'maximum': 1,
+            'is_list': False
         }
     ]
 
