@@ -91,7 +91,7 @@ def output_corrected_glyphs(cknn, glyphs, inputs, output_path):
     output_xml.write_filename(output_path)
 
 
-def run_output_stage(cknn, glyphs, inputs, outputs):
+def run_output_stage(cknn, glyphs, inputs, outputs, class_names):
     """
     The job is complete, so save the results to disk.
     """
@@ -100,6 +100,17 @@ def run_output_stage(cknn, glyphs, inputs, outputs):
             'resource_path']
         # Save the training data to disk
         cknn.to_xml_filename(output_training_classifier_path)
+
+    if 'Plain Text - Class Names' in outputs:
+        output_classes_path = outputs['Plain Text - Class Names'][0]['resource_path']
+        class_names = [n for n in class_names if not n == "UNCLASSIFIED"]
+        reverse_names = sorted(class_names)
+        outfile = open(output_classes_path, "w")
+        for name in reverse_names:
+            outfile.write(name + '\n')
+        outfile.close()
+
+
     output_classified_data_path = outputs['GameraXML - Classified Glyphs'][0][
         'resource_path']
     # Save the rest of the glyphs
@@ -261,10 +272,14 @@ def serialize_glyphs_to_json(glyphs):
     return json.dumps(output)
 
 
-def serialize_class_names_to_json(glyphs, training_database, imported_class_names):
+def serialize_class_names_to_json(settings):
     """
     Get JSON representing the list of all class names in the classifier.
     """
+    glyphs = settings['glyphs']
+    training_database = settings['training_glyphs']
+    imported_class_names = settings['imported_class_names']
+
     name_set = set()
     database = glyphs + training_database
     # Add the glyph short codes
@@ -273,6 +288,8 @@ def serialize_class_names_to_json(glyphs, training_database, imported_class_name
 
     for name in imported_class_names:
         name_set.add(name)
+
+    settings['class_names'] = list(name_set)
 
     return json.dumps(sorted(list(name_set)))
 
@@ -288,8 +305,7 @@ def serialize_data(settings):
         if glyph['id_state_manual']:
             manual.append(glyph)
 
-    settings['class_names_json'] = serialize_class_names_to_json(
-        settings['glyphs'], settings['training_glyphs'], settings['imported_class_names'])
+    settings['class_names_json'] = serialize_class_names_to_json(settings)
     settings['glyphs_json'] = serialize_glyphs_to_json(settings['glyphs'])
     settings['training_json'] = serialize_glyphs_to_json(settings['training_glyphs'] + manual)
 
@@ -651,9 +667,10 @@ class InteractiveClassifier(RodanTask):
             cknn = prepare_classifier(settings['training_glyphs'], settings['glyphs'], features)
 
             filter_parts(settings)
-
+            serialize_data(settings)
+            
             # No more corrections are required.  We can now output the data
-            run_output_stage(cknn, settings['glyphs'], inputs, outputs)
+            run_output_stage(cknn, settings['glyphs'], inputs, outputs, settings['class_names'])
             # Remove the cached JSON from the settings
             settings['glyphs_json'] = None
             settings['class_names_json'] = None
