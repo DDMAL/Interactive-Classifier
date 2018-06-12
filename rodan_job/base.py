@@ -411,6 +411,24 @@ def remove_deleted_classes(settings):
     settings['imported_class_names'] = validClasses
     settings['@deleted_classes'] = []
 
+def update_renamed_classes(settings):
+    classes = settings['imported_class_names']
+    renamedClasses = settings['@renamed_classes']
+    updatedClasses = []
+    addedClasses = []
+    for c in classes:
+        for r in renamedClasses:
+            if c == r or c.startswith(r + "."):
+                addedClasses.append(c)
+                updatedClasses.append(c.replace(r, renamedClasses[r], 1))
+    for c in classes:
+        if not c in addedClasses:
+            updatedClasses.append(c)
+
+    settings['imported_class_names'] = updatedClasses
+    updatedClasses = []
+    settings['@renamed_classes'] = []
+
 
 class InteractiveClassifier(RodanTask):
     #############
@@ -565,7 +583,10 @@ class InteractiveClassifier(RodanTask):
             add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
             remove_deleted_glyphs(settings, inputs)
+
+            # Update any changed class names
             remove_deleted_classes(settings)
+            update_renamed_classes(settings)
 
             # Takes out _group._parts glyphs and split glyphs TODO: save split glyphs for automatic splitting
             filter_parts(settings)
@@ -589,7 +610,10 @@ class InteractiveClassifier(RodanTask):
             add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
             remove_deleted_glyphs(settings, inputs)
+
+            # Update any changed class names
             remove_deleted_classes(settings)
+            update_renamed_classes(settings)
 
             # Takes out _group._parts glyphs
             filter_parts(settings)
@@ -612,7 +636,10 @@ class InteractiveClassifier(RodanTask):
             add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
             remove_deleted_glyphs(settings, inputs)
+
+            # Update any changed class names
             remove_deleted_classes(settings)
+            update_renamed_classes(settings)
 
             cknn = prepare_classifier(settings['training_glyphs'], settings['glyphs'], features)
 
@@ -768,8 +795,8 @@ class InteractiveClassifier(RodanTask):
                 '@changed_training_glyphs': user_input['changed_training_glyphs'],
                 '@deleted_glyphs': user_input['deleted_glyphs'],
                 '@deleted_training_glyphs': user_input['deleted_training_glyphs'],
-                '@deleted_classes': user_input['deleted_classes']
-
+                '@deleted_classes': user_input['deleted_classes'],
+                '@renamed_classes': user_input['renamed_classes']
             }
 
         # If the user wants to group, group the glyphs and return the new glyph
@@ -800,7 +827,8 @@ class InteractiveClassifier(RodanTask):
             '@changed_training_glyphs': user_input['changed_training_glyphs'],
             '@deleted_glyphs': user_input['deleted_glyphs'],
             '@deleted_training_glyphs': user_input['deleted_training_glyphs'],
-            '@deleted_classes': user_input['deleted_classes']
+            '@deleted_classes': user_input['deleted_classes'],
+            '@renamed_classes': user_input['renamed_classes']
             }
 
         elif 'delete' in user_input:
@@ -825,5 +853,6 @@ class InteractiveClassifier(RodanTask):
                 '@changed_training_glyphs': user_input['changed_training_glyphs'],
                 '@deleted_glyphs': user_input['deleted_glyphs'],
                 '@deleted_training_glyphs': user_input['deleted_training_glyphs'],
-                '@deleted_classes': user_input['deleted_classes']
+                '@deleted_classes': user_input['deleted_classes'],
+                '@renamed_classes': user_input['renamed_classes']
             }
