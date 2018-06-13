@@ -37,6 +37,8 @@ var App = Marionette.Application.extend(
         deletedGlyphs: new GlyphCollection(),
         deletedTrainingGlyphs: new GlyphCollection(),
         groupedGlyphs: [],
+        deletedClasses: [],
+        renamedClasses: {},
 
         /**
          * @class App
@@ -93,18 +95,12 @@ var App = Marionette.Application.extend(
                     that.changedGlyphs.add(glyphModel);
                 }
             });
-            this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, function (glyphModel)
-            {
-                that.changedGlyphs.add(glyphModel);
-            });
-
             // A loading screen pops up.
             //this.listenTo(RadioChannels.edit, GlyphEvents.addGlyph, function (glyphModel)
             this.listenTo(RadioChannels.edit, GlyphEvents.addGlyph, function ()
             {
                 this.modals.group.close();
             });
-
             this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyphs, function (glyphs)
             {
                 var deletedGlyphCollection = new GlyphCollection();
@@ -114,7 +110,6 @@ var App = Marionette.Application.extend(
                 }
                 that.deleteGlyphs(deletedGlyphCollection);
             });
-
             this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs, function (glyphList, glyphName)
             {
                 var groupedGlyphs = new GlyphCollection();
@@ -130,6 +125,15 @@ var App = Marionette.Application.extend(
             {
                 this.modals.split.open();
                 that.splitGlyph(glyph, split_type);
+            });
+
+            this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, function (className)
+            {
+                that.deletedClasses.push(className);
+            });
+            this.listenTo(RadioChannels.edit, ClassEvents.renameClass, function (oldName, newName)
+            {
+                that.renamedClasses[oldName] = newName;
             });
 
             this.modals.loading.open();
@@ -213,7 +217,9 @@ var App = Marionette.Application.extend(
                 "grouped_glyphs": this.groupedGlyphs,
                 "changed_training_glyphs": this.changedTrainingGlyphs.toJSON(),
                 "deleted_glyphs": this.deletedGlyphs.toJSON(),
-                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON()
+                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON(),
+                "deleted_classes": this.deletedClasses,
+                "renamed_classes": this.renamedClasses
             });
             // Submit the corrections and close the window
             $.ajax({
@@ -244,7 +250,9 @@ var App = Marionette.Application.extend(
                 "user_options": userSelections,
                 "changed_training_glyphs": this.changedTrainingGlyphs.toJSON(),
                 "deleted_glyphs": this.deletedGlyphs.toJSON(),
-                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON()
+                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON(),
+                "deleted_classes": this.deletedClasses,
+                "renamed_classes": this.renamedClasses
             });
             // Submit the corrections and close the window
             $.ajax({
@@ -275,7 +283,9 @@ var App = Marionette.Application.extend(
                 "grouped_glyphs": this.groupedGlyphs,
                 "changed_training_glyphs": this.changedTrainingGlyphs.toJSON(),
                 "deleted_glyphs": this.deletedGlyphs.toJSON(),
-                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON()
+                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON(),
+                "deleted_classes": this.deletedClasses,
+                "renamed_classes": this.renamedClasses
             });
             /* Submit the corrections and close the window*/
             $.ajax({

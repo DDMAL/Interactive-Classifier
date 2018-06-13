@@ -91,7 +91,7 @@ def output_corrected_glyphs(cknn, glyphs, inputs, output_path):
     output_xml.write_filename(output_path)
 
 
-def run_output_stage(cknn, glyphs, inputs, outputs):
+def run_output_stage(cknn, glyphs, inputs, outputs, class_names):
     """
     The job is complete, so save the results to disk.
     """
@@ -100,6 +100,17 @@ def run_output_stage(cknn, glyphs, inputs, outputs):
             'resource_path']
         # Save the training data to disk
         cknn.to_xml_filename(output_training_classifier_path)
+
+    if 'Plain Text - Class Names' in outputs:
+        output_classes_path = outputs['Plain Text - Class Names'][0]['resource_path']
+        class_names = [n for n in class_names if not n == "UNCLASSIFIED"]
+        reverse_names = sorted(class_names)
+        outfile = open(output_classes_path, "w")
+        for name in reverse_names:
+            outfile.write(name + '\n')
+        outfile.close()
+
+
     output_classified_data_path = outputs['GameraXML - Classified Glyphs'][0][
         'resource_path']
     # Save the rest of the glyphs
@@ -261,15 +272,25 @@ def serialize_glyphs_to_json(glyphs):
     return json.dumps(output)
 
 
-def serialize_class_names_to_json(glyphs, training_database):
+def serialize_class_names_to_json(settings):
     """
     Get JSON representing the list of all class names in the classifier.
     """
+    glyphs = settings['glyphs']
+    training_database = settings['training_glyphs']
+    imported_class_names = settings['imported_class_names']
+
     name_set = set()
     database = glyphs + training_database
     # Add the glyph short codes
     for image in database:
         name_set.add(image['class_name'])
+
+    for name in imported_class_names:
+        name_set.add(name)
+
+    settings['class_names'] = list(name_set)
+
     return json.dumps(sorted(list(name_set)))
 
 
@@ -284,8 +305,7 @@ def serialize_data(settings):
         if glyph['id_state_manual']:
             manual.append(glyph)
 
-    settings['class_names_json'] = serialize_class_names_to_json(
-        settings['glyphs'], settings['training_glyphs'])
+    settings['class_names_json'] = serialize_class_names_to_json(settings)
     settings['glyphs_json'] = serialize_glyphs_to_json(settings['glyphs'])
     settings['training_json'] = serialize_glyphs_to_json(settings['training_glyphs'] + manual)
 
@@ -389,14 +409,41 @@ def update_changed_glyphs(settings):
 
 def remove_deleted_glyphs(settings, inputs):
     # filter out training glyphs with class name "UNCLASSIFIED" or deleted glyphs
-    copyTraining= settings['training_glyphs']
-    filterTraining = [g for g in copyTraining if not g['class_name'] == "UNCLASSIFIED"]
-    validTraining = [g for g in filterTraining if not g['class_name'].startswith("_delete")]
-    settings['training_glyphs'] = validTraining
+    copy_training= settings['training_glyphs']
+    filter_training = [g for g in copy_training if not g['class_name'] == "UNCLASSIFIED"]
+    valid_training = [g for g in filter_training if not g['class_name'].startswith("_delete")]
+    settings['training_glyphs'] = valid_training
 
-    copyList = settings['glyphs']
-    validGlyphs = [g for g in copyList if not g['class_name'].startswith("_delete")]
-    settings['glyphs'] = validGlyphs
+    copy_list = settings['glyphs']
+    valid_glyphs = [g for g in copy_list if not g['class_name'].startswith("_delete")]
+    settings['glyphs'] = valid_glyphs
+
+def remove_deleted_classes(settings):
+    valid_classes = settings['imported_class_names']
+    deleted_classes = settings['@deleted_classes']
+    for deleted_name in deleted_classes:
+        valid_classes = [c for c in valid_classes if not c == deleted_name]
+        valid_classes = [c for c in valid_classes if not c.startswith(deleted_name + ".")]
+    settings['imported_class_names'] = valid_classes
+    settings['@deleted_classes'] = []
+
+def update_renamed_classes(settings):
+    classes = settings['imported_class_names']
+    renamed_classes = settings['@renamed_classes']
+    updated_classes = []
+    added_classes = []
+    for c in classes:
+        for r in renamed_classes:
+            if c == r or c.startswith(r + "."):
+                added_classes.append(c)
+                updated_classes.append(c.replace(r, renamed_classes[r], 1))
+    for c in classes:
+        if not c in added_classes:
+            updated_classes.append(c)
+
+    settings['imported_class_names'] = updated_classes
+    updated_classes = []
+    settings['@renamed_classes'] = []
 
 
 class InteractiveClassifier(RodanTask):
@@ -439,6 +486,13 @@ class InteractiveClassifier(RodanTask):
             'minimum': 0,
             'maximum': 1,
             'is_list': False
+        },
+        {
+        	'name': 'Plain Text - Class Names',
+        	'resource_types': ['text/plain'],
+        	'minimum': 0,
+        	'maximum': 1,
+        	'is_list': False
         }
     ]
     output_port_types = [
@@ -453,6 +507,13 @@ class InteractiveClassifier(RodanTask):
             'name': 'GameraXML - Classified Glyphs',
             'resource_types': ['application/gamera+xml'],
             'minimum': 1,
+            'maximum': 1,
+            'is_list': False
+        },
+        {
+            'name': 'Plain Text - Class Names',
+            'resource_types': ['text/plain'],
+            'minimum': 0,
             'maximum': 1,
             'is_list': False
         }
@@ -512,6 +573,18 @@ class InteractiveClassifier(RodanTask):
             else:
                 classifier_glyphs = []
 
+
+            # Handle importing optional class names from text file
+            if 'Plain Text - Class Names' in inputs:
+                class_set = set()
+                classes_path = inputs['Plain Text - Class Names'][0]['resource_path']
+                with open(classes_path) as f:
+                    for line in f:
+                        class_set.add(line.strip())
+            else:
+                class_set = set()
+
+            settings['imported_class_names'] = list(class_set)
             settings['training_glyphs'] = classifier_glyphs
             settings['glyphs'] = GameraXML(classifier_path).get_glyphs()
             settings['@state'] = ClassifierStateEnum.CLASSIFYING
@@ -532,8 +605,12 @@ class InteractiveClassifier(RodanTask):
             # Update any changed glyphs
             add_grouped_glyphs(settings)
             update_changed_glyphs(settings)
-
             remove_deleted_glyphs(settings, inputs)
+
+            # Update any changed class names
+            remove_deleted_classes(settings)
+            update_renamed_classes(settings)
+
             # Takes out _group._parts glyphs and split glyphs TODO: save split glyphs for automatic splitting
             filter_parts(settings)
 
@@ -557,6 +634,10 @@ class InteractiveClassifier(RodanTask):
             update_changed_glyphs(settings)
             remove_deleted_glyphs(settings, inputs)
 
+            # Update any changed class names
+            remove_deleted_classes(settings)
+            update_renamed_classes(settings)
+
             # Takes out _group._parts glyphs
             filter_parts(settings)
             # grouping and reclassifying
@@ -579,12 +660,17 @@ class InteractiveClassifier(RodanTask):
             update_changed_glyphs(settings)
             remove_deleted_glyphs(settings, inputs)
 
+            # Update any changed class names
+            remove_deleted_classes(settings)
+            update_renamed_classes(settings)
+
             cknn = prepare_classifier(settings['training_glyphs'], settings['glyphs'], features)
 
             filter_parts(settings)
+            serialize_data(settings)
 
             # No more corrections are required.  We can now output the data
-            run_output_stage(cknn, settings['glyphs'], inputs, outputs)
+            run_output_stage(cknn, settings['glyphs'], inputs, outputs, settings['class_names'])
             # Remove the cached JSON from the settings
             settings['glyphs_json'] = None
             settings['class_names_json'] = None
@@ -732,7 +818,9 @@ class InteractiveClassifier(RodanTask):
                 '@grouped_glyphs': user_input['grouped_glyphs'],
                 '@changed_training_glyphs': user_input['changed_training_glyphs'],
                 '@deleted_glyphs': user_input['deleted_glyphs'],
-                '@deleted_training_glyphs': user_input['deleted_training_glyphs']
+                '@deleted_training_glyphs': user_input['deleted_training_glyphs'],
+                '@deleted_classes': user_input['deleted_classes'],
+                '@renamed_classes': user_input['renamed_classes']
             }
 
         # If the user wants to group, group the glyphs and return the new glyph
@@ -762,7 +850,9 @@ class InteractiveClassifier(RodanTask):
             '@grouped_glyphs': user_input['grouped_glyphs'],
             '@changed_training_glyphs': user_input['changed_training_glyphs'],
             '@deleted_glyphs': user_input['deleted_glyphs'],
-            '@deleted_training_glyphs': user_input['deleted_training_glyphs']
+            '@deleted_training_glyphs': user_input['deleted_training_glyphs'],
+            '@deleted_classes': user_input['deleted_classes'],
+            '@renamed_classes': user_input['renamed_classes']
             }
 
         elif 'delete' in user_input:
@@ -786,5 +876,7 @@ class InteractiveClassifier(RodanTask):
                 '@grouped_glyphs': grouped_glyphs,
                 '@changed_training_glyphs': user_input['changed_training_glyphs'],
                 '@deleted_glyphs': user_input['deleted_glyphs'],
-                '@deleted_training_glyphs': user_input['deleted_training_glyphs']
+                '@deleted_training_glyphs': user_input['deleted_training_glyphs'],
+                '@deleted_classes': user_input['deleted_classes'],
+                '@renamed_classes': user_input['renamed_classes']
             }
