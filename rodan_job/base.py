@@ -409,40 +409,40 @@ def update_changed_glyphs(settings):
 
 def remove_deleted_glyphs(settings, inputs):
     # filter out training glyphs with class name "UNCLASSIFIED" or deleted glyphs
-    copyTraining= settings['training_glyphs']
-    filterTraining = [g for g in copyTraining if not g['class_name'] == "UNCLASSIFIED"]
-    validTraining = [g for g in filterTraining if not g['class_name'].startswith("_delete")]
-    settings['training_glyphs'] = validTraining
+    copy_training= settings['training_glyphs']
+    filter_training = [g for g in copy_training if not g['class_name'] == "UNCLASSIFIED"]
+    valid_training = [g for g in filter_training if not g['class_name'].startswith("_delete")]
+    settings['training_glyphs'] = valid_training
 
-    copyList = settings['glyphs']
-    validGlyphs = [g for g in copyList if not g['class_name'].startswith("_delete")]
-    settings['glyphs'] = validGlyphs
+    copy_list = settings['glyphs']
+    valid_glyphs = [g for g in copy_list if not g['class_name'].startswith("_delete")]
+    settings['glyphs'] = valid_glyphs
 
 def remove_deleted_classes(settings):
-    validClasses = settings['imported_class_names']
-    deletedClasses = settings['@deleted_classes']
-    for deletedName in deletedClasses:
-        validClasses = [c for c in validClasses if not c == deletedName]
-        validClasses = [c for c in validClasses if not c.startswith(deletedName + ".")]
-    settings['imported_class_names'] = validClasses
+    valid_classes = settings['imported_class_names']
+    deleted_classes = settings['@deleted_classes']
+    for deleted_name in deleted_classes:
+        valid_classes = [c for c in valid_classes if not c == deleted_name]
+        valid_classes = [c for c in valid_classes if not c.startswith(deleted_name + ".")]
+    settings['imported_class_names'] = valid_classes
     settings['@deleted_classes'] = []
 
 def update_renamed_classes(settings):
     classes = settings['imported_class_names']
-    renamedClasses = settings['@renamed_classes']
-    updatedClasses = []
-    addedClasses = []
+    renamed_classes = settings['@renamed_classes']
+    updated_classes = []
+    added_classes = []
     for c in classes:
-        for r in renamedClasses:
+        for r in renamed_classes:
             if c == r or c.startswith(r + "."):
-                addedClasses.append(c)
-                updatedClasses.append(c.replace(r, renamedClasses[r], 1))
+                added_classes.append(c)
+                updated_classes.append(c.replace(r, renamed_classes[r], 1))
     for c in classes:
-        if not c in addedClasses:
-            updatedClasses.append(c)
+        if not c in added_classes:
+            updated_classes.append(c)
 
-    settings['imported_class_names'] = updatedClasses
-    updatedClasses = []
+    settings['imported_class_names'] = updated_classes
+    updated_classes = []
     settings['@renamed_classes'] = []
 
 
@@ -668,7 +668,7 @@ class InteractiveClassifier(RodanTask):
 
             filter_parts(settings)
             serialize_data(settings)
-            
+
             # No more corrections are required.  We can now output the data
             run_output_stage(cknn, settings['glyphs'], inputs, outputs, settings['class_names'])
             # Remove the cached JSON from the settings
