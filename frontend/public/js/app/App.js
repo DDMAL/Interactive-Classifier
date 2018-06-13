@@ -161,7 +161,7 @@ var App = Marionette.Application.extend(
             timer.tick();
 
             // Extract the page image URL
-            var binaryPageImage = pageElement.attr("data-page");
+            var pageImage = pageElement.attr("data-page");
             var glyphDictionary = JSON.parse(glyphsElement.attr("data-glyphs"));
             // This was causing some errors so I added a check
             if (classNamesElement.attr("data-class-names"))
@@ -190,7 +190,7 @@ var App = Marionette.Application.extend(
             // Open the view to edit the page
             var view = new RodanDashboardView({
                 model: new Backbone.Model({
-                    binaryImage: binaryPageImage,
+                    previewImage: pageImage,
                     glyphDictionary: glyphDictionary,
                     classNames: classNames,
                     trainingGlyphs: trainingGlyphs

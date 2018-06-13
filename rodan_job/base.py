@@ -534,7 +534,7 @@ class InteractiveClassifier(RodanTask):
 
         data = {
             'glyphs': settings['glyphs_json'],
-            'binary_image_path': media_file_path_to_public_url(
+            'image_path': media_file_path_to_public_url(
                 staffless_image_path),
             'class_names': settings['class_names_json'],
             'training_glyphs': settings['training_json']

@@ -57,7 +57,7 @@ export default Marionette.LayoutView.extend(
             // Create the preview window
             this.previewView = new ImagePreviewView({
                 model: new ImagePreviewViewModel({
-                    backgroundImage: this.model.get("binaryImage")
+                    backgroundImage: this.model.get("previewImage")
                 })
             });
             this.isMouseDown = true,
