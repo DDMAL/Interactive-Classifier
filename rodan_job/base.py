@@ -460,8 +460,8 @@ class InteractiveClassifier(RodanTask):
     interactive = True
     input_port_types = [
         {
-            'name': '1-Bit PNG - Preview Image',
-            'resource_types': ['image/onebit+png'],
+            'name': 'PNG (RGB, 1-Bit, Greyscale) - Preview Image',
+            'resource_types': ['image/onebit+png', 'image/rgb+png', 'image/greyscale+png'],
             'minimum': 1,
             'maximum': 1,
             'is_list': False
@@ -528,7 +528,7 @@ class InteractiveClassifier(RodanTask):
         pass
 
     def get_my_interface(self, inputs, settings):
-        staffless_image_path = inputs['1-Bit PNG - Preview Image'][0][
+        staffless_image_path = inputs['PNG (RGB, 1-Bit, Greyscale) - Preview Image'][0][
             'resource_path']
         # We need to figure out the best way to include the data in the template
 
