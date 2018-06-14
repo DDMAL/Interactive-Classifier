@@ -4,9 +4,11 @@
 
 The Gamera Interactive Classifier is deployed as a Rodan [Job Package](https://github.com/DDMAL/Rodan/wiki/Write-a-Rodan-job-package).
 
-First, create a symbolic link from `/path/to/Rodan/rodan/jobs/interactive_classifier/` to `/path/to/Interactive-Classifier/rodan_job/`.
+First, clone the Interactive Classifier repository inside `/path/to/rodan-docker/jobs/Interactive-Classifier`.
+
+In `docker-compose.job-dev.yml`, under `volumes`, add the following link to the Interactive Classifier:
 ````
-ln -s /home/path/to/Interactive-Classifier/rodan_job/ /home/path/to/Rodan/rodan/jobs/interactive_classifier
+- ./jobs/Interactive-Classifier/rodan_job:/code/rodan/rodan/jobs/interactive_classifier
 ````
 
 Open `/path/to/Rodan/rodan/settings.py`.  Add `"rodan.jobs.interactive_classifier"` to the `RODAN_JOB_PACKAGES` tuple.  Save `settings.py`.
