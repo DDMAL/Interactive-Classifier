@@ -300,27 +300,31 @@ export default Marionette.ItemView.extend(
                 {
                     // If the user has stopped holding their mouse down, execute
                     // the onMouseUp() procedure.
-
-                    if (event.buttons === 0)
+                    that.isMouseUp = false;
+                    $(document).mouseup(function (event)
                     {
+                        that.isMouseUp = true;
                         that.onMouseUp(event);
-                    }
-                    else if (that.isSlider) // If the coords of the click are on the slider
+                    });
+                    if (!that.isMouseUp)
                     {
-                        var value = document.getElementById("s1").value;
-                        var value2 = parseInt(document.getElementById("s2").value) / 100;
-                        RadioChannels.edit.trigger(PageEvents.zoom, value);
-                        RadioChannels.edit.trigger(GlyphEvents.zoomGlyphs, value2);
-                    }
-                    else
-                    {
-                        var x = event.pageX,
-                            y = event.pageY;
+                        if (that.isSlider) // If the coords of the click are on the slider
+                        {
+                            var value = document.getElementById("s1").value;
+                            var value2 = parseInt(document.getElementById("s2").value) / 100;
+                            RadioChannels.edit.trigger(PageEvents.zoom, value);
+                            RadioChannels.edit.trigger(GlyphEvents.zoomGlyphs, value2);
+                        }
+                        else
+                        {
+                            var x = event.pageX,
+                                y = event.pageY;
 
-                        that.selectionBox.style.left = Math.min(x, that.mouseDownX) + "px";
-                        that.selectionBox.style.top = Math.min(y, that.mouseDownY) + "px";
-                        that.selectionBox.style.width = Math.abs(x - that.mouseDownX) + "px";
-                        that.selectionBox.style.height = Math.abs(y - that.mouseDownY) + "px";
+                            that.selectionBox.style.left = Math.min(x, that.mouseDownX) + "px";
+                            that.selectionBox.style.top = Math.min(y, that.mouseDownY) + "px";
+                            that.selectionBox.style.width = Math.abs(x - that.mouseDownX) + "px";
+                            that.selectionBox.style.height = Math.abs(y - that.mouseDownY) + "px";
+                        }
                     }
                 }
 
