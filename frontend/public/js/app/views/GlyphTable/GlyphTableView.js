@@ -166,19 +166,16 @@ export default Marionette.CollectionView.extend(
             {
                 // If the user has stopped holding their mouse down, execute
                 // the onMouseUp() procedure.
-                if (event.buttons === 0)
+                $(document).mouseup(function (event)
                 {
                     that.onMouseUp(event);
-                }
-                else
-                {
-                    var x = event.pageX,
-                    y = event.pageY;
-                    that.selectionBox.style.left = Math.min(x, that.mouseDownX) + "px";
-                    that.selectionBox.style.top = Math.min(y, that.mouseDownY) + "px";
-                    that.selectionBox.style.width = Math.abs(x - that.mouseDownX) + "px";
-                    that.selectionBox.style.height = Math.abs(y - that.mouseDownY) + "px";
-                }
+                });
+                var x = event.pageX,
+                y = event.pageY;
+                that.selectionBox.style.left = Math.min(x, that.mouseDownX) + "px";
+                that.selectionBox.style.top = Math.min(y, that.mouseDownY) + "px";
+                that.selectionBox.style.width = Math.abs(x - that.mouseDownX) + "px";
+                that.selectionBox.style.height = Math.abs(y - that.mouseDownY) + "px";
             }
         });
     }

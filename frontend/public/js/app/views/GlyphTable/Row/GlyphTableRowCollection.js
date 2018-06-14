@@ -2,7 +2,6 @@ import Backbone from "backbone";
 import GlyphTableRowViewModel from "views/GlyphTable/Row/GlyphTableRowViewModel";
 import GlyphCollection from "collections/GlyphCollection";
 import RadioChannels from "radio/RadioChannels";
-import ClassEvents from "events/ClassEvents";
 import PageEvents from "events/PageEvents";
 
 /**
