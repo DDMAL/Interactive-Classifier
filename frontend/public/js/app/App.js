@@ -212,6 +212,38 @@ var App = Marionette.Application.extend(
         },
 
         /**
+         *  Save the current state
+         */
+        saveCurrentState: function()
+        {
+            var that = this;
+            var data = JSON.stringify({
+                "save": true,
+                "glyphs": this.changedGlyphs.toJSON(),
+                "grouped_glyphs": this.groupedGlyphs,
+                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON(),
+                "deleted_glyphs": this.deletedGlyphs.toJSON(),
+                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON(),
+                "deleted_classes": this.deletedClasses,
+                "renamed_classes": this.renamedClasses
+            });
+            $.ajax({
+                url: this.authenticator.getWorkingUrl(),
+                type: 'POST',
+                data: data,
+                contentType: 'application/json',
+                complete: function (response)
+                {
+                    if (response.status === 200)
+                    {
+                        that.modals.saveChanges.close();
+
+                    }
+                }
+            });
+        },
+
+        /**
          *  Submit corrections back to Rodan and run another round of gamera classification.
          */
         submitCorrections: function ()
