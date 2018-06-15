@@ -896,6 +896,11 @@ class InteractiveClassifier(RodanTask):
                 '@renamed_classes': user_input['renamed_classes']
             }
 
+        elif 'undo' in user_input:
+            return {
+                '@state': ClassifierStateEnum.IMPORT_XML
+            }
+
         else:
             # We are not complete.  Run another correction stage
             changed_glyphs = user_input['glyphs']
