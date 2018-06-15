@@ -80,6 +80,10 @@ var App = Marionette.Application.extend(
             {
                 that.modals.finalizeCorrections.open();
             });
+            this.listenTo(RadioChannels.menu, MainMenuEvents.clickSaveChanges, function ()
+            {
+                that.modals.saveChanges.open();
+            });
             this.listenTo(RadioChannels.menu, MainMenuEvents.clickTest, function ()
             {
                 that.modals.opening.open();
@@ -595,6 +599,24 @@ var App = Marionette.Application.extend(
                 })
             });
             this.modalCollection.add(this.modals.submitCorrections);
+
+            //Save changes modal
+            this.modals.saveChanges = new ModalViewModel({
+                title: Strings.saveChanges,
+                isCloseable: true,
+                isHiddenObject: false,
+                innerView: new ConfirmView({
+                    model: new ConfirmViewModel({
+                        text: Strings.saveWarning,
+                        callback: function ()
+                        {
+                            //Once confirmed, save the current state
+                            that.saveCurrentState();
+                        }
+                    })
+                })
+            });
+            this.modalCollection.add(this.modals.saveChanges);
 
             // Group and reclassify modal
             this.modals.groupReclassify = new ModalViewModel({

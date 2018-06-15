@@ -38,6 +38,7 @@ export default {
     unclassifiedClass: "UNCLASSIFIED is a reserved keyword.",
     invalidClass: " is not a valid class name.",
     saveChanges: "Save Changes",
+    saveWarning: "Save the current state?",
     // Strings for GlyphEditview
     editGlyph: {
         update: "Update",
