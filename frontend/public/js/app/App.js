@@ -248,6 +248,30 @@ var App = Marionette.Application.extend(
         },
 
         /**
+         *  Undo all changes
+         */
+        undoAllChanges: function ()
+        {
+            var that = this;
+            var data = JSON.stringify({
+                "undo": true
+            });
+            $.ajax({
+                url: this.authenticator.getWorkingUrl(),
+                type: 'POST',
+                data: data,
+                contentType: 'application/json',
+                complete: function (response)
+                {
+                    if (response.status === 200)
+                    {
+                        window.close();
+                    }
+                }
+            });
+        },
+
+        /**
          *  Submit corrections back to Rodan and run another round of gamera classification.
          */
         submitCorrections: function ()
