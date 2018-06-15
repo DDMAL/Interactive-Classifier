@@ -50,6 +50,11 @@ export default Marionette.CompositeView.extend({
             text: Strings.saveChanges,
             clickEvent: MainMenuEvents.clickSaveChanges
         }));
+        menuLinks.add(new MenuLinkViewModel({
+            url: "#",
+            text: Strings.undoAll,
+            clickEvent: MainMenuEvents.clickUndoAll
+        }));
         this.collection = menuLinks;
     }
 });
