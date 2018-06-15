@@ -5,5 +5,6 @@ export default {
     clickSubmitCorrections: "click:submit:corrections",
     clickTest: "click:test",
     clickGroupClassify: "click:group:classify",
-    clickFinalizeCorrections: "click:finalize:corrections"
+    clickFinalizeCorrections: "click:finalize:corrections",
+    clickSaveChanges: "click:save:changes"
 }
