@@ -80,6 +80,10 @@ var App = Marionette.Application.extend(
             {
                 that.modals.finalizeCorrections.open();
             });
+            this.listenTo(RadioChannels.menu, MainMenuEvents.clickSaveChanges, function ()
+            {
+                that.modals.saveChanges.open();
+            });
             this.listenTo(RadioChannels.menu, MainMenuEvents.clickTest, function ()
             {
                 that.modals.opening.open();
@@ -205,6 +209,38 @@ var App = Marionette.Application.extend(
                 that.rootView.container.show(view);
                 that.modals.loading.close();
             }, 2000);
+        },
+
+        /**
+         *  Save the current state
+         */
+        saveCurrentState: function()
+        {
+            var that = this;
+            var data = JSON.stringify({
+                "save": true,
+                "glyphs": this.changedGlyphs.toJSON(),
+                "grouped_glyphs": this.groupedGlyphs,
+                "changed_training_glyphs": this.changedTrainingGlyphs.toJSON(),
+                "deleted_glyphs": this.deletedGlyphs.toJSON(),
+                "deleted_training_glyphs": this.deletedTrainingGlyphs.toJSON(),
+                "deleted_classes": this.deletedClasses,
+                "renamed_classes": this.renamedClasses
+            });
+            $.ajax({
+                url: this.authenticator.getWorkingUrl(),
+                type: 'POST',
+                data: data,
+                contentType: 'application/json',
+                complete: function (response)
+                {
+                    if (response.status === 200)
+                    {
+                        that.modals.saveChanges.close();
+
+                    }
+                }
+            });
         },
 
         /**
@@ -595,6 +631,24 @@ var App = Marionette.Application.extend(
                 })
             });
             this.modalCollection.add(this.modals.submitCorrections);
+
+            //Save changes modal
+            this.modals.saveChanges = new ModalViewModel({
+                title: Strings.saveChanges,
+                isCloseable: true,
+                isHiddenObject: false,
+                innerView: new ConfirmView({
+                    model: new ConfirmViewModel({
+                        text: Strings.saveWarning,
+                        callback: function ()
+                        {
+                            //Once confirmed, save the current state
+                            that.saveCurrentState();
+                        }
+                    })
+                })
+            });
+            this.modalCollection.add(this.modals.saveChanges);
 
             // Group and reclassify modal
             this.modals.groupReclassify = new ModalViewModel({

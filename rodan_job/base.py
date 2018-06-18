@@ -25,6 +25,7 @@ class ClassifierStateEnum:
     EXPORT_XML = 2
     GROUP_AND_CLASSIFY = 3
     GROUP = 4
+    SAVE = 5
 
 
 def media_file_path_to_public_url(media_file_path):
@@ -649,6 +650,22 @@ class InteractiveClassifier(RodanTask):
             serialize_data(settings)
             return self.WAITING_FOR_INPUT()
 
+        # Save all changes
+        elif settings['@state'] == ClassifierStateEnum.SAVE:
+            # Update any changed glyphs
+            add_grouped_glyphs(settings)
+            update_changed_glyphs(settings)
+            remove_deleted_glyphs(settings, inputs)
+
+            # Update any changed class names
+            remove_deleted_classes(settings)
+            update_renamed_classes(settings)
+
+            # Takes out _group._parts glyphs and split glyphs
+            filter_parts(settings)
+            serialize_data(settings)
+            return self.WAITING_FOR_INPUT()
+
         else:
             # EXPORT_XML STAGE
 
@@ -866,6 +883,18 @@ class InteractiveClassifier(RodanTask):
             'glyphs': glyphs
             }
             return data
+
+        elif 'save' in user_input:
+            return {
+                '@state': ClassifierStateEnum.SAVE,
+                '@changed_glyphs': user_input['glyphs'],
+                '@grouped_glyphs': user_input['grouped_glyphs'],
+                '@changed_training_glyphs': user_input['changed_training_glyphs'],
+                '@deleted_glyphs': user_input['deleted_glyphs'],
+                '@deleted_training_glyphs': user_input['deleted_training_glyphs'],
+                '@deleted_classes': user_input['deleted_classes'],
+                '@renamed_classes': user_input['renamed_classes']
+            }
 
         else:
             # We are not complete.  Run another correction stage
