@@ -39,6 +39,8 @@ export default {
     invalidClass: " is not a valid class name.",
     saveChanges: "Save Changes",
     saveWarning: "Save the current state?",
+    undoAll: "Undo All Changes",
+    undoWarning: "Are you sure you wish to undo all changes? This will restore the original state of the job.",
     // Strings for GlyphEditview
     editGlyph: {
         update: "Update",

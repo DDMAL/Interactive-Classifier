@@ -84,6 +84,10 @@ var App = Marionette.Application.extend(
             {
                 that.modals.saveChanges.open();
             });
+            this.listenTo(RadioChannels.menu, MainMenuEvents.clickUndoAll, function()
+            {
+                that.modals.undoAll.open();
+            });
             this.listenTo(RadioChannels.menu, MainMenuEvents.clickTest, function ()
             {
                 that.modals.opening.open();
@@ -238,6 +242,30 @@ var App = Marionette.Application.extend(
                     {
                         that.modals.saveChanges.close();
 
+                    }
+                }
+            });
+        },
+
+        /**
+         *  Undo all changes
+         */
+        undoAllChanges: function ()
+        {
+            var that = this;
+            var data = JSON.stringify({
+                "undo": true
+            });
+            $.ajax({
+                url: this.authenticator.getWorkingUrl(),
+                type: 'POST',
+                data: data,
+                contentType: 'application/json',
+                complete: function (response)
+                {
+                    if (response.status === 200)
+                    {
+                        window.close();
                     }
                 }
             });
@@ -632,7 +660,7 @@ var App = Marionette.Application.extend(
             });
             this.modalCollection.add(this.modals.submitCorrections);
 
-            //Save changes modal
+            // Save changes modal
             this.modals.saveChanges = new ModalViewModel({
                 title: Strings.saveChanges,
                 isCloseable: true,
@@ -649,6 +677,23 @@ var App = Marionette.Application.extend(
                 })
             });
             this.modalCollection.add(this.modals.saveChanges);
+
+            // Undo all changes
+            this.modals.undoAll = new ModalViewModel({
+                title: Strings.undoAll,
+                isCloseable: true,
+                isHiddenObject: false,
+                innerView: new ConfirmView({
+                    model: new ConfirmViewModel({
+                        text: Strings.undoWarning,
+                        callback: function ()
+                        {
+                            that.undoAllChanges();
+                        }
+                    })
+                })
+            });
+            this.modalCollection.add(this.modals.undoAll);
 
             // Group and reclassify modal
             this.modals.groupReclassify = new ModalViewModel({
