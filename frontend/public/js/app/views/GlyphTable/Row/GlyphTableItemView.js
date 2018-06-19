@@ -203,7 +203,6 @@ export default Marionette.ItemView.extend(
         onClickGlyph: function (event)
         {
             event.preventDefault();
-
             if (event.shiftKey)
             {
                 // If the glyph is already active, then deactivate it.
@@ -217,7 +216,6 @@ export default Marionette.ItemView.extend(
                 {
                     RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, true);
                     RadioChannels.edit.trigger(GlyphEvents.selectGlyph, this.model);
-
                 }
                 RadioChannels.edit.trigger(GlyphEvents.dragSelect);
                 RadioChannels.edit.trigger(GlyphEvents.openMultiEdit);
