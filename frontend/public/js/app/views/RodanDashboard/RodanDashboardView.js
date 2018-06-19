@@ -264,8 +264,13 @@ export default Marionette.LayoutView.extend(
                 for (var i = 0; i < elms.length; i++)
                 {
                     var child = elms[i].childNodes[0].childNodes[1].childNodes[1];
-                    child.width = child.dataset.originalWidth * zoomLevel;
-                    child.height = child.dataset.originalHeight * zoomLevel;
+                    var newWidth = child.dataset.originalWidth * zoomLevel;
+                    var newHeight = child.dataset.originalHeight * zoomLevel;
+                    if (newWidth > 1 && newHeight > 1)
+                    {
+                        child.width = newWidth;
+                        child.height = newHeight;
+                    }
                 }
             }
             );
