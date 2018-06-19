@@ -197,6 +197,7 @@ export default Marionette.ItemView.extend(
                         child.height = newHeight;
                     }
                 }
+                this.render();
             });
         },
 
@@ -268,8 +269,13 @@ export default Marionette.ItemView.extend(
 
             if (this.viewModel.isZoomed())
             {
-                data.ncols = this.zoom * this.model.get("ncols");
-                data.nrows = this.zoom * this.model.get("nrows");
+                var newNCols = this.zoom * this.model.get("ncols");
+                var newNRows = this.zoom * this.model.get("nrows");
+                if (newNCols > 1 && newNRows > 1)
+                {
+                    data.ncols = newNCols;
+                    data.nrows = newNRows;
+                }
             }
 
             // Figure out which background color will be used
