@@ -252,7 +252,6 @@ var App = Marionette.Application.extend(
          */
         undoAllChanges: function ()
         {
-            var that = this;
             var data = JSON.stringify({
                 "undo": true
             });
