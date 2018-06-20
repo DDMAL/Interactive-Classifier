@@ -1,0 +1,41 @@
+language: node_js
+if: (branch = master AND type = (pull_request OR cron)) OR (branch = develop)
+node_js:
+  # These are the recommended versions according to nodejs. We should make sure they all work.
+  # - 8
+  # - 9
+  - 10
+matrix:
+  include:
+    # Mac Installation. - It could easily be linux.
+    - os: osx
+      env:
+        - PKG_MANAGER="npm"
+        - HOMEBREW_NO_AUTO_UPDATE="1"
+        - GLOBAL="$PKG_MANAGER install -g"
+    - os: osx
+      env:
+        - PKG_MANAGER="yarn"
+        - HOMEBREW_NO_AUTO_UPDATE="1"
+        - GLOBAL="$PKG_MANAGER global add"
+cache:
+  yarn: true
+  directories:
+    - ${pwd}/frontend/node_modules
+before_install:
+  # If brew doesn't work, try the other one. We already specify a version of node, based on the build.
+  - brew install yarn --without-node
+  # - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version version-number
+  # - export PATH="$HOME/.yarn/bin:$PATH"
+install:
+  # Try to install all packages with both yarn and npm
+  - cd frontend
+  - $PKG_MANAGER install
+before_script:
+  # The GLOBAL env variable just helps introduce the differences in the commands to execute global installs of yarn or npm into our command.
+  - $GLOBAL gulp-cli karma-cli
+script:
+  - gulp lint:js
+  - gulp build
+  - npm audit
+  # - $PKG_MANAGER test
