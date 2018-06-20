@@ -43,6 +43,7 @@
     "backbone.marionette": "^2.4.7",
     "backbone.radio": "^2.0.0",
     "bootstrap": "^3.3.7",
+    "hoek": "^5.0.3",
     "jquery": "^3.2.1"
   }
 }
