@@ -39,3 +39,7 @@ script:
   - gulp build
   - npm audit
   # - $PKG_MANAGER test
+notifications:
+  email: false
+  slack:
+    secure: maDjmvWUkdwQ3z3p2FFA0h2+UAHABVxmdmnGslxnRHEfPWvtLbkRODqT7M9CbF++0acdV6pBXwdJOPaD58mLeuxRglZlHATIiz0CPFGDO3l8b4zU0RxzFy+4L9FNp+fxR4HLfmPCcGP/cY8JfFEwbcFRPOt6I+iMYn5ugDTQweRaI/z9FNfYtfrqjPuUHCbM7sUuJMPueFDZwgygrsTSSWoK1K2tv+5s8qVetZOKcpLwukhCqFapCO/GUl5azly2DnfNdWiitB+9jL/T4NZRD0LsHxNzMfWM3ILCwcDU7IZof+AkQE/BWLlCNIyBHdt7HnJRRJ34S7iX3gIdAgDxizr7qE6pXJgH6vO3BpBdzNQ8qm1rnSL8P/oq844gvOU95YdgNIiAIYB7iDvisunofzJsuGkEJBTiuHzGlhK8y5po/hfXpEXp0g/3OSeqoEoUZVhHsS9fiOyeh75mgHVZ5gvJsSdV2eCdr5O/euvE9P0EG5c5vttVI9Ml/ayGZMcYJaT7UPNfwHhuidtuqYJVbx+CtIGI73GIqqgzYGgPcaA2LyHqbbXboGFlovRlEM4GhphkKdwP6TIssvnBZWpBFsnQM7ae3U9BnXOTfCuvCFYciPvII5E5A/hd9luLE8j+UGSp1CqpNFvp5nf6KekImZ78X8Y4IZ1PUDK+eMQ0yDM=
