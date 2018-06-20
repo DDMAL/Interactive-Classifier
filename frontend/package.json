@@ -22,7 +22,6 @@
     "imports-loader": "^0.6.4",
     "jasmine-core": "^2.3.4",
     "jshint-stylish": "^2.0.0",
-    "karma-jasmine-ajax": "^0.1.13",
     "karma-jasmine-jquery": "^0.1.1",
     "karma-phantomjs-launcher": "^0.2.0",
     "karma-sourcemap-loader": "^0.3.5",
