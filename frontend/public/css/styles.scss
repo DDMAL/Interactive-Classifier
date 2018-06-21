@@ -629,6 +629,18 @@ html.js {
     padding-top: 70px;
 }
 
+#upper {
+    float: left;
+    width: 75%;
+    height: 40px;
+    top: 50px;
+    right: 0;
+    background-color: #888;
+    position: absolute;
+    text-align: center;
+    padding-top: 10px;
+}
+
 #left {
     float: left;
     width: 25%;
@@ -636,9 +648,22 @@ html.js {
     overflow-y: scroll;
     background-color: #efefef;
     position: absolute;
-    top: 0;
+    top: 50px;
     left: 0;
     padding-top: 50px;
+}
+
+#left0 {
+    float: left;
+    width: 25%;
+    height: 40px;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background-color: #888;
+    text-align: center;
+    padding-top: 10px;
+    overflow-y: scroll;
 }
 
 #left1 {
@@ -648,9 +673,9 @@ html.js {
     overflow-y: scroll;
     background-color: #efefef;
     position: absolute;
-    top: 0;
+    top: 90px;
     left: 0;
-    padding-top: 50px;
+    padding-top: 10px;
 }
 
 #left2 {
@@ -682,7 +707,7 @@ html.js {
     height: 4%;
     width: 12%;
     position: absolute;
-    top: 55px;
+    top: 92px;
     bottom: 50px;
     right: 0;
     border-top: 1px solid #444444;
@@ -696,10 +721,10 @@ html.js {
     height: 28%;
     width: 75%;
     position: absolute;
-    top: 90px;
+    top: 130px;
     right: 0;
     resize: vertical;
-    border-left: 1px solid #444444;
+    border-left: 1px solid #474747;
 }
 
 #right1 {
