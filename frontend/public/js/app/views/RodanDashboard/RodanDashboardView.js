@@ -5,6 +5,7 @@ import Marionette from "marionette";
 import ClassEvents from "events/ClassEvents";
 import GlyphEvents from "events/GlyphEvents";
 import PageEvents from "events/PageEvents";
+import MainMenuEvents from "events/MainMenuEvents";
 import GlyphCollection from "collections/GlyphCollection";
 import ClassTreeView from "views/ClassTree/ClassTreeView";
 import ClassTreeViewModel from "views/ClassTree/ClassTreeViewModel";
@@ -40,7 +41,9 @@ export default Marionette.LayoutView.extend(
         },
 
         events: {
-            "mousedown": "onMouseDown"
+            "mousedown": "onMouseDown",
+            "click #save": "saveChanges",
+            "click #revert": "revertChanges"
         },
 
         /**
@@ -587,6 +590,24 @@ export default Marionette.LayoutView.extend(
             this.isMouseDown = true;
         },
 
+        saveChanges: function (event)
+        {
+            if (event)
+            {
+                event.preventDefault();
+            }
+            RadioChannels.menu.trigger(MainMenuEvents.clickSaveChanges);
+        },
+
+        revertChanges: function (event)
+        {
+            if (event)
+            {
+                event.preventDefault();
+            }
+            RadioChannels.menu.trigger(MainMenuEvents.clickUndoAll);
+        },
+
         /**
          * Open the GlyphEditView for editing a particular glyph.
          *
@@ -651,7 +672,9 @@ export default Marionette.LayoutView.extend(
             return {
                 classesHeader: Strings.classes,
                 editGlyphLabel: Strings.editGlyphLabel,
-                editGlyphDescription: Strings.editGlyphDescription
+                editGlyphDescription: Strings.editGlyphDescription,
+                saveChanges: Strings.saveChanges,
+                revert: Strings.undoAll
             }
         }
     });
