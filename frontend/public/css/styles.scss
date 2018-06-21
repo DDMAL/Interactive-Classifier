@@ -632,7 +632,7 @@ html.js {
 #upper {
     float: left;
     width: 75%;
-    height: 35px;
+    height: 30px;
     top: 50px;
     right: 0;
     background-color: #444;
@@ -663,7 +663,7 @@ html.js {
 #left0 {
     float: left;
     width: 25%;
-    height: 35px;
+    height: 30px;
     position: absolute;
     top: 50px;
     left: 0;
@@ -673,7 +673,7 @@ html.js {
     overflow-y: scroll;
 }
 
-.edit-changes {
+.changes {
     background-color: #444;
     color: #eee;
     margin-right: 28px;
@@ -688,7 +688,7 @@ html.js {
     overflow-y: scroll;
     background-color: #efefef;
     position: absolute;
-    top: 85px;
+    top: 80px;
     left: 0;
     padding-top: 10px;
 }
@@ -722,7 +722,7 @@ html.js {
     height: 4%;
     width: 12%;
     position: absolute;
-    top: 87px;
+    top: 82px;
     bottom: 50px;
     right: 0;
     border-top: 1px solid #444444;
@@ -736,7 +736,7 @@ html.js {
     height: 28%;
     width: 75%;
     position: absolute;
-    top: 130px;
+    top: 125px;
     right: 0;
     resize: vertical;
     border-left: 1px solid #474747;
