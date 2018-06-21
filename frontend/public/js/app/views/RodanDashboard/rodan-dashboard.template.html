@@ -1,5 +1,6 @@
 <div class="row">
     <div id="upper" class-"col-md-2 col-md-push-3">
+        <div class="glyph-count-region"></div>
     </div>
     <button id="collapse-button" class="col-md-2 col-md-push-3" data-toggle="collapse" data-target="#right0">Classifier Glyphs</button>
     <div class="col-md-2 col-md-push-3" id="right0">
@@ -12,6 +13,8 @@
         <div class="page-image-preview-region"></div>
     </div>
     <div class="col-md-3 col-md-pull-9" id="left0">
+        <button id="save" class="edit-changes"><%- saveChanges %></button>
+        <button id="revert" class="edit-changes"><%- revert %></button>
     </div>
     <div style = "resize: both;" class="col-md-3 col-md-pull-9" id="left1">
         <h2><%- classesHeader %></h2>
