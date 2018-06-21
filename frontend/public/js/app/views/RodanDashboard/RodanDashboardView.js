@@ -674,7 +674,10 @@ export default Marionette.LayoutView.extend(
                 editGlyphLabel: Strings.editGlyphLabel,
                 editGlyphDescription: Strings.editGlyphDescription,
                 saveChanges: Strings.saveChanges,
-                revert: Strings.undoAll
+                revert: Strings.undoAll,
+                classifierGlyphs: Strings.classifierGlyphs,
+                pageGlyphs: Strings.pageGlyphs,
+                selectedGlyphs: Strings.selectedGlyphs
             }
         }
     });

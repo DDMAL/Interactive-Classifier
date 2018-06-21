@@ -41,6 +41,9 @@ export default {
     saveWarning: "Save the current state?",
     undoAll: "Revert",
     undoWarning: "Are you sure you wish to undo all changes? This will restore the original state of the job.",
+    classifierGlyphs: " glyphs in classifier",
+    pageGlyphs: " glyphs in page",
+    selectedGlyphs: " selected glyphs",
     // Strings for GlyphEditview
     editGlyph: {
         update: "Update",
