@@ -109,7 +109,7 @@ export default Marionette.LayoutView.extend(
                 {
                     that.selectedGlyphs.add(glyph);
                     that.selectedCount = that.selectedGlyphs.length;
-                    document.getElementById("count-selected").innerHTML = this.selectedCount;
+                    document.getElementById("count-selected").innerHTML = that.selectedCount;
                 }
             );
             this.listenTo(RadioChannels.edit, GlyphEvents.deselectGlyph,
@@ -117,7 +117,7 @@ export default Marionette.LayoutView.extend(
                 {
                     that.selectedGlyphs.remove(glyph);
                     that.selectedCount = that.selectedGlyphs.length;
-                    document.getElementById("count-selected").innerHTML = this.selectedCount;
+                    document.getElementById("count-selected").innerHTML = that.selectedCount;
                 }
             );
             this.listenTo(RadioChannels.edit, GlyphEvents.deselectAllGlyphs,
@@ -125,7 +125,7 @@ export default Marionette.LayoutView.extend(
                 {
                     that.selectedGlyphs.reset();
                     that.selectedCount = 0;
-                    document.getElementById("count-selected").innerHTML = this.selectedCount;
+                    document.getElementById("count-selected").innerHTML = that.selectedCount;
                 }
             );
 
@@ -164,8 +164,8 @@ export default Marionette.LayoutView.extend(
                             that.pageCount--;
                         }
                     }
-                    document.getElementById("count-classifier").innerHTML = this.classifierCount;
-                    document.getElementById("count-page").innerHTML = this.pageCount;
+                    document.getElementById("count-classifier").innerHTML = that.classifierCount;
+                    document.getElementById("count-page").innerHTML = that.pageCount;
                 }
             );
 
