@@ -199,12 +199,6 @@ export default Marionette.ItemView.extend(
                 }
                 this.render();
             });
-
-            this.listenTo(RadioChannels.edit, GlyphEvents.deselectAllGlyphs,
-            function()
-            {
-                this.viewModel.deactivate();
-            });
         },
 
         onShow: function()
@@ -250,8 +244,8 @@ export default Marionette.ItemView.extend(
             }
             else
             {
-                RadioChannels.edit.trigger(GlyphEvents.deselectAllGlyphs);
                 RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, true);
+                RadioChannels.edit.trigger(GlyphEvents.deselectAllGlyphs);
                 RadioChannels.edit.trigger(GlyphEvents.selectGlyph, this.model);
                 RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, this.model, this.viewModel);
             }
