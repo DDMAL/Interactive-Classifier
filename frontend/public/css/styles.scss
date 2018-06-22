@@ -668,16 +668,20 @@ html.js {
     left: 0;
     background-color: #cbcbcb;
     text-align: center;
-    padding-top: 5px;
 }
 
 .edit-button {
-    width: 30%;
+    width: 35%;
+    height: 100%;
     background-color: #cbcbcb;
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
     border: none;
+    &:hover{
+        background-color: #ababab;
+    }
 }
+
 
 #left1 {
     float: left;
