@@ -522,6 +522,9 @@ var App = Marionette.Application.extend(
                         {
                             var responseData = JSON.parse(response.responseText);
                             var glyphs = responseData['glyphs'];
+                            var oldPageCount = parseInt($("#count-page").text());
+                            var newPageCount = oldPageCount + glyphs.length;
+                            document.getElementById("count-page").innerHTML = newPageCount;
                             for (var i = 0; i < glyphs.length; i++)
                             {
                                 var new_glyph = glyphs[i];
