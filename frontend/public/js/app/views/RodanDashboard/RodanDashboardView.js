@@ -154,9 +154,14 @@ export default Marionette.LayoutView.extend(
                         var glyph = glyphs[i];
                         that.tableRowCollection.deleteGlyph(glyph);
                         that.trainingRowCollection.deleteGlyph(glyph);
-                        if (glyph.get("is_training") || glyph.get("is_state_manual"))
+                        if (glyph.get("is_training"))
                         {
                             that.classifierCount--;
+                        }
+                        else if (glyph.get("id_state_manual"))
+                        {
+                            that.classifierCount--;
+                            that.pageCount--;
                         }
                         else
                         {
@@ -267,8 +272,6 @@ export default Marionette.LayoutView.extend(
                         that.tableRowCollection.moveGlyph(glyph, oldClassName, newClassName);
                         that.trainingRowCollection.moveGlyph(glyph, oldClassName, newClassName);
                     }
-                    that.classifierCount++;
-                    document.getElementById("count-classifier").innerHTML = that.classifierCount;
                 }
             );
 
