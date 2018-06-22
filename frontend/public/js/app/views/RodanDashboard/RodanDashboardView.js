@@ -113,7 +113,7 @@ export default Marionette.LayoutView.extend(
                 {
                     that.selectedGlyphs.add(glyph);
                     that.selectedCount = that.selectedGlyphs.length;
-                    document.getElementById("count-selected").innerHTML = this.selectedCount + Strings.selectedGlyphs;
+                    document.getElementById("count-selected").innerHTML = this.selectedCount;
                 }
             );
             this.listenTo(RadioChannels.edit, GlyphEvents.deselectGlyph,
@@ -121,7 +121,7 @@ export default Marionette.LayoutView.extend(
                 {
                     that.selectedGlyphs.remove(glyph);
                     that.selectedCount = that.selectedGlyphs.length;
-                    document.getElementById("count-selected").innerHTML = this.selectedCount + Strings.selectedGlyphs;
+                    document.getElementById("count-selected").innerHTML = this.selectedCount;
                 }
             );
             this.listenTo(RadioChannels.edit, GlyphEvents.deselectAllGlyphs,
@@ -129,7 +129,7 @@ export default Marionette.LayoutView.extend(
                 {
                     that.selectedGlyphs.reset();
                     that.selectedCount = 0;
-                    document.getElementById("count-selected").innerHTML = this.selectedCount + Strings.selectedGlyphs;
+                    document.getElementById("count-selected").innerHTML = this.selectedCount;
                 }
             );
 
@@ -405,9 +405,9 @@ export default Marionette.LayoutView.extend(
                 }
             });
 
-            document.getElementById("count-classifier").innerHTML = this.classifierCount + Strings.classifierGlyphs;
-            document.getElementById("count-page").innerHTML = this.pageCount + Strings.pageGlyphs;
-            document.getElementById("count-selected").innerHTML = this.selectedCount + Strings.selectedGlyphs;
+            document.getElementById("count-classifier").innerHTML = this.classifierCount;
+            document.getElementById("count-page").innerHTML = this.pageCount;
+            document.getElementById("count-selected").innerHTML = this.selectedCount;
 
             timer.tick();
 
@@ -688,13 +688,15 @@ export default Marionette.LayoutView.extend(
          */
         serializeData: function ()
         {
-            var that = this;
             return {
                 classesHeader: Strings.classes,
                 editGlyphLabel: Strings.editGlyphLabel,
                 editGlyphDescription: Strings.editGlyphDescription,
                 saveChanges: Strings.saveChanges,
                 revert: Strings.undoAll,
+                classifierGlyphs: Strings.classifierGlyphs,
+                pageGlyphs: Strings.pageGlyphs,
+                selectedGlyphs: Strings.selectedGlyphs
             }
         }
     });

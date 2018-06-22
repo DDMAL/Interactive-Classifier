@@ -1,8 +1,17 @@
 <div class="row">
     <div class-"col-md-2 col-md-push-3" id="upper">
-        <div class="column" id="count-classifier"></div>
-        <div class="column" id="count-page"></div>
-        <div class="column" id="count-selected"></div>
+        <div class="column">
+            <span id="count-classifier"></span>
+            <%- classifierGlyphs %>
+        </div>
+        <div class="column">
+            <span id="count-page"></span>
+            <%- pageGlyphs %>
+        </div>
+        <div class="column">
+            <span id="count-selected"></span>
+            <%- selectedGlyphs %>
+        </div>
     </div>
     <button id="collapse-button" class="col-md-2 col-md-push-3" data-toggle="collapse" data-target="#right0">Classifier Glyphs</button>
     <div class="col-md-2 col-md-push-3" id="right0">
