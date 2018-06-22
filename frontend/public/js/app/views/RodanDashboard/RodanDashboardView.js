@@ -285,6 +285,18 @@ export default Marionette.LayoutView.extend(
                 }
             );
 
+            this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs,
+                function (glyphs, className)
+                {
+                    var count = glyphs.length;
+                    that.classifierCount++;
+                    that.pageCount++;
+                    document.getElementById("count-selected").innerHTML = 1;
+                    document.getElementById("count-classifier").innerHTML = that.classifierCount;
+                    document.getElementById("count-page").innerHTML = that.pageCount;
+                }
+            );
+
             this.listenTo(RadioChannels.edit, PageEvents.zoom,
             function (zoomLevel)
             {
