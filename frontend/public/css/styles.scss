@@ -630,22 +630,21 @@ html.js {
 }
 
 #upper {
-    float: left;
     width: 75%;
     height: 30px;
     top: 50px;
     right: 0;
-    background-color: #444;
+    background-color: #cbcbcb;
     position: absolute;
+    text-align: center;
 }
 
 .column {
-    width: 30%;
+    width: 20%;
     display: inline-block;
     text-align: center;
     padding-top: 7px;
     font-size: 12px;
-    color: #eee;
 }
 
 #left {
@@ -667,15 +666,13 @@ html.js {
     position: absolute;
     top: 50px;
     left: 0;
-    background-color: #444;
+    background-color: #cbcbcb;
     text-align: center;
     padding-top: 5px;
-    overflow-y: scroll;
 }
 
-.changes {
-    background-color: #444;
-    color: #eee;
+.edit-button {
+    background-color: #cbcbcb;
     margin-right: 28px;
     margin-left: 28px;
     border: none;
