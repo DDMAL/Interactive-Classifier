@@ -46,6 +46,14 @@ export default Marionette.LayoutView.extend(
             "click #revert": "revertChanges"
         },
 
+        modelEvents: {
+            "change": "render"
+        },
+
+        classifierCount: 0,
+        pageCount: 0,
+        selectedCount: 0,
+
         /**
          * @class RodanDashboardView
          *
@@ -104,18 +112,24 @@ export default Marionette.LayoutView.extend(
                 function (glyph)
                 {
                     that.selectedGlyphs.add(glyph);
+                    that.selectedCount = that.selectedGlyphs.length;
+                    document.getElementById("count-selected").innerHTML = this.selectedCount + Strings.selectedGlyphs;
                 }
             );
             this.listenTo(RadioChannels.edit, GlyphEvents.deselectGlyph,
                 function (glyph)
                 {
                     that.selectedGlyphs.remove(glyph);
+                    that.selectedCount = that.selectedGlyphs.length;
+                    document.getElementById("count-selected").innerHTML = this.selectedCount + Strings.selectedGlyphs;
                 }
             );
             this.listenTo(RadioChannels.edit, GlyphEvents.deselectAllGlyphs,
                 function ()
                 {
                     that.selectedGlyphs.reset();
+                    that.selectedCount = 0;
+                    document.getElementById("count-selected").innerHTML = this.selectedCount + Strings.selectedGlyphs;
                 }
             );
 
@@ -364,7 +378,6 @@ export default Marionette.LayoutView.extend(
                         trainingGlyphsCollection[classNames[i]] = glyphs;
                     }
                 }
-
             }
 
             timer.tick("pre-final render");
@@ -378,6 +391,7 @@ export default Marionette.LayoutView.extend(
                         class_name: className,
                         glyphs: glyphCollections[className]
                     });
+                    that.pageCount += glyphCollections[className].length;
                     that.tableRowCollection.add(row);
                 }
                 if (trainingGlyphsCollection[className])
@@ -386,9 +400,14 @@ export default Marionette.LayoutView.extend(
                         class_name: className,
                         glyphs: trainingGlyphsCollection[className]
                     });
+                    that.classifierCount += trainingGlyphsCollection[className].length;
                     that.trainingRowCollection.add(row);
                 }
             });
+
+            document.getElementById("count-classifier").innerHTML = this.classifierCount + Strings.classifierGlyphs;
+            document.getElementById("count-page").innerHTML = this.pageCount + Strings.pageGlyphs;
+            document.getElementById("count-selected").innerHTML = this.selectedCount + Strings.selectedGlyphs;
 
             timer.tick();
 
@@ -669,15 +688,13 @@ export default Marionette.LayoutView.extend(
          */
         serializeData: function ()
         {
+            var that = this;
             return {
                 classesHeader: Strings.classes,
                 editGlyphLabel: Strings.editGlyphLabel,
                 editGlyphDescription: Strings.editGlyphDescription,
                 saveChanges: Strings.saveChanges,
                 revert: Strings.undoAll,
-                classifierGlyphs: Strings.classifierGlyphs,
-                pageGlyphs: Strings.pageGlyphs,
-                selectedGlyphs: Strings.selectedGlyphs
             }
         }
     });
