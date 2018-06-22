@@ -268,6 +268,20 @@ export default Marionette.LayoutView.extend(
                         that.tableRowCollection.moveGlyph(glyph, oldClassName, newClassName);
                         that.trainingRowCollection.moveGlyph(glyph, oldClassName, newClassName);
                     }
+                    that.pageCount = 0;
+                    that.classifierCount = 0;
+                    that.tableRowCollection.each (function (row)
+                    {
+                        var glyphs = row.get("glyphs");
+                        that.pageCount += glyphs.length;
+                    });
+                    that.trainingRowCollection.each (function (row)
+                    {
+                        var glyphs = row.get("glyphs");
+                        that.classifierCount += glyphs.length;
+                    });
+                    document.getElementById("count-classifier").innerHTML = that.classifierCount;
+                    document.getElementById("count-page").innerHTML = that.pageCount;
                 }
             );
 
