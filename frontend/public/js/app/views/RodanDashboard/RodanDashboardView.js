@@ -46,10 +46,6 @@ export default Marionette.LayoutView.extend(
             "click #revert": "revertChanges"
         },
 
-        modelEvents: {
-            "change": "render"
-        },
-
         classifierCount: 0,
         pageCount: 0,
         selectedCount: 0,
