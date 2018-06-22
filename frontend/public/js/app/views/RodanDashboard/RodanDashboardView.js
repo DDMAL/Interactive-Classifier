@@ -154,7 +154,17 @@ export default Marionette.LayoutView.extend(
                         var glyph = glyphs[i];
                         that.tableRowCollection.deleteGlyph(glyph);
                         that.trainingRowCollection.deleteGlyph(glyph);
+                        if (glyph.get("is_training") || glyph.get("is_state_manual"))
+                        {
+                            that.classifierCount--;
+                        }
+                        else
+                        {
+                            that.pageCount--;
+                        }
                     }
+                    document.getElementById("count-classifier").innerHTML = this.classifierCount;
+                    document.getElementById("count-page").innerHTML = this.pageCount;
                 }
             );
 
@@ -257,6 +267,8 @@ export default Marionette.LayoutView.extend(
                         that.tableRowCollection.moveGlyph(glyph, oldClassName, newClassName);
                         that.trainingRowCollection.moveGlyph(glyph, oldClassName, newClassName);
                     }
+                    that.classifierCount++;
+                    document.getElementById("count-classifier").innerHTML = that.classifierCount;
                 }
             );
 
