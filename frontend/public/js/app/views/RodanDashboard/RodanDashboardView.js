@@ -350,16 +350,17 @@ export default Marionette.LayoutView.extend(
                     {
                         that.openTrainingEdit(training_glyphs);
                     }
-                    // If only one glyph has been selected, then glyph edit will open
-                    else if (glyphs.length === 1)
-                    {
-                        glyph = glyphs.at(0);
-                        RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, glyph);
-                    }
-                    else
+                    else if (training_glyphs.length === 0)
                     {
                         that.openMultiGlyphEdit(glyphs);
                         RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, glyphs);
+                    }
+                    // If page glyphs and training glyphs are both selected,
+                    // then open TrainingEditView instead of GlyphMultiEditView,
+                    // as page glyphs cannot be grouped with training glyphs
+                    else
+                    {
+                        that.openTrainingEdit(that.selectedGlyphs);
                     }
                 }
             );

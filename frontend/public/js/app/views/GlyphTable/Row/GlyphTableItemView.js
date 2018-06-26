@@ -56,12 +56,16 @@ export default Marionette.ItemView.extend(
             this.listenTo(RadioChannels.edit, GlyphEvents.deselectAllGlyphs,
                 function ()
                 {
+                    // jscs:disable
                     RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, false);
+                    // jscs:enable
                 }
             );
             this.listenTo(RadioChannels.edit, GlyphEvents.selectGlyph,
                 function (glyphModel) {
+                    // jscs:disable
                     RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, glyphModel.attributes.id, true);
+                    // jscs:enable
                 }
             );
             this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
