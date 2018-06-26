@@ -53,6 +53,17 @@ export default Marionette.ItemView.extend(
             // Re render when the viewmodel changes activity state
             this.listenTo(this.viewModel, "change:active", this.render);
             var that = this;
+            this.listenTo(RadioChannels.edit, GlyphEvents.deselectAllGlyphs,
+                function ()
+                {
+                    RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, false);
+                }
+            );
+            this.listenTo(RadioChannels.edit, GlyphEvents.selectGlyph,
+                function (glyphModel) {
+                    RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, glyphModel.attributes.id, true);
+                }
+            );
             this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
                 function (boundingBox, additional)
                 {
