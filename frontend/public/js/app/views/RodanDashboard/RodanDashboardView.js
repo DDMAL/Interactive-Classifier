@@ -296,17 +296,31 @@ export default Marionette.LayoutView.extend(
                 }
             );
 
-            this.listenTo(RadioChannels.edit, PageEvents.zoom,
-            function (zoomLevel)
-            {
-                var pic = document.getElementsByClassName("preview-background")[0];
-                var oldHeight = pic.dataset.originalHeight;
-                var newHeight = oldHeight * zoomLevel / document.getElementById("s1").getAttribute("default"); //60 is the default value
-                pic.style.height = newHeight + "px";
-                // makes sure the boxes around the glyphs follow the zoom
-                RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, that.selectedGlyphs);
+            this.listenTo(RadioChannels.edit, GlyphEvents.splitGlyph,
+                function (glyph, split_type)
+                {
+                    // After splitting, wait for the DOM to update, then update the count variables
+                    var waitTime = 1000;
+                    setTimeout (function (){
+                        var newPageCount = parseInt($("#count-page").text());
+                        var newClassifierCount = parseInt($("#count-classifier").text());
+                        that.pageCount = newPageCount;
+                        that.classifierCount = newClassifierCount;
+                    }, waitTime);
+                }
+            );
 
-            }
+            this.listenTo(RadioChannels.edit, PageEvents.zoom,
+                function (zoomLevel)
+                {
+                    var pic = document.getElementsByClassName("preview-background")[0];
+                    var oldHeight = pic.dataset.originalHeight;
+                    var newHeight = oldHeight * zoomLevel / document.getElementById("s1").getAttribute("default"); //60 is the default value
+                    pic.style.height = newHeight + "px";
+                    // makes sure the boxes around the glyphs follow the zoom
+                    RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, that.selectedGlyphs);
+
+                }
             );
 
             this.listenTo(RadioChannels.edit, GlyphEvents.highlightGlyphs,
@@ -319,7 +333,8 @@ export default Marionette.LayoutView.extend(
                         glyphs.push(glyph);
                     }
                     that.previewView.highlightGlyph(glyphs);
-                });
+                }
+            );
 
             this.listenTo(RadioChannels.edit, GlyphEvents.openMultiEdit,
                 function ()
@@ -371,7 +386,6 @@ export default Marionette.LayoutView.extend(
                     that.openTrainingEdit(that.selectedGlyphs);
                 }
             );
-
         },
 
         onShow: function ()
