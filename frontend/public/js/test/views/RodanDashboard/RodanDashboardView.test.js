@@ -1,4 +1,4 @@
-var RodanDashboardView = require('views/RodanDashboard/RodanDashboardView');
+import RodanDashboardView from 'views/RodanDashboard/RodanDashboardView';
 var Backbone = require('backbone');
 
 var dashboard = new RodanDashboardView({

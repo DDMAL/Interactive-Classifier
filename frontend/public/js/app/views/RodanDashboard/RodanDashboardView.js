@@ -752,4 +752,4 @@ var RodanDashboardView = Marionette.LayoutView.extend(
         }
     });
 
-module.exports = RodanDashboardView;
+export default RodanDashboardView;
