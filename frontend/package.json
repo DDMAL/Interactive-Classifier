@@ -51,6 +51,9 @@
     "moduleNameMapper": {
       "^[./a-zA-Z0-9$_-]+\\.html$": "<rootDir>/public/js/app/views/ClassTree/recursive-unordered-list.template.html"
     },
-    "moduleDirectories": ["node_modules", "public/js/app"]
+    "moduleDirectories": [
+      "node_modules",
+      "public/js/app"
+    ]
   }
 }
