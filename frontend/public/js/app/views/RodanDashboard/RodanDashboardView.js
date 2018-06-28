@@ -172,17 +172,17 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             this.listenTo(RadioChannels.edit, GlyphEvents.setGlyphName,
               function(className)
               {
-                //Don't add the new class if it's already in the list or if it's a part of a group or a split
-                if (!className.startsWith("_group._part") && !className.startsWith("_split"))
-                {
-                    var index = that.model.get('classNames').findIndex(name => name === className);
-                    if (index === -1)
-                    {
-                        var classNameList = that.model.get('classNames').push(className);
-                        classNameList = that.model.get('classNames').sort();
-                        that.model.set('classNames', classNameList);
-                    }
-                }
+                  //Don't add the new class if it's already in the list or if it's a part of a group or a split
+                  if (!className.startsWith("_group._part") && !className.startsWith("_split"))
+                  {
+                      var index = that.model.get('classNames').findIndex(name => name === className);
+                      if (index === -1)
+                      {
+                          var classNameList = that.model.get('classNames').push(className);
+                          classNameList = that.model.get('classNames').sort();
+                          that.model.set('classNames', classNameList);
+                      }
+                  }
               }
             );
             // Class editing events
@@ -270,12 +270,12 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     }
                     that.pageCount = 0;
                     that.classifierCount = 0;
-                    that.tableRowCollection.each (function (row)
+                    that.tableRowCollection.each(function (row)
                     {
                         var glyphs = row.get("glyphs");
                         that.pageCount += glyphs.length;
                     });
-                    that.trainingRowCollection.each (function (row)
+                    that.trainingRowCollection.each(function (row)
                     {
                         var glyphs = row.get("glyphs");
                         that.classifierCount += glyphs.length;
@@ -301,7 +301,8 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                 {
                     // After splitting, wait for the DOM to update, then update the count variables
                     var waitTime = 1000;
-                    setTimeout (function (){
+                    setTimeout(function ()
+                    {
                         var newPageCount = parseInt($("#count-page").text());
                         var newClassifierCount = parseInt($("#count-classifier").text());
                         that.pageCount = newPageCount;

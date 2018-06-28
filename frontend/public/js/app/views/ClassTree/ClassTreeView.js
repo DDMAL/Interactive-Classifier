@@ -52,7 +52,7 @@ export default Marionette.LayoutView.extend(
                         console.log("New name!", newClassName);
                         // Set the new list
                         that.model = new ClassTreeViewModel({
-                          class_names: newClassNameList.sort()
+                            class_names: newClassNameList.sort()
                         });
                         // Re-render the view
                         that.showSubTree();
@@ -68,35 +68,36 @@ export default Marionette.LayoutView.extend(
                 // Add the model to the class_names
                 console.log("Delete class!", deletedClassName);
                 var classNameList = that.model.get("class_names");
-                var filteredList = classNameList.filter(name => name !== deletedClassName && !name.startsWith(deletedClassName + "."));
+                var filteredList = classNameList.filter(name => name !== deletedClassName &&
+                  !name.startsWith(deletedClassName + "."));
                 // Set the new list
                 that.model = new ClassTreeViewModel({
-                  class_names: filteredList.sort()
+                    class_names: filteredList.sort()
                 });
                 // Re-render the view
                 that.showSubTree();
             }),
             this.listenTo(RadioChannels.edit, ClassEvents.renameClass, function (oldClassName, newClassName)
             {
-              var classNameList = that.model.get("class_names");
-              for (var i = 0; i < classNameList.length; i++)
-              {
-                if (classNameList[i].startsWith(oldClassName + ".") || classNameList[i] === oldClassName)
+                var classNameList = that.model.get("class_names");
+                for (var i = 0; i < classNameList.length; i++)
                 {
-                  classNameList[i] = classNameList[i].replace(oldClassName, newClassName);
+                    if (classNameList[i].startsWith(oldClassName + ".") || classNameList[i] === oldClassName)
+                    {
+                        classNameList[i] = classNameList[i].replace(oldClassName, newClassName);
+                    }
                 }
-              }
-              // remove duplicates from the list
-              var uniqueList = classNameList.filter(function(item, pos)
-              {
-                return classNameList.indexOf(item) === pos;
-              });
-              // Set the new list
-              that.model = new ClassTreeViewModel({
-                class_names: uniqueList.sort()
-              });
-              // Re-render the view
-              that.showSubTree();
+                // remove duplicates from the list
+                var uniqueList = classNameList.filter(function(item, pos)
+                {
+                    return classNameList.indexOf(item) === pos;
+                });
+                // Set the new list
+                that.model = new ClassTreeViewModel({
+                    class_names: uniqueList.sort()
+                });
+                // Re-render the view
+                that.showSubTree();
             });
         },
 
@@ -112,8 +113,8 @@ export default Marionette.LayoutView.extend(
         {
             var classNames = this.model.get("class_names");
             var mod = new RecursiveUnorderedListViewModel({
-              value: undefined,
-              children: []
+                value: undefined,
+                children: []
             });
             classNameArrayToRecursiveTree(classNames, mod);
             this.classTreeRegion.show(new RecursiveUnorderedListView({model: mod}));

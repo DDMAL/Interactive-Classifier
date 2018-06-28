@@ -154,7 +154,7 @@ export default Marionette.LayoutView.extend(
          *
          * @param event
          */
-        delete (event)
+        delete(event)
         {
             if (event)
             {

@@ -92,14 +92,14 @@ export default Backbone.Model.extend(
          */
         renameGlyph: function (renamedName)
         {
-          var oldClassName = this.get("class_name");
-          renamedName = String(renamedName);
-          var sanitizedName = ClassNameUtils.sanitizeClassName(renamedName);
-          this.set('class_name', sanitizedName);
+            var oldClassName = this.get("class_name");
+            renamedName = String(renamedName);
+            var sanitizedName = ClassNameUtils.sanitizeClassName(renamedName);
+            this.set('class_name', sanitizedName);
 
-          RadioChannels.edit.trigger(GlyphEvents.moveGlyph, this, oldClassName, this.get("class_name"));
-          RadioChannels.edit.trigger(GlyphEvents.changeGlyph, this);
-          RadioChannels.edit.trigger(GlyphEvents.setGlyphName, this.get("class_name"));
+            RadioChannels.edit.trigger(GlyphEvents.moveGlyph, this, oldClassName, this.get("class_name"));
+            RadioChannels.edit.trigger(GlyphEvents.changeGlyph, this);
+            RadioChannels.edit.trigger(GlyphEvents.setGlyphName, this.get("class_name"));
         },
 
         /**

@@ -44,10 +44,11 @@ export default Marionette.ItemView.extend(
             this.listenTo(RadioChannels.edit, GlyphEvents.clickGlyphName,
                 function (className)
                 {
-                    if (ClassNameUtils.sanitizeClassName(className) !== "unclassified" && ClassNameUtils.sanitizeClassName(className) !== "")
+                    if (ClassNameUtils.sanitizeClassName(className) !== "unclassified" &&
+                       ClassNameUtils.sanitizeClassName(className) !== "")
                     {
-                      that.ui.classInput.val(className);
-                      that.onSubmitForm();
+                        that.ui.classInput.val(className);
+                        that.onSubmitForm();
                     }
                 }
             );
@@ -136,12 +137,12 @@ export default Marionette.ItemView.extend(
 
         delete: function(event)
         {
-          if(event)
-          {
-            event.preventDefault();
-          }
-          var glyph = [this.model];
-          RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyph);
+            if (event)
+            {
+                event.preventDefault();
+            }
+            var glyph = [this.model];
+            RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyph);
         },
 
         /**

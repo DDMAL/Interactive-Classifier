@@ -39,26 +39,25 @@ export default Backbone.Collection.extend(
          */
         moveGlyph: function (glyph, oldClassName, newClassName)
         {
-                var oldRow = this.findWhere({
-                    class_name: oldClassName
-                });
-                if (oldRow)
+            var oldRow = this.findWhere({
+                class_name: oldClassName
+            });
+            if (oldRow)
+            {
+                oldRow.get("glyphs").remove(glyph);
+                // Remove the old row if it's empty
+                if (oldRow.get("glyphs").length < 1)
                 {
-                    oldRow.get("glyphs").remove(glyph);
-
-                    // Remove the old row if it's empty
-                    if (oldRow.get("glyphs").length < 1)
+                    if (!this.is_classifier)
                     {
-                        if (!this.is_classifier)
-                        {
-                            //RadioChannels.edit.trigger(ClassEvents.deleteClass, oldClassName);
-                        }
-                        this.remove(oldRow);
+                        //RadioChannels.edit.trigger(ClassEvents.deleteClass, oldClassName);
                     }
+                    this.remove(oldRow);
                 }
+            }
 
             // If the glyph is manual, it will be in both the classifier and the glyph table
-           // Otherwise, the glyph shouldn't be in the classifier glyphs so a new row shouldn't be created
+            // Otherwise, the glyph shouldn't be in the classifier glyphs so a new row shouldn't be created
             if (!this.is_classifier || glyph.attributes.id_state_manual)
             {
                 // Add to the new class name collection
@@ -112,23 +111,23 @@ export default Backbone.Collection.extend(
          * @param {string} oldName
          * @param {string} newName
          */
-         renameClass: function (name, oldName, newName)
-         {
+        renameClass: function (name, oldName, newName)
+        {
             var row = this.findWhere(
             {
                 class_name: name
             });
             if (row)
             {
-              var glyphs = row.get("glyphs");
-              while (glyphs.length > 0)
-              {
-                  var glyph = glyphs.pop();
-                  var renamed = name.replace(oldName, newName)
-                  glyph.renameGlyph(renamed);
-              }
+                var glyphs = row.get("glyphs");
+                while (glyphs.length > 0)
+                {
+                    var glyph = glyphs.pop();
+                    var renamed = name.replace(oldName, newName)
+                    glyph.renameGlyph(renamed);
+                }
             }
-         },
+        },
 
         /**
          * Add a new glyph to the table.
@@ -166,8 +165,8 @@ export default Backbone.Collection.extend(
          *
          * @param {Glyph} glyph - Glyph model.
          */
-         deleteGlyph: function(glyph)
-         {
+        deleteGlyph: function(glyph)
+        {
             var row = this.findWhere({
                 class_name: glyph.get("class_name")
             });
@@ -186,6 +185,6 @@ export default Backbone.Collection.extend(
                     this.remove(row);
                 }
             }
-         }
+        }
 
     });
