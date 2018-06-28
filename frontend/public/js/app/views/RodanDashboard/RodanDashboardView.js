@@ -24,7 +24,7 @@ import Timer from "utils/Timer";
 import template from "./rodan-dashboard.template.html";
 // import each from "underscore";
 
-export default Marionette.LayoutView.extend(
+var RodanDashboardView = Marionette.LayoutView.extend(
     /**
      * @lends RodanDashboardView.prototype
      */
@@ -751,3 +751,5 @@ export default Marionette.LayoutView.extend(
             }
         }
     });
+
+module.exports = RodanDashboardView;
