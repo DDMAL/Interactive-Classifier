@@ -15,13 +15,20 @@ beforeAll(() =>
     dashboard.initialize();
 });
 
-describe('Check glyph counts', function ()
+test('Counts cannot be negative', function ()
 {
-    it('greater than or equal zero', function ()
-    {
-        console.log(dashboard.classifierCount, dashboard.pageCount, dashboard.selectedCount);
-        expect(dashboard.classifierCount).toBeGreaterThanOrEqual(0);
-        expect(dashboard.pageCount).toBeGreaterThanOrEqual(0);
-        expect(dashboard.selectedCount).toBeGreaterThanOrEqual(0);
-    });
+    expect(dashboard.classifierCount).toBeGreaterThanOrEqual(0);
+    expect(dashboard.pageCount).toBeGreaterThanOrEqual(0);
+    expect(dashboard.selectedCount).toBeGreaterThanOrEqual(0);
+});
+
+test('All regions must be rendered', function ()
+{
+    expect(dashboard.classCreateRegion).toBeTruthy();
+    expect(dashboard.glyphTreeRegion).toBeTruthy();
+    expect(dashboard.glyphTableRegion).toBeTruthy();
+    expect(dashboard.classifierTableRegion).toBeTruthy();
+    expect(dashboard.glyphEditRegion).toBeTruthy();
+    expect(dashboard.pagePreviewRegion).toBeTruthy();
+    expect(dashboard.modalTestRegion).toBeTruthy();
 });
