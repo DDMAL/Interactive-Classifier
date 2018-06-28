@@ -1,6 +1,5 @@
 var RodanDashboardView = require('views/RodanDashboard/RodanDashboardView');
 var Backbone = require('backbone');
-import Radio from "backbone.radio";
 
 var dashboard = new RodanDashboardView({
       model: new Backbone.Model({

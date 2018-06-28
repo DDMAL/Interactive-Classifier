@@ -286,7 +286,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             );
 
             this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs,
-                function (glyphs, className)
+                function ()
                 {
                     that.classifierCount++;
                     that.pageCount++;
@@ -297,7 +297,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             );
 
             this.listenTo(RadioChannels.edit, GlyphEvents.splitGlyph,
-                function (glyph, split_type)
+                function ()
                 {
                     // After splitting, wait for the DOM to update, then update the count variables
                     var waitTime = 1000;
@@ -655,7 +655,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             timer.tick("final");
         },
 
-        onMouseDown: function (event)
+        onMouseDown: function ()
         {
             this.isMouseDown = true;
         },
