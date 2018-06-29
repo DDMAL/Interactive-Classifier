@@ -373,8 +373,8 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                         else
                         {
                             that.openMultiGlyphEdit(glyphs);
-                            RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, glyphs);
                         }
+                        RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, glyphs);
                     }
                     // At least one training glyph is selected
                     else
