@@ -1,5 +1,5 @@
 language: node_js
-if: (branch = master AND type = (pull_request OR cron)) OR (branch = develop)
+if: (branch = master AND type IN (pull_request, cron)) OR (branch = develop)
 node_js:
   # These are the recommended versions according to nodejs. We should make sure they all work.
   # - 8
