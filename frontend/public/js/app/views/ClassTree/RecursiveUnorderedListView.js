@@ -72,33 +72,34 @@ export default Marionette.ItemView.extend(
          */
         onRightClickName: function (rightClickEvent)
         {
-          rightClickEvent.preventDefault();
+            rightClickEvent.preventDefault();
 
-          //Extract the class name from the HTML5 data attribute
-          var className = rightClickEvent.target.dataset.name;
+            //Extract the class name from the HTML5 data attribute
+            var className = rightClickEvent.target.dataset.name;
 
-          if (className === "UNCLASSIFIED")
-          {
-              return;
-          }
-          var renameElem;
+            if (className === "UNCLASSIFIED")
+            {
+                return;
+            }
+            var renameElem;
 
-          //get the HTML element that corresponds to the class name
-          var classList = document.getElementsByClassName("class-name");
-          for (var i = 0; i < classList.length; i++)
-          {
-              if (classList[i].getAttribute('data-name') === className)
-              {
-                renameElem = classList[i];
-              }
-          }
+            //get the HTML element that corresponds to the class name
+            var classList = document.getElementsByClassName("class-name");
+            for (var i = 0; i < classList.length; i++)
+            {
+                if (classList[i].getAttribute('data-name') === className)
+                {
+                    renameElem = classList[i];
+                }
+            }
 
-          if (renameElem){
-            var tmpClass = new Class({
-              name: className
-            })
-            RadioChannels.edit.trigger(ClassEvents.openClassEdit, tmpClass);
-          }
+            if (renameElem)
+            {
+                var tmpClass = new Class({
+                    name: className
+                });
+                RadioChannels.edit.trigger(ClassEvents.openClassEdit, tmpClass);
+            }
 
         },
 

@@ -5,6 +5,7 @@ import Marionette from "marionette";
 import ClassEvents from "events/ClassEvents";
 import GlyphEvents from "events/GlyphEvents";
 import PageEvents from "events/PageEvents";
+import MainMenuEvents from "events/MainMenuEvents";
 import GlyphCollection from "collections/GlyphCollection";
 import ClassTreeView from "views/ClassTree/ClassTreeView";
 import ClassTreeViewModel from "views/ClassTree/ClassTreeViewModel";
@@ -23,7 +24,7 @@ import Timer from "utils/Timer";
 import template from "./rodan-dashboard.template.html";
 // import each from "underscore";
 
-export default Marionette.LayoutView.extend(
+var RodanDashboardView = Marionette.LayoutView.extend(
     /**
      * @lends RodanDashboardView.prototype
      */
@@ -40,8 +41,14 @@ export default Marionette.LayoutView.extend(
         },
 
         events: {
-            "mousedown": "onMouseDown"
+            "mousedown": "onMouseDown",
+            "click #save": "saveChanges",
+            "click #revert": "revertChanges"
         },
+
+        classifierCount: 0,
+        pageCount: 0,
+        selectedCount: 0,
 
         /**
          * @class RodanDashboardView
@@ -101,18 +108,24 @@ export default Marionette.LayoutView.extend(
                 function (glyph)
                 {
                     that.selectedGlyphs.add(glyph);
+                    that.selectedCount = that.selectedGlyphs.length;
+                    document.getElementById("count-selected").innerHTML = that.selectedCount;
                 }
             );
             this.listenTo(RadioChannels.edit, GlyphEvents.deselectGlyph,
                 function (glyph)
                 {
                     that.selectedGlyphs.remove(glyph);
+                    that.selectedCount = that.selectedGlyphs.length;
+                    document.getElementById("count-selected").innerHTML = that.selectedCount;
                 }
             );
             this.listenTo(RadioChannels.edit, GlyphEvents.deselectAllGlyphs,
                 function ()
                 {
                     that.selectedGlyphs.reset();
+                    that.selectedCount = 0;
+                    document.getElementById("count-selected").innerHTML = that.selectedCount;
                 }
             );
 
@@ -137,24 +150,41 @@ export default Marionette.LayoutView.extend(
                         var glyph = glyphs[i];
                         that.tableRowCollection.deleteGlyph(glyph);
                         that.trainingRowCollection.deleteGlyph(glyph);
+                        if (glyph.get("is_training"))
+                        {
+                            that.classifierCount--;
+                        }
+                        else if (glyph.get("id_state_manual"))
+                        {
+                            that.classifierCount--;
+                            that.pageCount--;
+                        }
+                        else
+                        {
+                            that.pageCount--;
+                        }
                     }
+                    that.selectedCount = 0;
+                    document.getElementById("count-classifier").innerHTML = that.classifierCount;
+                    document.getElementById("count-page").innerHTML = that.pageCount;
+                    document.getElementById("count-selected").innerHTML = that.selectedCount;
                 }
             );
 
             this.listenTo(RadioChannels.edit, GlyphEvents.setGlyphName,
               function(className)
               {
-                //Don't add the new class if it's already in the list or if it's a part of a group or a split
-                if (!className.startsWith("_group._part") && !className.startsWith("_split"))
-                {
-                    var index = that.model.get('classNames').findIndex(name => name === className);
-                    if (index === -1)
-                    {
-                        var classNameList = that.model.get('classNames').push(className);
-                        classNameList = that.model.get('classNames').sort();
-                        that.model.set('classNames', classNameList);
-                    }
-                }
+                  //Don't add the new class if it's already in the list or if it's a part of a group or a split
+                  if (!className.startsWith("_group._part") && !className.startsWith("_split"))
+                  {
+                      var index = that.model.get('classNames').findIndex(name => name === className);
+                      if (index === -1)
+                      {
+                          var classNameList = that.model.get('classNames').push(className);
+                          classNameList = that.model.get('classNames').sort();
+                          that.model.set('classNames', classNameList);
+                      }
+                  }
               }
             );
             // Class editing events
@@ -240,20 +270,60 @@ export default Marionette.LayoutView.extend(
                         that.tableRowCollection.moveGlyph(glyph, oldClassName, newClassName);
                         that.trainingRowCollection.moveGlyph(glyph, oldClassName, newClassName);
                     }
+                    that.pageCount = 0;
+                    that.classifierCount = 0;
+                    that.tableRowCollection.each(function (row)
+                    {
+                        var glyphs = row.get("glyphs");
+                        that.pageCount += glyphs.length;
+                    });
+                    that.trainingRowCollection.each(function (row)
+                    {
+                        var glyphs = row.get("glyphs");
+                        that.classifierCount += glyphs.length;
+                    });
+                    document.getElementById("count-classifier").innerHTML = that.classifierCount;
+                    document.getElementById("count-page").innerHTML = that.pageCount;
+                }
+            );
+
+            this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs,
+                function ()
+                {
+                    that.classifierCount++;
+                    that.pageCount++;
+                    document.getElementById("count-selected").innerHTML = 1;
+                    document.getElementById("count-classifier").innerHTML = that.classifierCount;
+                    document.getElementById("count-page").innerHTML = that.pageCount;
+                }
+            );
+
+            this.listenTo(RadioChannels.edit, GlyphEvents.splitGlyph,
+                function ()
+                {
+                    // After splitting, wait for the DOM to update, then update the count variables
+                    var waitTime = 1000;
+                    setTimeout(function ()
+                    {
+                        var newPageCount = parseInt($("#count-page").text());
+                        var newClassifierCount = parseInt($("#count-classifier").text());
+                        that.pageCount = newPageCount;
+                        that.classifierCount = newClassifierCount;
+                    }, waitTime);
                 }
             );
 
             this.listenTo(RadioChannels.edit, PageEvents.zoom,
-            function (zoomLevel)
-            {
-                var pic = document.getElementsByClassName("preview-background")[0];
-                var oldHeight = pic.dataset.originalHeight;
-                var newHeight = oldHeight * zoomLevel / document.getElementById("s1").getAttribute("default"); //60 is the default value
-                pic.style.height = newHeight + "px";
-                // makes sure the boxes around the glyphs follow the zoom
-                RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, that.selectedGlyphs);
+                function (zoomLevel)
+                {
+                    var pic = document.getElementsByClassName("preview-background")[0];
+                    var oldHeight = pic.dataset.originalHeight;
+                    var newHeight = oldHeight * zoomLevel / document.getElementById("s1").getAttribute("default"); //60 is the default value
+                    pic.style.height = newHeight + "px";
+                    // makes sure the boxes around the glyphs follow the zoom
+                    RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, that.selectedGlyphs);
 
-            }
+                }
             );
 
             this.listenTo(RadioChannels.edit, GlyphEvents.highlightGlyphs,
@@ -266,7 +336,8 @@ export default Marionette.LayoutView.extend(
                         glyphs.push(glyph);
                     }
                     that.previewView.highlightGlyph(glyphs);
-                });
+                }
+            );
 
             this.listenTo(RadioChannels.edit, GlyphEvents.openMultiEdit,
                 function ()
@@ -292,21 +363,23 @@ export default Marionette.LayoutView.extend(
                             glyphs.add(glyph);
                         }
                     }
-                    // Page glyphs are prioritized
-                    if (glyphs.length === 0)
+                    // Only page glyphs are selected
+                    if (training_glyphs.length === 0)
                     {
-                        that.openTrainingEdit(training_glyphs);
+                        if (glyphs.length === 1)
+                        {
+                            that.openGlyphEdit(glyphs.at(0));
+                        }
+                        else
+                        {
+                            that.openMultiGlyphEdit(glyphs);
+                        }
+                        RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, glyphs);
                     }
-                    // If only one glyph has been selected, then glyph edit will open
-                    else if (glyphs.length === 1)
-                    {
-                        glyph = glyphs.at(0);
-                        RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, glyph);
-                    }
+                    // At least one training glyph is selected
                     else
                     {
-                        that.openMultiGlyphEdit(glyphs);
-                        RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, glyphs);
+                        that.openTrainingEdit(that.selectedGlyphs);
                     }
                 }
             );
@@ -317,7 +390,6 @@ export default Marionette.LayoutView.extend(
                     that.openTrainingEdit(that.selectedGlyphs);
                 }
             );
-
         },
 
         onShow: function ()
@@ -361,7 +433,6 @@ export default Marionette.LayoutView.extend(
                         trainingGlyphsCollection[classNames[i]] = glyphs;
                     }
                 }
-
             }
 
             timer.tick("pre-final render");
@@ -375,6 +446,7 @@ export default Marionette.LayoutView.extend(
                         class_name: className,
                         glyphs: glyphCollections[className]
                     });
+                    that.pageCount += glyphCollections[className].length;
                     that.tableRowCollection.add(row);
                 }
                 if (trainingGlyphsCollection[className])
@@ -383,9 +455,14 @@ export default Marionette.LayoutView.extend(
                         class_name: className,
                         glyphs: trainingGlyphsCollection[className]
                     });
+                    that.classifierCount += trainingGlyphsCollection[className].length;
                     that.trainingRowCollection.add(row);
                 }
             });
+
+            document.getElementById("count-classifier").innerHTML = this.classifierCount;
+            document.getElementById("count-page").innerHTML = this.pageCount;
+            document.getElementById("count-selected").innerHTML = this.selectedCount;
 
             timer.tick();
 
@@ -582,9 +659,27 @@ export default Marionette.LayoutView.extend(
             timer.tick("final");
         },
 
-        onMouseDown: function (event)
+        onMouseDown: function ()
         {
             this.isMouseDown = true;
+        },
+
+        saveChanges: function (event)
+        {
+            if (event)
+            {
+                event.preventDefault();
+            }
+            RadioChannels.menu.trigger(MainMenuEvents.clickSaveChanges);
+        },
+
+        revertChanges: function (event)
+        {
+            if (event)
+            {
+                event.preventDefault();
+            }
+            RadioChannels.menu.trigger(MainMenuEvents.clickUndoAll);
         },
 
         /**
@@ -651,7 +746,14 @@ export default Marionette.LayoutView.extend(
             return {
                 classesHeader: Strings.classes,
                 editGlyphLabel: Strings.editGlyphLabel,
-                editGlyphDescription: Strings.editGlyphDescription
+                editGlyphDescription: Strings.editGlyphDescription,
+                saveChanges: Strings.saveChanges,
+                revert: Strings.undoAll,
+                classifierGlyphs: Strings.classifierGlyphs,
+                pageGlyphs: Strings.pageGlyphs,
+                selectedGlyphs: Strings.selectedGlyphs
             }
         }
     });
+
+export default RodanDashboardView;

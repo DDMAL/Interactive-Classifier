@@ -60,7 +60,7 @@ export default Marionette.ItemView.extend({
         {
             RadioChannels.edit.trigger(ClassEvents.renameClass, this.model.get("name"), className);
         }
-      },
+    },
 
     delete: function(event)
     {

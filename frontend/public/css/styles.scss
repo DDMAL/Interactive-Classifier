@@ -629,6 +629,24 @@ html.js {
     padding-top: 70px;
 }
 
+#upper {
+    width: 75%;
+    height: 30px;
+    top: 50px;
+    right: 0;
+    background-color: #cbcbcb;
+    position: absolute;
+    text-align: center;
+}
+
+.column {
+    width: 20%;
+    display: inline-block;
+    text-align: center;
+    padding-top: 7px;
+    font-size: 12px;
+}
+
 #left {
     float: left;
     width: 25%;
@@ -636,10 +654,34 @@ html.js {
     overflow-y: scroll;
     background-color: #efefef;
     position: absolute;
-    top: 0;
+    top: 50px;
     left: 0;
     padding-top: 50px;
 }
+
+#left0 {
+    float: left;
+    width: 25%;
+    height: 30px;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background-color: #cbcbcb;
+    text-align: center;
+}
+
+.edit-button {
+    width: 35%;
+    height: 100%;
+    background-color: #cbcbcb;
+    margin-left: 10px;
+    margin-right: 10px;
+    border: none;
+    &:hover{
+        background-color: #ababab;
+    }
+}
+
 
 #left1 {
     float: left;
@@ -648,9 +690,8 @@ html.js {
     overflow-y: scroll;
     background-color: #efefef;
     position: absolute;
-    top: 0;
+    top: 80px;
     left: 0;
-    padding-top: 50px;
 }
 
 #left2 {
@@ -682,7 +723,7 @@ html.js {
     height: 4%;
     width: 12%;
     position: absolute;
-    top: 55px;
+    top: 82px;
     bottom: 50px;
     right: 0;
     border-top: 1px solid #444444;
@@ -696,10 +737,10 @@ html.js {
     height: 28%;
     width: 75%;
     position: absolute;
-    top: 90px;
+    top: 125px;
     right: 0;
     resize: vertical;
-    border-left: 1px solid #444444;
+    border-left: 1px solid #474747;
 }
 
 #right1 {

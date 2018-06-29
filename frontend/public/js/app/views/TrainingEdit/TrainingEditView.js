@@ -100,8 +100,8 @@ export default Marionette.LayoutView.extend(
          *
          * @param event
          */
-         delete: function (event)
-         {
+        delete: function (event)
+        {
             if (event)
             {
                 event.preventDefault();
@@ -113,7 +113,7 @@ export default Marionette.LayoutView.extend(
             });
             if (glyphs.length > 1)
             {
-                if (confirm (Strings.deleteWarning))
+                if (confirm(Strings.deleteWarning))
                 {
                     RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyphs);
                 }
@@ -122,7 +122,7 @@ export default Marionette.LayoutView.extend(
             {
                 RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyphs);
             }
-         },
+        },
 
         /**
          * Include some localized strings.

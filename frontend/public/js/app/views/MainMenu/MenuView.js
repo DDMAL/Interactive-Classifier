@@ -34,26 +34,10 @@ export default Marionette.CompositeView.extend({
             text: Strings.menuFinalizeLabel,
             clickEvent: MainMenuEvents.clickFinalizeCorrections
         }));
-        /*menuLinks.add(new MenuLinkViewModel({
-            url: "#",
-            text: Strings.menuOpenImage,
-            clickEvent: MainMenuEvents.clickTest
-        }));*/
-
         menuLinks.add(new MenuLinkViewModel({
             url: "#",
             text: Strings.menuGroupLabel,
             clickEvent: MainMenuEvents.clickGroupClassify
-        }));
-        menuLinks.add(new MenuLinkViewModel({
-            url: "#",
-            text: Strings.saveChanges,
-            clickEvent: MainMenuEvents.clickSaveChanges
-        }));
-        menuLinks.add(new MenuLinkViewModel({
-            url: "#",
-            text: Strings.undoAll,
-            clickEvent: MainMenuEvents.clickUndoAll
         }));
         this.collection = menuLinks;
     }

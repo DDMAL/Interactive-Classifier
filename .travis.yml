@@ -37,7 +37,7 @@ before_script:
 script:
   - gulp lint:js
   - gulp build
-  - npm audit
+  # - npm audit
   # - $PKG_MANAGER test
 notifications:
   email: false

@@ -331,7 +331,6 @@ export default Marionette.ItemView.extend(
                         that.selectionBox.style.height = Math.abs(y - that.mouseDownY) + "px";
                     }
                 }
-              
             });
         }
     });
