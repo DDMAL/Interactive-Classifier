@@ -363,19 +363,20 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                             glyphs.add(glyph);
                         }
                     }
-                    // Page glyphs are prioritized
-                    if (glyphs.length === 0)
+                    // Only page glyphs are selected
+                    if (training_glyphs.length === 0)
                     {
-                        that.openTrainingEdit(training_glyphs);
+                        if (glyphs.length === 1)
+                        {
+                            that.openGlyphEdit(glyphs.at(0));
+                        }
+                        else
+                        {
+                            that.openMultiGlyphEdit(glyphs);
+                            RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, glyphs);
+                        }
                     }
-                    else if (training_glyphs.length === 0)
-                    {
-                        that.openMultiGlyphEdit(glyphs);
-                        RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, glyphs);
-                    }
-                    // If page glyphs and training glyphs are both selected,
-                    // then open TrainingEditView instead of GlyphMultiEditView,
-                    // as page glyphs cannot be grouped with training glyphs
+                    // At least one training glyph is selected
                     else
                     {
                         that.openTrainingEdit(that.selectedGlyphs);
