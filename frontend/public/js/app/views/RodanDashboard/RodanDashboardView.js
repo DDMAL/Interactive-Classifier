@@ -164,8 +164,10 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                             that.pageCount--;
                         }
                     }
+                    that.selectedCount = 0;
                     document.getElementById("count-classifier").innerHTML = that.classifierCount;
                     document.getElementById("count-page").innerHTML = that.pageCount;
+                    document.getElementById("count-selected").innerHTML = that.selectedCount;
                 }
             );
 
