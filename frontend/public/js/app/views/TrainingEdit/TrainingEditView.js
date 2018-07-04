@@ -89,7 +89,6 @@ export default Marionette.LayoutView.extend(
             {
                 event.preventDefault();
             }
-            var that = this;
             var className = this.ui.classInput.val();
             if (ClassNameUtils.sanitizeClassName(className) === "unclassified")
             {
