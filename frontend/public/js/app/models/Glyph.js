@@ -52,36 +52,36 @@ export default Backbone.Model.extend(
         {
             // Make sure it's a string
             newClassName = String(newClassName);
-            var oldClassName = this.get("class_name");
-            var confidence = 1.0;
-            var id_state_manual = true;
-            // In case of grouping, we don't want the glyph to be manual
-            if (!isManual)
-            {
-                confidence = 0;
-                id_state_manual = false;
-            } // TODO: this is redundant, should be fixed
-            else
-            {
-                confidence = 1.0;
-                id_state_manual = true;
-            }
-
             // do the sanitization step
             var sanitizedClassName = ClassNameUtils.sanitizeClassName(newClassName);
-
-            this.set(
+            if (sanitizedClassName !== "" && sanitizedClassName !== "unclassified")
             {
-                class_name: sanitizedClassName,
-                id_state_manual: id_state_manual,
-                confidence: confidence
-            });
+                var oldClassName = this.get("class_name");
+                var confidence = 1.0;
+                var id_state_manual = true;
+                // In case of grouping, we don't want the glyph to be manual
+                if (!isManual)
+                {
+                    confidence = 0;
+                    id_state_manual = false;
+                } // TODO: this is redundant, should be fixed
+                else
+                {
+                    confidence = 1.0;
+                    id_state_manual = true;
+                }
+                this.set(
+                {
+                    class_name: sanitizedClassName,
+                    id_state_manual: id_state_manual,
+                    confidence: confidence
+                });
 
-            // Update glyph table location
-            RadioChannels.edit.trigger(GlyphEvents.moveGlyph, this, oldClassName, this.get("class_name"));
-            RadioChannels.edit.trigger(GlyphEvents.changeGlyph, this);
-            RadioChannels.edit.trigger(GlyphEvents.setGlyphName, this.get("class_name"));
-
+                // Update glyph table location
+                RadioChannels.edit.trigger(GlyphEvents.moveGlyph, this, oldClassName, this.get("class_name"));
+                RadioChannels.edit.trigger(GlyphEvents.changeGlyph, this);
+                RadioChannels.edit.trigger(GlyphEvents.setGlyphName, this.get("class_name"));
+            }
         },
         /**
          * Rename the glyph's name according to the user input
@@ -95,11 +95,14 @@ export default Backbone.Model.extend(
             var oldClassName = this.get("class_name");
             renamedName = String(renamedName);
             var sanitizedName = ClassNameUtils.sanitizeClassName(renamedName);
-            this.set('class_name', sanitizedName);
+            if (sanitizedName !== "unclassified" && sanitizedName !== "")
+            {
+                this.set('class_name', sanitizedName);
 
-            RadioChannels.edit.trigger(GlyphEvents.moveGlyph, this, oldClassName, this.get("class_name"));
-            RadioChannels.edit.trigger(GlyphEvents.changeGlyph, this);
-            RadioChannels.edit.trigger(GlyphEvents.setGlyphName, this.get("class_name"));
+                RadioChannels.edit.trigger(GlyphEvents.moveGlyph, this, oldClassName, this.get("class_name"));
+                RadioChannels.edit.trigger(GlyphEvents.changeGlyph, this);
+                RadioChannels.edit.trigger(GlyphEvents.setGlyphName, this.get("class_name"));
+            }
         },
 
         /**
