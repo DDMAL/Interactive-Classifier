@@ -4,6 +4,7 @@ import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
 import Strings from "localization/Strings";
 import template from "views/TrainingEdit/training-edit.template.html";
+import ClassNameUtils from "utils/ClassNameUtils";
 
 export default Marionette.LayoutView.extend(
     /**
@@ -88,11 +89,24 @@ export default Marionette.LayoutView.extend(
             {
                 event.preventDefault();
             }
-            var that = this;
-            this.collection.each(function (model)
+            var className = this.ui.classInput.val();
+            if (ClassNameUtils.sanitizeClassName(className) === "unclassified")
             {
-                model.changeClass(that.ui.classInput.val());
-            });
+                alert(Strings.unclassifiedClass);
+            }
+            else if (ClassNameUtils.sanitizeClassName(className) === "")
+            {
+                var message = className + Strings.invalidClass;
+                alert(message);
+            }
+            else
+            {
+                this.collection.each(function (model)
+                {
+                    model.changeClass(className);
+                });
+            }
+
         },
 
         /**
