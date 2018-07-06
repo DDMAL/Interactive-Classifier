@@ -217,44 +217,8 @@ export default Marionette.ItemView.extend(
             this.selectionBox.style.filter = "alpha(opacity=40)"; // IE8
             this.selectionBox.style.visibility = "hidden";
 
-            var slider = document.getElementById("zoom-slider");
-            var outer = document.getElementById("right2").getClientRects()[0]
-            var left = outer.width + outer.left - slider.style.width.split("px")[0] - 30;
-            var top = outer.top + outer.height - 35;
-            slider.style.left = left + "px";
-            slider.style.top = top + "px";
-
-            // This slider corresponds to the glyph zoom
-            var outer2 = document.getElementById("right2").getClientRects()[0];
-            var slider2 = document.getElementById("glyph-zoom");
-            slider2.style.left = left + "px";
-            slider2.style.top = outer2.top - 35 + "px";
-
             var pic = document.getElementsByClassName("preview-background")[0];
-
             var that = this;
-            $(document).keypress(function (event)
-            {
-                var slider = document.getElementById("s1");
-                var value = slider.value;
-                // If the user's mouse is hovering over the window, then = and - act as hotkeys
-                // This is so the user can still user = and - when classifying glpyhs.
-                if (that.isHover)
-                {
-                    if (event.key === "=")
-                    {
-                        var newVal = value * 1.1;
-                        slider.value = newVal;
-                        RadioChannels.edit.trigger(PageEvents.zoom, newVal);
-                    }
-                    else if (event.key === "-")
-                    {
-                        newVal = value / 1.1;
-                        slider.value = newVal;
-                        RadioChannels.edit.trigger(PageEvents.zoom, newVal);
-                    }
-                }
-            });
 
             var mouseClick = false;
             $(document).mousedown(function ()
@@ -277,25 +241,6 @@ export default Marionette.ItemView.extend(
                     this.mouseDownX = event.clientX;
                     this.mouseDownY = event.clientY;
 
-                    // This section checks whether or not the cursor is on one of the zoom sliders
-                    var zoom = document.getElementById("zoom-slider");
-                    var left = parseInt(zoom.style.left.split("px")[0]);
-                    var top = parseInt(zoom.style.top.split("px")[0]);
-                    var width = parseInt(zoom.style.width.split("px")[0]);
-
-                    var xBounds = this.mouseDownX > left && this.mouseDownX < (left + width);
-                    var yBounds = this.mouseDownY > (top - 20) && this.mouseDownY < (top + 20);
-
-                    var zoom2 = document.getElementById("glyph-zoom");
-                    var left2 = parseInt(zoom2.style.left.split("px")[0]);
-                    var top2 = parseInt(zoom2.style.top.split("px")[0]);
-                    var width2 = parseInt(zoom2.style.width.split("px")[0]);
-
-                    var xBounds2 = this.mouseDownX > left2 && this.mouseDownX < (left2 + width2);
-                    var yBounds2 = this.mouseDownY > (top2 - 20) && this.mouseDownY < (top2 + 20);
-
-                    that.isSlider = (xBounds && yBounds || xBounds2 && yBounds2);
-
                     // This makes sure that the height isn't stored before the image exists
                     // So it's not set to 0
                     if (pic.style.height === "" || pic.style.height === "0px")
@@ -313,23 +258,14 @@ export default Marionette.ItemView.extend(
                     that.isHover = (event.clientX > document.getElementById("right2").getClientRects()[0].left && event.clientY > document.getElementById("right2").getClientRects()[0].top);
                     // jscs:enable
 
-                    if (that.isSlider) // If the coords of the click are on the slider
-                    {
-                        var value = document.getElementById("s1").value;
-                        var value2 = parseInt(document.getElementById("s2").value) / 100;
-                        RadioChannels.edit.trigger(PageEvents.zoom, value);
-                        RadioChannels.edit.trigger(GlyphEvents.zoomGlyphs, value2);
-                    }
-                    else
-                    {
-                        var x = event.pageX,
-                            y = event.pageY;
+                    var x = event.pageX,
+                        y = event.pageY;
 
-                        that.selectionBox.style.left = Math.min(x, that.mouseDownX) + "px";
-                        that.selectionBox.style.top = Math.min(y, that.mouseDownY) + "px";
-                        that.selectionBox.style.width = Math.abs(x - that.mouseDownX) + "px";
-                        that.selectionBox.style.height = Math.abs(y - that.mouseDownY) + "px";
-                    }
+                    that.selectionBox.style.left = Math.min(x, that.mouseDownX) + "px";
+                    that.selectionBox.style.top = Math.min(y, that.mouseDownY) + "px";
+                    that.selectionBox.style.width = Math.abs(x - that.mouseDownX) + "px";
+                    that.selectionBox.style.height = Math.abs(y - that.mouseDownY) + "px";
+
                 }
             });
         }
