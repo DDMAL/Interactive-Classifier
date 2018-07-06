@@ -730,6 +730,25 @@ html.js {
     border-left: 1px solid #444444;
 }
 
+.zoom {
+    float: right;
+    height: 22%;
+    width: 4%;
+    font-size: 25px;
+    text-align: center;
+    position: relative;
+    font-weight: bolder;
+    display: inline-block;
+    top: 13px;
+    right: 10px;
+    border-top: 1px solid #444444;
+    border-left: 1px solid #444444;
+    &:hover{
+        background-color: #efefef;
+    }
+}
+
+
 #right0 {
     margin-top: 13px;
     float: left;
