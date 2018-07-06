@@ -43,12 +43,17 @@ var RodanDashboardView = Marionette.LayoutView.extend(
         events: {
             "mousedown": "onMouseDown",
             "click #save": "saveChanges",
-            "click #revert": "revertChanges"
+            "click #revert": "revertChanges",
+            "click #zoom-out": "zoomOut",
+            "click #zoom-in": "zoomIn"
         },
 
         classifierCount: 0,
         pageCount: 0,
         selectedCount: 0,
+        zoomCount: 0,
+        zoomLevel: 1.1,
+        maxZoomCount: 5,
 
         /**
          * @class RodanDashboardView
@@ -637,21 +642,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                         imgPrev.style.width = Math.round((1 - widthPerc) * 100) + "%";
                         trainingGlyphs.style.width = Math.round((1 - widthPerc) * 100) + "%";
                         glyphTable.style.width = Math.round((1 - widthPerc) * 100) + "%";
-
-                        // How the slider moves on resize
-                        // The 35 and 25 are hardcoded values that seem to place the slider in a good position
-                        var slider = document.getElementById("zoom-slider");
-                        var outer = document.getElementById("right2").getClientRects()[0];
-                        var top = outer.top + outer.height - 35;
-                        slider.style.top = top + "px";
-                        left = outer.width + outer.left - slider.style.width.split("px")[0] - 25;
-                        slider.style.left = left + "px";
-
-                        var outer2 = document.getElementById("right2").getClientRects()[0];
-                        var slider2 = document.getElementById("glyph-zoom");
-                        slider2.style.left = left + "px";
-                        slider2.style.top = outer2.top - 35 + "px";
-
                     }
                 }
             });
@@ -680,6 +670,32 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                 event.preventDefault();
             }
             RadioChannels.menu.trigger(MainMenuEvents.clickUndoAll);
+        },
+
+        zoomIn: function (event)
+        {
+            if (event)
+            {
+                event.preventDefault();
+            }
+            this.zoomCount++;
+            if (this.zoomCount < this.maxZoomCount)
+            {
+                RadioChannels.edit.trigger(GlyphEvents.zoomGlyphs, this.zoomLevel, this.zoomCount);
+            }
+        },
+
+        zoomOut: function (event)
+        {
+            if (event)
+            {
+                event.preventDefault();
+            }
+            this.zoomCount--;
+            if (this.zoomCount > -this.maxZoomCount)
+            {
+                RadioChannels.edit.trigger(GlyphEvents.zoomGlyphs, this.zoomLevel, this.zoomCount);
+            }
         },
 
         /**

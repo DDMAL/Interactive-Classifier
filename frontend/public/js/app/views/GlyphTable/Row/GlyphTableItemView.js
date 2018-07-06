@@ -198,23 +198,10 @@ export default Marionette.ItemView.extend(
             });
 
             this.listenTo(RadioChannels.edit, GlyphEvents.zoomGlyphs,
-            function (zoomLevel)
+            function (zoomLevel, zoomCount)
             {
-                this.zoom = zoomLevel;
+                this.zoom = Math.pow(zoomLevel, zoomCount);
                 this.viewModel.set("zoomed", true);
-                var elms = document.getElementsByClassName("glyph-image-container");
-
-                for (var i = 0; i < elms.length; i++)
-                {
-                    var child = elms[i].childNodes[0].childNodes[1].childNodes[1];
-                    var newWidth = child.dataset.originalWidth * zoomLevel;
-                    var newHeight = child.dataset.originalHeight * zoomLevel;
-                    if (newWidth > 1 && newHeight > 1)
-                    {
-                        child.width = newWidth;
-                        child.height = newHeight;
-                    }
-                }
                 this.render();
             });
         },
