@@ -52,8 +52,8 @@ var RodanDashboardView = Marionette.LayoutView.extend(
         pageCount: 0,
         selectedCount: 0,
         zoomCount: 0,
-        zoomLevel: 1.1,
-        maxZoomCount: 5,
+        zoomLevel: 1.15,
+        maxZoomCount: 7,
 
         /**
          * @class RodanDashboardView
@@ -319,15 +319,15 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             );
 
             this.listenTo(RadioChannels.edit, PageEvents.zoom,
-                function (zoomLevel)
+                function (zoomLevel, zoomCount)
                 {
+                    var imageZoom = Math.pow(zoomLevel, zoomCount);
                     var pic = document.getElementsByClassName("preview-background")[0];
                     var oldHeight = pic.dataset.originalHeight;
-                    var newHeight = oldHeight * zoomLevel / document.getElementById("s1").getAttribute("default"); //60 is the default value
+                    var newHeight = oldHeight * imageZoom;
                     pic.style.height = newHeight + "px";
                     // makes sure the boxes around the glyphs follow the zoom
                     RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, that.selectedGlyphs);
-
                 }
             );
 
@@ -683,6 +683,10 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             {
                 RadioChannels.edit.trigger(GlyphEvents.zoomGlyphs, this.zoomLevel, this.zoomCount);
             }
+            else
+            {
+                this.zoomCount--;
+            }
         },
 
         zoomOut: function (event)
@@ -695,6 +699,10 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             if (this.zoomCount > -this.maxZoomCount)
             {
                 RadioChannels.edit.trigger(GlyphEvents.zoomGlyphs, this.zoomLevel, this.zoomCount);
+            }
+            else
+            {
+                this.zoomCount++;
             }
         },
 
