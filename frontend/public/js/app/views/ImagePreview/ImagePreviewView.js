@@ -26,6 +26,9 @@ export default Marionette.ItemView.extend(
         mouseDownX: 0,
         mouseDownY: 0,
         isSlider: false,
+        zoomCount: 0,
+        zoomLevel: 1.3,
+        maxZoomCount: 8,
 
         /**
          * selectionBox is the blue lasso that appears when the user clicks and
@@ -36,7 +39,9 @@ export default Marionette.ItemView.extend(
         resizeEvent: undefined,
 
         events: {
-            "mousedown": "onMouseDown"
+            "mousedown": "onMouseDown",
+            "click #image-in": "imageZoomIn",
+            "click #image-out": "imageZoomOut"
         },
 
         ui: {
@@ -268,5 +273,39 @@ export default Marionette.ItemView.extend(
 
                 }
             });
+        },
+
+        imageZoomIn: function (event)
+        {
+            if (event)
+            {
+                event.preventDefault();
+            }
+            this.zoomCount++;
+            if (this.zoomCount < this.maxZoomCount)
+            {
+                RadioChannels.edit.trigger(PageEvents.zoom, this.zoomLevel, this.zoomCount);
+            }
+            else
+            {
+                this.zoomCount--;
+            }
+        },
+
+        imageZoomOut: function (event)
+        {
+            if (event)
+            {
+                event.preventDefault();
+            }
+            this.zoomCount--;
+            if (this.zoomCount > -this.maxZoomCount)
+            {
+                RadioChannels.edit.trigger(PageEvents.zoom, this.zoomLevel, this.zoomCount);
+            }
+            else
+            {
+                this.zoomCount++;
+            }
         }
     });
