@@ -27,8 +27,9 @@ export default Marionette.ItemView.extend(
         mouseDownY: 0,
         isSlider: false,
         zoomCount: 0,
-        zoomLevel: 1.3,
+        zoomLevel: 1.4,
         maxZoomCount: 8,
+        isZoomIn: false,
 
         /**
          * selectionBox is the blue lasso that appears when the user clicks and
@@ -281,10 +282,11 @@ export default Marionette.ItemView.extend(
             {
                 event.preventDefault();
             }
+            this.isZoomIn = true;
             this.zoomCount++;
             if (this.zoomCount < this.maxZoomCount)
             {
-                RadioChannels.edit.trigger(PageEvents.zoom, this.zoomLevel, this.zoomCount);
+                RadioChannels.edit.trigger(PageEvents.zoom, this.zoomLevel, this.isZoomIn);
             }
             else
             {
@@ -298,10 +300,11 @@ export default Marionette.ItemView.extend(
             {
                 event.preventDefault();
             }
+            this.isZoomIn = false;
             this.zoomCount--;
             if (this.zoomCount > -this.maxZoomCount)
             {
-                RadioChannels.edit.trigger(PageEvents.zoom, this.zoomLevel, this.zoomCount);
+                RadioChannels.edit.trigger(PageEvents.zoom, this.zoomLevel, this.isZoomIn);
             }
             else
             {

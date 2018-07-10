@@ -317,14 +317,20 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     }, waitTime);
                 }
             );
-
             this.listenTo(RadioChannels.edit, PageEvents.zoom,
-                function (zoomLevel, zoomCount)
+                function (zoomLevel, isZoomIn)
                 {
-                    var imageZoom = Math.pow(zoomLevel, zoomCount);
                     var pic = document.getElementsByClassName("preview-background")[0];
-                    var oldHeight = pic.dataset.originalHeight;
-                    var newHeight = oldHeight * imageZoom;
+                    var oldHeight = pic.height;
+                    var newHeight;
+                    if (isZoomIn)
+                    {
+                        newHeight = oldHeight * zoomLevel;
+                    }
+                    else
+                    {
+                        newHeight = oldHeight / zoomLevel;
+                    }
                     pic.style.height = newHeight + "px";
                     // makes sure the boxes around the glyphs follow the zoom
                     RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, that.selectedGlyphs);
