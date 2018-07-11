@@ -101,7 +101,8 @@ export default Marionette.ItemView.extend(
                 function (boundingBox, additional)
                 {
                     if (boundingBox)
-                    {   var pic = document.getElementsByClassName("preview-background")[0];
+                    {
+                        var pic = document.getElementsByClassName("preview-background")[0];
                         var zoomLevel = pic.getBoundingClientRect().height / pic.dataset.originalHeight;
                         var glyphRect =
                         {

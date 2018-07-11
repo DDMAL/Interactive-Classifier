@@ -61,6 +61,18 @@ export default Marionette.CollectionView.extend(
 
         initialize: function ()
         {
+            // This waits for the preview image to load before retrieving its height
+            var renderTime = 1000;
+            setTimeout(function()
+            {
+                var pic = document.getElementsByClassName("preview-background")[0];
+                var h = pic.getClientRects()[0].height;
+                if (h !== 0)
+                {
+                    pic.dataset.originalHeight = h;
+                }
+            }, renderTime);
+
             this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyphs, function (glyphs)
             {
                 // NOTE: glyphs is an array of Glyph model, not a Backbone collection

@@ -125,7 +125,6 @@ export default Marionette.ItemView.extend(
             this.mouseDownX = event.clientX;
             this.mouseDownY = event.clientY;
 
-
             event.preventDefault();
             this.selectionBox.style.top = this.mouseDownY + "px";
             this.selectionBox.style.left = this.mouseDownX + "px";
