@@ -25,7 +25,6 @@ export default Marionette.ItemView.extend(
         isMouseDown: false,
         mouseDownX: 0,
         mouseDownY: 0,
-        isSlider: false,
         zoomCount: 0,
         zoomLevel: 1.4,
         maxZoomCount: 8,
@@ -98,7 +97,7 @@ export default Marionette.ItemView.extend(
 
                 // If the user selected the glyph from the preview image, the page won't shift
                 // If the user is zooming, then it will stay scroll to the highlighted glyph
-                if (!this.isHover || this.isSlider)
+                if (!this.isHover)
                 {
                     elems[0].scrollIntoView();
                 }
@@ -126,15 +125,13 @@ export default Marionette.ItemView.extend(
             this.mouseDownX = event.clientX;
             this.mouseDownY = event.clientY;
 
-            if (!this.isSlider)
-            {
-                event.preventDefault();
-                this.selectionBox.style.top = this.mouseDownY + "px";
-                this.selectionBox.style.left = this.mouseDownX + "px";
-                this.selectionBox.style.width = "0px";
-                this.selectionBox.style.height = "0px";
-                this.selectionBox.style.visibility = "visible";
-            }
+
+            event.preventDefault();
+            this.selectionBox.style.top = this.mouseDownY + "px";
+            this.selectionBox.style.left = this.mouseDownX + "px";
+            this.selectionBox.style.width = "0px";
+            this.selectionBox.style.height = "0px";
+            this.selectionBox.style.visibility = "visible";
         },
 
         /**
@@ -148,15 +145,7 @@ export default Marionette.ItemView.extend(
          */
         onMouseUp: function (event)
         {
-            if (this.isSlider && this.isMouseDown === true) // If the coords of the click are on the slider
-            {
-                var value = document.getElementById("s1").value;
-                RadioChannels.edit.trigger(PageEvents.zoom, value);
-                RadioChannels.edit.trigger(GlyphEvents.openMultiEdit);
-                console.log("MouseUp!");
-                this.isMouseDown = false;
-            }
-            else if (this.isMouseDown === true)
+            if (this.isMouseDown === true)
             {
                 console.log("MouseUp!");
                 this.isMouseDown = false;
