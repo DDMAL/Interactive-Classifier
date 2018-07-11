@@ -59,6 +59,30 @@ export default Marionette.CollectionView.extend(
             "mousedown": "onMouseDown"
         },
 
+        initialize: function ()
+        {
+            this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyphs, function (glyphs)
+            {
+                // NOTE: glyphs is an array of Glyph model, not a Backbone collection
+                for (var i = 0; i < glyphs.length; i++)
+                {
+                    var glyph = glyphs[i];
+                    var bgWarning = document.getElementsByClassName("glyph img-thumbnail bg-warning glyph-image");
+                    //var bgSuccess = document.getElementsByClassName("glyph img-thumbnail bg-success glyph-image");
+                    var elems = Array.from(bgWarning);
+                    console.log(elems.length);
+                    //elems.concat(Array.from(bgSuccess));
+                    for (var j = 0; j < elems.length; j++)
+                    {
+                        if (elems[j].href.split('glyph/')[1].split('/')[0] === glyph.attributes.id)
+                        {
+                            elems[j].parentNode.remove();
+                        }
+                    }
+                }
+            });
+        },
+
         /**
          * This function fires when the user clicks and holds their mouse down.
          * We record the location of the user's mouse and trigger the selectionBox
