@@ -733,9 +733,9 @@ html.js {
 .glyph-zoom {
     float: right;
     z-index: 1;
-    height: 22%;
-    width: 3.5%;
-    font-size: 25px;
+    height: 35px;
+    width: 35px;
+    font-size: 22px;
     text-align: center;
     position: relative;
     font-weight: bolder;
@@ -752,14 +752,13 @@ html.js {
 .image-zoom {
     float: right;
     z-index: 1;
-    height: 3%;
-    width: 5%;
-    font-size: 25px;
+    height: 35px;
+    width: 35px;
+    font-size: 22px;
     text-align: center;
-    position: relative;
+    position: fixed;
     font-weight: bolder;
     display: inline-block;
-    right: 0;
     border-top: 1px solid #444444;
     border-left: 1px solid #444444;
     &:hover{
