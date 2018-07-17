@@ -211,6 +211,13 @@ export default Marionette.ItemView.extend(
             this.selectionBox.style.filter = "alpha(opacity=40)"; // IE8
             this.selectionBox.style.visibility = "hidden";
 
+            var imageZoomOut = document.getElementById("image-out");
+            var imageZoomIn = document.getElementById("image-in");
+            // The 'right' variable keeps the buttons from overlapping the scrollbar of the image
+            var right = 15;
+            imageZoomOut.style.right = right + "px";
+            imageZoomIn.style.right = right + imageZoomOut.getClientRects()[0].width + "px";
+
             var pic = document.getElementsByClassName("preview-background")[0];
             var that = this;
 
