@@ -53,22 +53,6 @@ export default Marionette.ItemView.extend(
             // Re render when the viewmodel changes activity state
             this.listenTo(this.viewModel, "change:active", this.render);
             var that = this;
-            this.listenTo(RadioChannels.edit, GlyphEvents.deselectAllGlyphs,
-                function ()
-                {
-                    // jscs:disable
-                    RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, false);
-                    // jscs:enable
-                }
-            );
-            this.listenTo(RadioChannels.edit, GlyphEvents.selectGlyph,
-                function (glyphModel)
-                {
-                    // jscs:disable
-                    RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, glyphModel.attributes.id, true);
-                    // jscs:enable
-                }
-            );
             this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
                 function (boundingBox, additional)
                 {
@@ -150,7 +134,7 @@ export default Marionette.ItemView.extend(
 
             this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit, function (model)
             {
-                if (that.model.attributes.id !== model.attributes.id && !model.attributes.is_training)
+                if (that.model.attributes.id !== model.attributes.id)
                 {
                     RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, that.model.attributes.id, false);
                 }
