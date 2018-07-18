@@ -173,6 +173,12 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     document.getElementById("count-classifier").innerHTML = that.classifierCount;
                     document.getElementById("count-page").innerHTML = that.pageCount;
                     document.getElementById("count-selected").innerHTML = that.selectedCount;
+
+                    this.glyphEditRegion.empty();
+                    var glyphRegion = document.getElementsByClassName("glyph-edit-region")[0];
+                    var editParagraph = document.createElement('p');
+                    editParagraph.innerHTML = Strings.editGlyphDescription;
+                    glyphRegion.appendChild(editParagraph);
                 }
             );
 
