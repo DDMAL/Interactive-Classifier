@@ -104,6 +104,17 @@ export default Marionette.ItemView.extend(
             }
         },
 
+        // Remove the highlight of previously selected glyphs
+        unhighlightGlyphs: function ()
+        {
+            var elems = document.getElementsByClassName("preview-highlight");
+            while (elems.length > 0)
+            {
+                var elem = elems[0];
+                elem.parentNode.removeChild(elem);
+            }
+        },
+
         /**
          * This function fires when the user clicks and holds their mouse down.
          * We record the location of the user's mouse and trigger the selectionBox

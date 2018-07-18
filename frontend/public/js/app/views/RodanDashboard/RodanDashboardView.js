@@ -179,6 +179,8 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     var editParagraph = document.createElement('p');
                     editParagraph.innerHTML = Strings.editGlyphDescription;
                     glyphRegion.appendChild(editParagraph);
+
+                    that.previewView.unhighlightGlyphs();
                 }
             );
 
