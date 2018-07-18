@@ -230,7 +230,23 @@ export default Marionette.ItemView.extend(
             imageZoomIn.style.right = right + imageZoomOut.getClientRects()[0].width + "px";
 
             var pic = document.getElementsByClassName("preview-background")[0];
+            var imageBox = document.getElementById("right2").getClientRects()[0];
             var that = this;
+            $(document).keypress(function (event)
+            {
+                if (that.isHover)
+                {
+                    if (event.key === "=")
+                    {
+                        that.isZoomIn = true;
+                    }
+                    else if (event.key === "-")
+                    {
+                        that.isZoomIn = false;
+                    }
+                    RadioChannels.edit.trigger(PageEvents.zoom, that.zoomLevel, that.isZoomIn);
+                }
+            });
 
             var mouseClick = false;
             $(document).mousedown(function ()
@@ -246,6 +262,7 @@ export default Marionette.ItemView.extend(
             {
                 if (mouseClick === false)
                 {
+                    that.isHover = (event.clientX > imageBox.left && event.clientY > imageBox.top);
                     return;
                 }
                 else
@@ -266,9 +283,7 @@ export default Marionette.ItemView.extend(
                             pic.dataset.originalHeight = h;
                         }
                     }
-                    // jscs:disable
-                    that.isHover = (event.clientX > document.getElementById("right2").getClientRects()[0].left && event.clientY > document.getElementById("right2").getClientRects()[0].top);
-                    // jscs:enable
+                    that.isHover = (event.clientX > imageBox.left && event.clientY > imageBox.top);
 
                     var x = event.pageX,
                         y = event.pageY;
