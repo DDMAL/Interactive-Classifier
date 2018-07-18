@@ -193,16 +193,16 @@ export default Marionette.CollectionView.extend(
             var that = this;
             //trigger mousemove only if mouse is down
             var mouseClick = false;
-            $(document).mousedown(function()
+            $(document).mousedown(function ()
             {
                 mouseClick = true;
             });
-            $(document).mouseup(function(event)
+            $(document).mouseup(function (event)
             {
                 mouseClick = false;
                 that.onMouseUp(event);
             });
-            $(document).mousemove(function ()
+            $(document).mousemove(function (event)
             {
                 if (mouseClick === false)
                 {
