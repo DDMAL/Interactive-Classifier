@@ -27,7 +27,7 @@ export default Marionette.ItemView.extend(
         mouseDownY: 0,
         zoomCount: 0,
         zoomLevel: 1.4,
-        maxZoomCount: 8,
+        maxZoomCount: 10,
         isZoomIn: false,
 
         /**
@@ -238,13 +238,12 @@ export default Marionette.ItemView.extend(
                 {
                     if (event.key === "=")
                     {
-                        that.isZoomIn = true;
+                        that.imageZoomIn();
                     }
                     else if (event.key === "-")
                     {
-                        that.isZoomIn = false;
+                        that.imageZoomOut();
                     }
-                    RadioChannels.edit.trigger(PageEvents.zoom, that.zoomLevel, that.isZoomIn);
                 }
             });
 

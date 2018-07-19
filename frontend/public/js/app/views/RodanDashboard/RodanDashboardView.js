@@ -53,7 +53,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
         selectedCount: 0,
         zoomCount: 0,
         zoomLevel: 1.15,
-        maxZoomCount: 7,
+        maxZoomCount: 10,
 
         /**
          * @class RodanDashboardView
