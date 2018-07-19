@@ -39,7 +39,6 @@ export default Marionette.CollectionView.extend(
         childView: GlyphTableRowView,
 
         isMouseDown: false,
-        isSlider: false,
         mouseDownX: 0,
         mouseDownY: 0,
 
@@ -106,14 +105,11 @@ export default Marionette.CollectionView.extend(
             this.mouseDownX = event.clientX;
             this.mouseDownY = event.clientY;
 
-            if (!this.isSlider)
-            {
-                this.selectionBox.style.top = this.mouseDownY + "px";
-                this.selectionBox.style.left = this.mouseDownX + "px";
-                this.selectionBox.style.width = "0px";
-                this.selectionBox.style.height = "0px";
-                this.selectionBox.style.visibility = "visible";
-            }
+            this.selectionBox.style.top = this.mouseDownY + "px";
+            this.selectionBox.style.left = this.mouseDownX + "px";
+            this.selectionBox.style.width = "0px";
+            this.selectionBox.style.height = "0px";
+            this.selectionBox.style.visibility = "visible";
         },
 
         /**
