@@ -735,17 +735,13 @@ html.js {
     z-index: 1;
     height: 35px;
     width: 35px;
-    font-size: 22px;
-    text-align: center;
+    font-size: 21px;
     position: relative;
-    font-weight: bolder;
     display: inline-block;
     top: 13px;
     right: 10px;
-    border-top: 1px solid #444444;
-    border-left: 1px solid #444444;
     &:hover{
-        background-color: #efefef;
+        background-color: #cdcdcd;
     }
 }
 
@@ -754,15 +750,11 @@ html.js {
     z-index: 1;
     height: 35px;
     width: 35px;
-    font-size: 22px;
-    text-align: center;
+    font-size: 21px;
     position: fixed;
-    font-weight: bolder;
     display: inline-block;
-    border-top: 1px solid #444444;
-    border-left: 1px solid #444444;
     &:hover{
-        background-color: #efefef;
+        background-color: #cdcdcd;
     }
 }
 
