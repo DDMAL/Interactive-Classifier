@@ -112,7 +112,7 @@ export default Marionette.ItemView.extend(
                             {
                                 if (elems[i]['href'].split('glyph/')[1].split('/')[0] === that.model.id)
                                 {
-                                    elems[i].scrollIntoView();
+                                    elems[i].scrollIntoView({inline: "center"});
                                 }
                             }
                             // jscs:enable
