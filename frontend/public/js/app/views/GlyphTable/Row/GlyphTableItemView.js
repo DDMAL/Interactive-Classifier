@@ -56,27 +56,24 @@ export default Marionette.ItemView.extend(
             this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
                 function (boundingBox, additional)
                 {
-                    if (boundingBox)
+                    // If this div's bounding box is within the selection, then we've
+                    // gotta add the model to the multi selection collection.
+                    if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
                     {
-                        // If this div's bounding box is within the selection, then we've
-                        // gotta add the model to the multi selection collection.
-                        if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
-                        {
-                            // Add this glyph to the collection
-                            RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
-                            // jscs:disable
-                            RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, true);
-                            // jscs:enable
-                        }
-                        // make sure not to deactivate if it's a top manual glyph
-                        // TODO : the training glyphs sometimes stay selected for too long
-                        else if (!additional && (!(that.is_classifier) || this.model.attributes.is_training))
-                        {
-                            // If it's additional, then we don't deactivate!
-                            // jscs:disable
-                            RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, false);
-                            // jscs:enable
-                        }
+                        // Add this glyph to the collection
+                        RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
+                        // jscs:disable
+                        RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, true);
+                        // jscs:enable
+                    }
+                    // make sure not to deactivate if it's a top manual glyph
+                    // TODO : the training glyphs sometimes stay selected for too long
+                    else if (!additional && (!(that.is_classifier) || this.model.attributes.is_training))
+                    {
+                        // If it's additional, then we don't deactivate!
+                        // jscs:disable
+                        RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, false);
+                        // jscs:enable
                     }
                 }
             );
@@ -209,7 +206,6 @@ export default Marionette.ItemView.extend(
                     RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, true);
                     RadioChannels.edit.trigger(GlyphEvents.selectGlyph, this.model);
                 }
-                RadioChannels.edit.trigger(GlyphEvents.dragSelect);
                 RadioChannels.edit.trigger(GlyphEvents.openMultiEdit);
             }
             else
