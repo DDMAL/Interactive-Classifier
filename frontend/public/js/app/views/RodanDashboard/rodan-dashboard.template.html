@@ -14,8 +14,12 @@
         </div>
     </div>
     <button id="collapse-button" class="col-md-2 col-md-push-3" data-toggle="collapse" data-target="#right0">Classifier Glyphs</button>
-    <button id="zoom-out" class="glyph-zoom">-</button>
-    <button id="zoom-in" class="glyph-zoom">+</button>
+    <button id="zoom-out" class="glyph-zoom">
+        <span class="glyphicon glyphicon-zoom-out"></span>
+    </button>
+    <button id="zoom-in" class="glyph-zoom">
+        <span class="glyphicon glyphicon-zoom-in"></span>
+    </button>
     <div class="col-md-2 col-md-push-3" id="right0">
         <div class="classifier-table-region"></div>
     </div>
@@ -26,8 +30,12 @@
         <div class="page-image-preview-region"></div>
     </div>
     <div class="col-md-3 col-md-pull-9" id="left0">
-        <button class="edit-button" id="save"><%- saveChanges %></button>
-        <button class="edit-button" id="revert"><%- revert %></button>
+        <button class="edit-button" id="save">
+            <span class="glyphicon glyphicon-floppy-disk"></span><%- saveChanges %>
+        </button>
+        <button class="edit-button" id="revert">
+            <span class="glyphicon glyphicon-repeat"></span><%- revert %>
+        </button>
     </div>
     <div style = "resize: both;" class="col-md-3 col-md-pull-9" id="left1">
         <h2><%- classesHeader %></h2>
