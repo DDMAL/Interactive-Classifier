@@ -54,26 +54,48 @@ export default Marionette.ItemView.extend(
             this.listenTo(this.viewModel, "change:active", this.render);
             var that = this;
             this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
-                function (boundingBox, additional)
+                function (boundingBox, additional, isClassifier)
                 {
-                    // If this div's bounding box is within the selection, then we've
-                    // gotta add the model to the multi selection collection.
-                    if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
+                    var id = this.model.attributes.id;
+                    // If drag select is triggered in the classifier glyphs region, highlight classifier glyphs only and unhighlight page glyphs
+                    // If drag select in triggered in the page glyphs region, highlight page glyphs only and unhighlight classifier glyphs
+                    if (isClassifier)
                     {
-                        // Add this glyph to the collection
-                        RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
-                        // jscs:disable
-                        RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, true);
-                        // jscs:enable
+                        if (that.is_classifier)
+                        {
+                            if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
+                            {
+                                RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
+                                RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, id, true);
+                            }
+                            else if (!additional)
+                            {
+                                RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, id, false);
+                            }
+                        }
+                        else
+                        {
+                            RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, id, false);
+                        }
                     }
-                    // make sure not to deactivate if it's a top manual glyph
-                    // TODO : the training glyphs sometimes stay selected for too long
-                    else if (!additional && (!(that.is_classifier) || this.model.attributes.is_training))
+                    else
                     {
-                        // If it's additional, then we don't deactivate!
-                        // jscs:disable
-                        RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, false);
-                        // jscs:enable
+                        if (!that.is_classifier)
+                        {
+                            if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
+                            {
+                                RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
+                                RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, id, true);
+                            }
+                            else if (!additional)
+                            {
+                                RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, id, false);
+                            }
+                        }
+                        else
+                        {
+                            RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, id, false);
+                        }
                     }
                 }
             );
@@ -172,7 +194,6 @@ export default Marionette.ItemView.extend(
         {
             var class_table = document.getElementsByClassName("classifier-table-region")[0].getBoundingClientRect();
             this.is_classifier = Geometry.rectangleOverlap(this.getPosition(), class_table);
-
         },
 
         /**

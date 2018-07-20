@@ -161,7 +161,8 @@ export default Marionette.CollectionView.extend(
                     RadioChannels.edit.trigger(
                         GlyphEvents.dragSelect,
                         boundingBox,
-                        isAdditional // If the shift key is held, then it's an "additional" selection!
+                        isAdditional, // If the shift key is held, then it's an "additional" selection!
+                        this.collection.is_classifier
                     );
                     RadioChannels.edit.trigger(GlyphEvents.openMultiEdit);
                 }
