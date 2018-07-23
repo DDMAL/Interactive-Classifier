@@ -174,11 +174,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     document.getElementById("count-page").innerHTML = that.pageCount;
                     document.getElementById("count-selected").innerHTML = that.selectedCount;
 
-                    this.glyphEditRegion.empty();
-                    var glyphRegion = document.getElementsByClassName("glyph-edit-region")[0];
-                    var editParagraph = document.createElement('p');
-                    editParagraph.innerHTML = Strings.editGlyphDescription;
-                    glyphRegion.appendChild(editParagraph);
+                    this.clearEditRegion();
 
                     that.previewView.unhighlightGlyphs();
                 }
@@ -225,6 +221,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                         return !name.startsWith(className + ".") && name !== className;
                     });
                     this.model.set('classNames', newClasses);
+                    this.clearEditRegion();
                 });
 
             this.listenTo(RadioChannels.edit, ClassEvents.renameClass,
@@ -772,6 +769,15 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                 model: model
             }));
 
+        },
+
+        clearEditRegion: function()
+        {
+            this.glyphEditRegion.empty();
+            var glyphRegion = document.getElementsByClassName("glyph-edit-region")[0];
+            var editParagraph = document.createElement('p');
+            editParagraph.innerHTML = Strings.editGlyphDescription;
+            glyphRegion.appendChild(editParagraph);
         },
 
         /**
