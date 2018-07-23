@@ -94,10 +94,7 @@ export default Marionette.ItemView.extend(
             }
             if (renameElem)
             {
-                var tmpClass = new Class({
-                    name: className
-                });
-                RadioChannels.edit.trigger(ClassEvents.openClassEdit, tmpClass);
+                RadioChannels.edit.trigger(ClassEvents.openClassEdit, className);
             }
 
         },

@@ -159,7 +159,6 @@ export default Marionette.ItemView.extend(
                 }
             });
 
-            // this.listenTo(RadioChannels.edit, ClassEvents.openClassEdit, function (className)
             this.listenTo(RadioChannels.edit, ClassEvents.openClassEdit, function ()
             {
                 RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, that.model.attributes.id, false);

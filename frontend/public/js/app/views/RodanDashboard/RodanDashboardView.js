@@ -2,6 +2,7 @@ import $ from 'jquery';
 import _ from "underscore";
 import Backbone from "backbone";
 import Marionette from "marionette";
+import Class from "models/Class";
 import ClassEvents from "events/ClassEvents";
 import GlyphEvents from "events/GlyphEvents";
 import PageEvents from "events/PageEvents";
@@ -250,6 +251,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                         return classes.indexOf(item) === pos;
                     });
                     this.model.set('classNames', renamedClasses);
+                    this.openClassEdit(newName);
                 });
 
             // Glyph Editing Events
@@ -758,10 +760,13 @@ var RodanDashboardView = Marionette.LayoutView.extend(
         /**
          * Open the ClassEditView for editing a class.
          *
-         * @param {Class} model - a Class model
+         * @param {String} className - a class name as a String
          */
-        openClassEdit: function(model)
+        openClassEdit: function (className)
         {
+            var model = new Class({
+                name: className
+            });
             this.glyphEditRegion.show(new ClassEditView({
                 model: model
             }));
