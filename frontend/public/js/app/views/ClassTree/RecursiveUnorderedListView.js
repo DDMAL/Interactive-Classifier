@@ -3,7 +3,7 @@ import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
 import ClassEvents from "events/ClassEvents";
 import template from "./recursive-unordered-list.template.html";
-import Class from 'models/Class';
+import Class from "models/Class";
 
 /**
  * @class RecursiveUnorderedListView
@@ -68,21 +68,20 @@ export default Marionette.ItemView.extend(
          * This event causes the class name to display a renaming textbox.
          *
          *
-         * @param rightClickEvent
+         * @param event
          */
-        onRightClickName: function (rightClickEvent)
+        onRightClickName: function (event)
         {
-            rightClickEvent.preventDefault();
+            event.preventDefault();
 
             //Extract the class name from the HTML5 data attribute
-            var className = rightClickEvent.target.dataset.name;
+            var className = event.target.dataset.name;
 
             if (className === "UNCLASSIFIED")
             {
                 return;
             }
             var renameElem;
-
             //get the HTML element that corresponds to the class name
             var classList = document.getElementsByClassName("class-name");
             for (var i = 0; i < classList.length; i++)
@@ -90,9 +89,9 @@ export default Marionette.ItemView.extend(
                 if (classList[i].getAttribute('data-name') === className)
                 {
                     renameElem = classList[i];
+                    break;
                 }
             }
-
             if (renameElem)
             {
                 var tmpClass = new Class({
