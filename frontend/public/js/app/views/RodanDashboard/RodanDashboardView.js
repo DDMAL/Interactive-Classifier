@@ -724,7 +724,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
          */
         openGlyphEdit: function (model)
         {
-            console.log("Open glyphEdit!");
             this.glyphEditRegion.show(new GlyphEditView({
                 model: model
             }));
@@ -763,8 +762,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
          */
         openClassEdit: function(model)
         {
-            console.log("Open classEdit!");
-
             this.glyphEditRegion.show(new ClassEditView({
                 model: model
             }));

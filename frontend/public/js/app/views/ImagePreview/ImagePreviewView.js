@@ -157,7 +157,6 @@ export default Marionette.ItemView.extend(
         {
             if (this.isMouseDown === true)
             {
-                console.log("MouseUp!");
                 this.isMouseDown = false;
                 var x = event.clientX,
                     y = event.clientY;
