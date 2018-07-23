@@ -3,7 +3,6 @@ import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
 import ClassEvents from "events/ClassEvents";
 import template from "./recursive-unordered-list.template.html";
-import Class from "models/Class";
 
 /**
  * @class RecursiveUnorderedListView
@@ -50,17 +49,6 @@ export default Marionette.ItemView.extend(
             // Extract the name from the HTML5 data attribute.
             var className = event.target.dataset.name;
             RadioChannels.edit.trigger(GlyphEvents.clickGlyphName, className);
-
-            //the user cannot edit the unclassified class
-            if (className.toLowerCase() !== "unclassified")
-            {
-                // TODO: store classes in a database so won't create more than once
-                // This feature is very buggy so it's commented out for now
-                var c = new Class();
-                c.set("name",className);
-                //RadioChannels.edit.trigger(ClassEvents.openClassEdit, c);
-            }
-
         },
 
         /**
