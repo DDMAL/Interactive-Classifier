@@ -728,6 +728,9 @@ html.js {
     right: 0;
     border-top: 1px solid #444444;
     border-left: 1px solid #444444;
+    &:hover{
+        background-color: #cbcbcb;
+    }
 }
 
 .glyph-zoom {
