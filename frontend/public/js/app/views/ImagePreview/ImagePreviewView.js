@@ -225,8 +225,8 @@ export default Marionette.ItemView.extend(
             var imageZoomIn = document.getElementById("image-in");
             // The 'right' variable keeps the buttons from overlapping the scrollbar of the image
             var right = 15;
-            imageZoomOut.style.right = right + "px";
-            imageZoomIn.style.right = right + imageZoomOut.getClientRects()[0].width + "px";
+            imageZoomIn.style.right = right + "px";
+            imageZoomOut.style.right = right + imageZoomIn.getClientRects()[0].width + "px";
 
             var pic = document.getElementsByClassName("preview-background")[0];
             var imageBox = document.getElementById("right2").getClientRects()[0];
