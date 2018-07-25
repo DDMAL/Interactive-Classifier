@@ -736,28 +736,32 @@ html.js {
 .glyph-zoom {
     float: right;
     z-index: 1;
-    height: 35px;
-    width: 35px;
-    font-size: 1.5em;
+    height: 32px;
+    width: 32px;
+    font-size: 30px;
+    line-height: 22px;
+    font-weight: bolder;
     position: relative;
     display: inline-block;
     top: 13px;
     right: 10px;
     &:hover{
-        background-color: #cdcdcd;
+        background-color: #efefef;
     }
 }
 
 .image-zoom {
     float: right;
     z-index: 1;
-    height: 35px;
-    width: 35px;
-    font-size: 1.5em;
+    height: 32px;
+    width: 32px;
+    font-size: 30px;
+    line-height: 22px;
+    font-weight: bolder;
     position: fixed;
     display: inline-block;
     &:hover{
-        background-color: #cdcdcd;
+        background-color: #efefef;
     }
 }
 
