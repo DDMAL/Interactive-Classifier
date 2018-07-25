@@ -39,7 +39,6 @@ export default Marionette.CollectionView.extend(
         childView: GlyphTableRowView,
 
         isMouseDown: false,
-        isSlider: false,
         mouseDownX: 0,
         mouseDownY: 0,
 
@@ -59,6 +58,39 @@ export default Marionette.CollectionView.extend(
             "mousedown": "onMouseDown"
         },
 
+        initialize: function ()
+        {
+            // This waits for the preview image to load before retrieving its height
+            var renderTime = 1000;
+            setTimeout(function()
+            {
+                var pic = document.getElementsByClassName("preview-background")[0];
+                var h = pic.getClientRects()[0].height;
+                if (h !== 0)
+                {
+                    pic.dataset.originalHeight = h;
+                }
+            }, renderTime);
+
+            this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyphs, function (glyphs)
+            {
+                // NOTE: glyphs is an array of Glyph model, not a Backbone collection
+                for (var i = 0; i < glyphs.length; i++)
+                {
+                    var glyph = glyphs[i];
+                    var bgWarning = document.getElementsByClassName("glyph img-thumbnail bg-warning glyph-image");
+                    var elems = Array.from(bgWarning);
+                    for (var j = 0; j < elems.length; j++)
+                    {
+                        if (elems[j].href.split('glyph/')[1].split('/')[0] === glyph.attributes.id)
+                        {
+                            elems[j].parentNode.remove();
+                        }
+                    }
+                }
+            });
+        },
+
         /**
          * This function fires when the user clicks and holds their mouse down.
          * We record the location of the user's mouse and trigger the selectionBox
@@ -73,14 +105,11 @@ export default Marionette.CollectionView.extend(
             this.mouseDownX = event.clientX;
             this.mouseDownY = event.clientY;
 
-            if (!this.isSlider)
-            {
-                this.selectionBox.style.top = this.mouseDownY + "px";
-                this.selectionBox.style.left = this.mouseDownX + "px";
-                this.selectionBox.style.width = "0px";
-                this.selectionBox.style.height = "0px";
-                this.selectionBox.style.visibility = "visible";
-            }
+            this.selectionBox.style.top = this.mouseDownY + "px";
+            this.selectionBox.style.left = this.mouseDownX + "px";
+            this.selectionBox.style.width = "0px";
+            this.selectionBox.style.height = "0px";
+            this.selectionBox.style.visibility = "visible";
         },
 
         /**
@@ -132,7 +161,8 @@ export default Marionette.CollectionView.extend(
                     RadioChannels.edit.trigger(
                         GlyphEvents.dragSelect,
                         boundingBox,
-                        isAdditional // If the shift key is held, then it's an "additional" selection!
+                        isAdditional, // If the shift key is held, then it's an "additional" selection!
+                        this.collection.is_classifier
                     );
                     RadioChannels.edit.trigger(GlyphEvents.openMultiEdit);
                 }
@@ -160,16 +190,16 @@ export default Marionette.CollectionView.extend(
             var that = this;
             //trigger mousemove only if mouse is down
             var mouseClick = false;
-            $(document).mousedown(function()
+            $(document).mousedown(function ()
             {
                 mouseClick = true;
             });
-            $(document).mouseup(function(event)
+            $(document).mouseup(function (event)
             {
                 mouseClick = false;
                 that.onMouseUp(event);
             });
-            $(document).mousemove(function ()
+            $(document).mousemove(function (event)
             {
                 if (mouseClick === false)
                 {

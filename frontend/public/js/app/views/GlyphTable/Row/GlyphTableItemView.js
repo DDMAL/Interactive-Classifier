@@ -53,45 +53,48 @@ export default Marionette.ItemView.extend(
             // Re render when the viewmodel changes activity state
             this.listenTo(this.viewModel, "change:active", this.render);
             var that = this;
-            this.listenTo(RadioChannels.edit, GlyphEvents.deselectAllGlyphs,
-                function ()
-                {
-                    // jscs:disable
-                    RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, false);
-                    // jscs:enable
-                }
-            );
-            this.listenTo(RadioChannels.edit, GlyphEvents.selectGlyph,
-                function (glyphModel)
-                {
-                    // jscs:disable
-                    RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, glyphModel.attributes.id, true);
-                    // jscs:enable
-                }
-            );
             this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
-                function (boundingBox, additional)
+                function (boundingBox, additional, isClassifier)
                 {
-                    if (boundingBox)
+                    var id = this.model.attributes.id;
+                    // If drag select is triggered in the classifier glyphs region, highlight classifier glyphs only and unhighlight page glyphs
+                    // If drag select in triggered in the page glyphs region, highlight page glyphs only and unhighlight classifier glyphs
+                    if (isClassifier)
                     {
-                        // If this div's bounding box is within the selection, then we've
-                        // gotta add the model to the multi selection collection.
-                        if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
+                        if (that.is_classifier)
                         {
-                            // Add this glyph to the collection
-                            RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
-                            // jscs:disable
-                            RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, true);
-                            // jscs:enable
+                            if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
+                            {
+                                RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
+                                RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, id, true);
+                            }
+                            else if (!additional)
+                            {
+                                RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, id, false);
+                            }
                         }
-                        // make sure not to deactivate if it's a top manual glyph
-                        // TODO : the training glyphs sometimes stay selected for too long
-                        else if (!additional && (!(that.is_classifier) || this.model.attributes.is_training))
+                        else
                         {
-                            // If it's additional, then we don't deactivate!
-                            // jscs:disable
-                            RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, false);
-                            // jscs:enable
+                            RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, id, false);
+                        }
+                    }
+                    else
+                    {
+                        if (!that.is_classifier)
+                        {
+                            if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
+                            {
+                                RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
+                                RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, id, true);
+                            }
+                            else if (!additional)
+                            {
+                                RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, id, false);
+                            }
+                        }
+                        else
+                        {
+                            RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, id, false);
                         }
                     }
                 }
@@ -101,7 +104,8 @@ export default Marionette.ItemView.extend(
                 function (boundingBox, additional)
                 {
                     if (boundingBox)
-                    {   var pic = document.getElementsByClassName("preview-background")[0];
+                    {
+                        var pic = document.getElementsByClassName("preview-background")[0];
                         var zoomLevel = pic.getBoundingClientRect().height / pic.dataset.originalHeight;
                         var glyphRect =
                         {
@@ -127,7 +131,7 @@ export default Marionette.ItemView.extend(
                             {
                                 if (elems[i]['href'].split('glyph/')[1].split('/')[0] === that.model.id)
                                 {
-                                    elems[i].scrollIntoView();
+                                    elems[i].scrollIntoView({inline: "center"});
                                 }
                             }
                             // jscs:enable
@@ -149,33 +153,12 @@ export default Marionette.ItemView.extend(
 
             this.listenTo(RadioChannels.edit, GlyphEvents.openGlyphEdit, function (model)
             {
-                if (that.model.attributes.id !== model.attributes.id && !model.attributes.is_training)
+                if (that.model.attributes.id !== model.attributes.id)
                 {
                     RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, that.model.attributes.id, false);
                 }
             });
 
-            this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyphs, function (glyphs)
-            {
-                // NOTE: glyphs is an array of Glyph model, not a Backbone collection
-                for (var i = 0; i < glyphs.length; i++)
-                {
-                    var glyph = glyphs[i];
-                    var bgWarning = document.getElementsByClassName("glyph img-thumbnail bg-warning glyph-image");
-                    var bgSuccess = document.getElementsByClassName("glyph img-thumbnail bg-success glyph-image");
-                    var elems = Array.from(bgWarning);
-                    elems.concat(Array.from(bgSuccess));
-                    for (var j = 0; j < elems.length; j++)
-                    {
-                        if (elems[j].href.split('glyph/')[1].split('/')[0] === glyph.attributes.id)
-                        {
-                            elems[j].parentNode.remove();
-                        }
-                    }
-                }
-            });
-
-            // this.listenTo(RadioChannels.edit, ClassEvents.openClassEdit, function (className)
             this.listenTo(RadioChannels.edit, ClassEvents.openClassEdit, function ()
             {
                 RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, that.model.attributes.id, false);
@@ -198,23 +181,10 @@ export default Marionette.ItemView.extend(
             });
 
             this.listenTo(RadioChannels.edit, GlyphEvents.zoomGlyphs,
-            function (zoomLevel)
+            function (zoomLevel, zoomCount)
             {
-                this.zoom = zoomLevel;
+                this.zoom = Math.pow(zoomLevel, zoomCount);
                 this.viewModel.set("zoomed", true);
-                var elms = document.getElementsByClassName("glyph-image-container");
-
-                for (var i = 0; i < elms.length; i++)
-                {
-                    var child = elms[i].childNodes[0].childNodes[1].childNodes[1];
-                    var newWidth = child.dataset.originalWidth * zoomLevel;
-                    var newHeight = child.dataset.originalHeight * zoomLevel;
-                    if (newWidth > 1 && newHeight > 1)
-                    {
-                        child.width = newWidth;
-                        child.height = newHeight;
-                    }
-                }
                 this.render();
             });
         },
@@ -223,7 +193,6 @@ export default Marionette.ItemView.extend(
         {
             var class_table = document.getElementsByClassName("classifier-table-region")[0].getBoundingClientRect();
             this.is_classifier = Geometry.rectangleOverlap(this.getPosition(), class_table);
-
         },
 
         /**
@@ -257,7 +226,6 @@ export default Marionette.ItemView.extend(
                     RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, this.model.attributes.id, true);
                     RadioChannels.edit.trigger(GlyphEvents.selectGlyph, this.model);
                 }
-                RadioChannels.edit.trigger(GlyphEvents.dragSelect);
                 RadioChannels.edit.trigger(GlyphEvents.openMultiEdit);
             }
             else

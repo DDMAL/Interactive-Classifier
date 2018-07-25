@@ -138,7 +138,6 @@ export default Marionette.LayoutView.extend(
             }
             else
             {
-                console.log("Glyphs will be grouped to " + className);
                 var glyphs = []
                 this.collection.each(function (model)
                 {

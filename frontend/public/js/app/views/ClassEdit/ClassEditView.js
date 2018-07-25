@@ -69,6 +69,5 @@ export default Marionette.ItemView.extend({
             event.preventDefault();
         }
         RadioChannels.edit.trigger(ClassEvents.deleteClass, this.model.get("name"));
-
     }
 });

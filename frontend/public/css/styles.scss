@@ -728,10 +728,40 @@ html.js {
     right: 0;
     border-top: 1px solid #444444;
     border-left: 1px solid #444444;
+    &:hover{
+        background-color: #cbcbcb;
+    }
+}
+
+.glyph-zoom {
+    float: right;
+    z-index: 1;
+    height: 35px;
+    width: 35px;
+    font-size: 1.5em;
+    position: relative;
+    display: inline-block;
+    top: 13px;
+    right: 10px;
+    &:hover{
+        background-color: #cdcdcd;
+    }
+}
+
+.image-zoom {
+    float: right;
+    z-index: 1;
+    height: 35px;
+    width: 35px;
+    font-size: 1.5em;
+    position: fixed;
+    display: inline-block;
+    &:hover{
+        background-color: #cdcdcd;
+    }
 }
 
 #right0 {
-    margin-top: 13px;
     float: left;
     overflow-y: scroll;
     height: 28%;

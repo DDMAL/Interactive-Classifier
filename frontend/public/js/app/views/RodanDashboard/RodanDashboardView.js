@@ -2,6 +2,7 @@ import $ from 'jquery';
 import _ from "underscore";
 import Backbone from "backbone";
 import Marionette from "marionette";
+import Class from "models/Class";
 import ClassEvents from "events/ClassEvents";
 import GlyphEvents from "events/GlyphEvents";
 import PageEvents from "events/PageEvents";
@@ -43,12 +44,17 @@ var RodanDashboardView = Marionette.LayoutView.extend(
         events: {
             "mousedown": "onMouseDown",
             "click #save": "saveChanges",
-            "click #revert": "revertChanges"
+            "click #revert": "revertChanges",
+            "click #zoom-out": "zoomOut",
+            "click #zoom-in": "zoomIn"
         },
 
         classifierCount: 0,
         pageCount: 0,
         selectedCount: 0,
+        zoomCount: 0,
+        zoomLevel: 1.15,
+        maxZoomCount: 10,
 
         /**
          * @class RodanDashboardView
@@ -168,6 +174,10 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     document.getElementById("count-classifier").innerHTML = that.classifierCount;
                     document.getElementById("count-page").innerHTML = that.pageCount;
                     document.getElementById("count-selected").innerHTML = that.selectedCount;
+
+                    this.clearEditRegion();
+
+                    that.previewView.unhighlightGlyphs();
                 }
             );
 
@@ -212,6 +222,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                         return !name.startsWith(className + ".") && name !== className;
                     });
                     this.model.set('classNames', newClasses);
+                    this.clearEditRegion();
                 });
 
             this.listenTo(RadioChannels.edit, ClassEvents.renameClass,
@@ -240,6 +251,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                         return classes.indexOf(item) === pos;
                     });
                     this.model.set('classNames', renamedClasses);
+                    this.openClassEdit(newName);
                 });
 
             // Glyph Editing Events
@@ -312,17 +324,23 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     }, waitTime);
                 }
             );
-
             this.listenTo(RadioChannels.edit, PageEvents.zoom,
-                function (zoomLevel)
+                function (zoomLevel, isZoomIn)
                 {
                     var pic = document.getElementsByClassName("preview-background")[0];
-                    var oldHeight = pic.dataset.originalHeight;
-                    var newHeight = oldHeight * zoomLevel / document.getElementById("s1").getAttribute("default"); //60 is the default value
+                    var oldHeight = pic.height;
+                    var newHeight;
+                    if (isZoomIn)
+                    {
+                        newHeight = oldHeight * zoomLevel;
+                    }
+                    else
+                    {
+                        newHeight = oldHeight / zoomLevel;
+                    }
                     pic.style.height = newHeight + "px";
                     // makes sure the boxes around the glyphs follow the zoom
                     RadioChannels.edit.trigger(GlyphEvents.highlightGlyphs, that.selectedGlyphs);
-
                 }
             );
 
@@ -637,21 +655,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                         imgPrev.style.width = Math.round((1 - widthPerc) * 100) + "%";
                         trainingGlyphs.style.width = Math.round((1 - widthPerc) * 100) + "%";
                         glyphTable.style.width = Math.round((1 - widthPerc) * 100) + "%";
-
-                        // How the slider moves on resize
-                        // The 35 and 25 are hardcoded values that seem to place the slider in a good position
-                        var slider = document.getElementById("zoom-slider");
-                        var outer = document.getElementById("right2").getClientRects()[0];
-                        var top = outer.top + outer.height - 35;
-                        slider.style.top = top + "px";
-                        left = outer.width + outer.left - slider.style.width.split("px")[0] - 25;
-                        slider.style.left = left + "px";
-
-                        var outer2 = document.getElementById("right2").getClientRects()[0];
-                        var slider2 = document.getElementById("glyph-zoom");
-                        slider2.style.left = left + "px";
-                        slider2.style.top = outer2.top - 35 + "px";
-
                     }
                 }
             });
@@ -682,6 +685,40 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             RadioChannels.menu.trigger(MainMenuEvents.clickUndoAll);
         },
 
+        zoomIn: function (event)
+        {
+            if (event)
+            {
+                event.preventDefault();
+            }
+            this.zoomCount++;
+            if (this.zoomCount < this.maxZoomCount)
+            {
+                RadioChannels.edit.trigger(GlyphEvents.zoomGlyphs, this.zoomLevel, this.zoomCount);
+            }
+            else
+            {
+                this.zoomCount--;
+            }
+        },
+
+        zoomOut: function (event)
+        {
+            if (event)
+            {
+                event.preventDefault();
+            }
+            this.zoomCount--;
+            if (this.zoomCount > -this.maxZoomCount)
+            {
+                RadioChannels.edit.trigger(GlyphEvents.zoomGlyphs, this.zoomLevel, this.zoomCount);
+            }
+            else
+            {
+                this.zoomCount++;
+            }
+        },
+
         /**
          * Open the GlyphEditView for editing a particular glyph.
          *
@@ -689,7 +726,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
          */
         openGlyphEdit: function (model)
         {
-            console.log("Open glyphEdit!");
             this.glyphEditRegion.show(new GlyphEditView({
                 model: model
             }));
@@ -724,16 +760,26 @@ var RodanDashboardView = Marionette.LayoutView.extend(
         /**
          * Open the ClassEditView for editing a class.
          *
-         * @param {Class} model - a Class model
+         * @param {String} className - a class name as a String
          */
-        openClassEdit: function(model)
+        openClassEdit: function (className)
         {
-            console.log("Open classEdit!");
-
+            var model = new Class({
+                name: className
+            });
             this.glyphEditRegion.show(new ClassEditView({
                 model: model
             }));
 
+        },
+
+        clearEditRegion: function()
+        {
+            this.glyphEditRegion.empty();
+            var glyphRegion = document.getElementsByClassName("glyph-edit-region")[0];
+            var editParagraph = document.createElement('p');
+            editParagraph.innerHTML = Strings.editGlyphDescription;
+            glyphRegion.appendChild(editParagraph);
         },
 
         /**

@@ -49,7 +49,6 @@ export default Marionette.LayoutView.extend(
 
                     if (newClassNameList.length !== oldClassNameList.length)
                     {
-                        console.log("New name!", newClassName);
                         // Set the new list
                         that.model = new ClassTreeViewModel({
                             class_names: newClassNameList.sort()
@@ -66,7 +65,6 @@ export default Marionette.LayoutView.extend(
             this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, function (deletedClassName)
             {
                 // Add the model to the class_names
-                console.log("Delete class!", deletedClassName);
                 var classNameList = that.model.get("class_names");
                 var filteredList = classNameList.filter(name => name !== deletedClassName &&
                   !name.startsWith(deletedClassName + "."));
