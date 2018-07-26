@@ -5,6 +5,7 @@ export default Backbone.Model.extend({
         url: "#",
         text: "Link",
         clickEvent: null,
-        subLinks: undefined
+        subLinks: undefined,
+        icon: null
     }
 });
