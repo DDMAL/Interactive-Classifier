@@ -33,21 +33,15 @@ export default Marionette.CompositeView.extend({
         });
         // A collection representing the menu links
         var menuLinks = new Backbone.Collection();
-
         menuLinks.add(new MenuLinkViewModel({
             url: "#",
-            text: Strings.menuSubmitLabel,
-            clickEvent: MainMenuEvents.clickSubmitCorrections
+            text: Strings.saveChanges,
+            clickEvent: MainMenuEvents.clickSaveChanges
         }));
         menuLinks.add(new MenuLinkViewModel({
             url: "#",
-            text: Strings.menuFinalizeLabel,
-            clickEvent: MainMenuEvents.clickFinalizeCorrections
-        }));
-        menuLinks.add(new MenuLinkViewModel({
-            url: "#",
-            text: Strings.menuGroupLabel,
-            clickEvent: MainMenuEvents.clickGroupClassify
+            text: Strings.undoAll,
+            clickEvent: MainMenuEvents.clickUndoAll
         }));
         this.collection = menuLinks;
     },
