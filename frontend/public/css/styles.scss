@@ -465,6 +465,37 @@ body.propagate-height {
     }
 }
 
+#drop-menu {
+    font-size: 22px;
+}
+
+.navbar-menu .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 60px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+
+    a {
+        float: none;
+        color: inherit;
+        font-size: 14px;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        text-align: left;
+    }
+    a:hover {
+        background-color: #cdcdcd;
+    }
+}
+
+.navbar-menu:hover .dropdown-content {
+    top: 51px;
+    display: block;
+}
+
 // A subhead is an extension of a navbar brand that works like a breadcrumb to title a specific page
 .secondary-brand-component::before {
     content: "›";
