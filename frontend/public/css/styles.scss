@@ -690,17 +690,6 @@ html.js {
     padding-top: 50px;
 }
 
-#left0 {
-    float: left;
-    width: 25%;
-    height: 30px;
-    position: absolute;
-    top: 50px;
-    left: 0;
-    background-color: #cbcbcb;
-    text-align: center;
-}
-
 .edit-button {
     width: 35%;
     height: 100%;
@@ -713,7 +702,6 @@ html.js {
     }
 }
 
-
 #left1 {
     float: left;
     width: 25%;
@@ -721,10 +709,9 @@ html.js {
     overflow-y: scroll;
     background-color: #efefef;
     position: absolute;
-    top: 80px;
     left: 0;
-    //top: 0;
-    //padding-top: 50px;
+    top: 0;
+    padding-top: 45px;
 }
 
 #left2 {
