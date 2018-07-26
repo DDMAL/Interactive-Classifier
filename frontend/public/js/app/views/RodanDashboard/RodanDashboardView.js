@@ -557,6 +557,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             var classEdit = document.getElementById("left1");
             var trainingGlyphs = document.getElementById("right0");
             var collapseButton = document.getElementById("collapse-button");
+            var upper = document.getElementById("upper");
 
             // I make sure the height/width is the same as the original height/width
             // (It doesn't change on resize)
@@ -602,6 +603,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             glyphTable.style.left = left + "px";
             trainingGlyphs.style.left = left + "px";
             collapseButton.style.left = left + "px";
+            upper.style.left = left + "px";
 
             // This region deals with changing the height and width percentages on resize
             // Resize = true when the height/width needs to be changed
