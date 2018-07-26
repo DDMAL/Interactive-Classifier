@@ -36,12 +36,14 @@ export default Marionette.CompositeView.extend({
         menuLinks.add(new MenuLinkViewModel({
             url: "#",
             text: Strings.saveChanges,
-            clickEvent: MainMenuEvents.clickSaveChanges
+            clickEvent: MainMenuEvents.clickSaveChanges,
+            icon: "glyphicon-floppy-disk"
         }));
         menuLinks.add(new MenuLinkViewModel({
             url: "#",
             text: Strings.undoAll,
-            clickEvent: MainMenuEvents.clickUndoAll
+            clickEvent: MainMenuEvents.clickUndoAll,
+            icon: "glyphicon-repeat"
         }));
         this.collection = menuLinks;
     },
