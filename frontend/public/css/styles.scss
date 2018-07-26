@@ -692,6 +692,8 @@ html.js {
     position: absolute;
     top: 80px;
     left: 0;
+    //top: 0;
+    //padding-top: 50px;
 }
 
 #left2 {
@@ -738,9 +740,9 @@ html.js {
     z-index: 1;
     height: 32px;
     width: 32px;
-    font-size: 30px;
-    line-height: 22px;
-    font-weight: bolder;
+    font-size: 1.1em;
+    text-align: center;
+    line-height: 30px;
     position: relative;
     display: inline-block;
     top: 13px;
@@ -755,9 +757,9 @@ html.js {
     z-index: 1;
     height: 32px;
     width: 32px;
-    font-size: 30px;
-    line-height: 22px;
-    font-weight: bolder;
+    font-size: 1.1em;
+    text-align: center;
+    line-height: 30px;
     position: fixed;
     display: inline-block;
     &:hover{
