@@ -19,7 +19,10 @@ export default Marionette.CompositeView.extend({
     {
         // A model to handle the main properties of the menu
         this.model = new MenuViewModel({
-            title: Strings.siteTitle
+            title: Strings.siteTitle,
+            reClassify: Strings.menuSubmitLabel,
+            group: Strings.menuGroupLabel,
+            finalize: Strings.menuFinalizeLabel
         });
         // A collection representing the menu links
         var menuLinks = new Backbone.Collection();
