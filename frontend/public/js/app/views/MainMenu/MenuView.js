@@ -6,6 +6,7 @@ import MenuViewModel from "views/MainMenu/MenuViewModel";
 import MainMenuEvents from "events/MainMenuEvents";
 import Strings from "localization/Strings";
 import template from "./main-menu.template.html";
+import RadioChannels from "radio/RadioChannels";
 
 /**
  * The main menu which renders at the top of the window.
@@ -14,6 +15,12 @@ export default Marionette.CompositeView.extend({
     template,
     childView: MenuLinkView,
     childViewContainer: ".navbar-left",
+
+    events: {
+        "click .re-classify": "reClassify",
+        "click .group": "group",
+        "click .finalize": "finalize"
+    },
 
     initialize: function ()
     {
@@ -43,5 +50,18 @@ export default Marionette.CompositeView.extend({
             clickEvent: MainMenuEvents.clickGroupClassify
         }));
         this.collection = menuLinks;
+    },
+
+    reClassify: function ()
+    {
+        RadioChannels.menu.trigger(MainMenuEvents.clickSubmitCorrections);
+    },
+    group: function ()
+    {
+        RadioChannels.menu.trigger(MainMenuEvents.clickGroupClassify);
+    },
+    finalize: function ()
+    {
+        RadioChannels.menu.trigger(MainMenuEvents.clickFinalizeCorrections);
     }
 });
