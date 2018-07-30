@@ -310,8 +310,10 @@ def serialize_data(settings):
     settings['training_json'] = serialize_glyphs_to_json(settings['training_glyphs'] + manual)
 
 
-# We don't want to reclassify glyphs that are a part of a group or split
 def filter_parts(settings):
+    """
+    Remove grouped components and glyphs that have been deleted or split.
+    """
     parts = []
     temp = copy.copy(settings['glyphs'])
     for glyph in settings['glyphs']:
@@ -331,7 +333,9 @@ def filter_parts(settings):
 
 
 def add_grouped_glyphs(settings):
-
+    """
+    Add new glyphs that have been grouped to the glyph dictionary.
+    """
     grouped_glyphs = settings['@grouped_glyphs']
 
     for glyph in grouped_glyphs:
@@ -408,7 +412,9 @@ def update_changed_glyphs(settings):
     settings['@deleted_training_glyphs'] = []
 
 def remove_deleted_glyphs(settings, inputs):
-    # filter out training glyphs with class name "UNCLASSIFIED" or deleted glyphs
+    """
+    Filter out training glyphs that have been deleted or have the class UNCLASSIFIED.
+    """
     copy_training= settings['training_glyphs']
     filter_training = [g for g in copy_training if not g['class_name'] == "UNCLASSIFIED"]
     valid_training = [g for g in filter_training if not g['class_name'].startswith("_delete")]
@@ -419,6 +425,9 @@ def remove_deleted_glyphs(settings, inputs):
     settings['glyphs'] = valid_glyphs
 
 def remove_deleted_classes(settings):
+    """
+    Filter out the class names that have been deleted.
+    """
     valid_classes = settings['imported_class_names']
     deleted_classes = settings['@deleted_classes']
     for deleted_name in deleted_classes:
@@ -428,6 +437,9 @@ def remove_deleted_classes(settings):
     settings['@deleted_classes'] = []
 
 def update_renamed_classes(settings):
+    """
+    Update the class names if they have been renamed.
+    """
     classes = settings['imported_class_names']
     renamed_classes = settings['@renamed_classes']
     updated_classes = []
