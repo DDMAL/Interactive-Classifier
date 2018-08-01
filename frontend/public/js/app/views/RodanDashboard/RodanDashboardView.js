@@ -599,9 +599,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
 
                     if (resizeTraining)
                     {
-                        var splitHeight = (window.innerHeight - trainingTable.getClientRects()[0].bottom) / 2;
-                        glyphTable.style.height = splitHeight + "px";
-                        imgPrev.style.height = splitHeight + "px";
+                        imgPrev.style.height = window.innerHeight - glyphTable.getClientRects()[0].bottom + "px";
                     }
                     else if (resizeGlyph)
                     {
