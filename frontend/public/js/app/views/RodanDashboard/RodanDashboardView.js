@@ -532,9 +532,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
             imgPrev.style.height = window.innerHeight - glyphTable.getClientRects()[0].bottom + "px";
 
-            var resizeClass = false,
-                resizeTraining = false,
-                resizeGlyph = false;
+            var resizeClass = false;
             $(document).mousedown(function (event)
             {
                 that.isMouseDown = true;
@@ -548,12 +546,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     if (event.buttons === 0)
                     {
                         that.isMouseDown = false;
-                        resizeGlyph = false;
-                        resizeTraining = false;
-                        setTimeout(function()
-                        {
-                            resizeClass = false;
-                        }, 500);
+                        resizeClass = false;
                     }
 
                     var collapseButton = document.getElementById("collapse-button");
@@ -564,48 +557,19 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     var classEdit = document.getElementById("left1");
                     var glyphEdit = document.getElementById("left2");
 
-                    var currentClassHeight = classEdit.getClientRects()[0].height;
-                    var currentClassWidth = classEdit.getClientRects()[0].width;
-                    var currentTrainingHeight = trainingTable.getClientRects()[0].height;
-                    var currentGlyphHeight = glyphTable.getClientRects()[0].height;
-
                     collapseButton.style.height = that.collapseHeight + "px";
                     collapseButton.style.width = that.collapseWidth + "px";
 
                     var classEditRight = classEdit.getClientRects()[0].left + classEdit.getClientRects()[0].width;
                     var classEditBottom = classEdit.getClientRects()[0].top + classEdit.getClientRects()[0].height;
-                    // jscs:disable
-                    var trainingTableRight = trainingTable.getClientRects()[0].left + trainingTable.getClientRects()[0].width;
-                    var trainingTableBottom = trainingTable.getClientRects()[0].top + trainingTable.getClientRects()[0].height;
-                    // jscs:enable
-                    var glyphTableRight = glyphTable.getClientRects()[0].left + glyphTable.getClientRects()[0].width;
-                    var glyphTableBottom = glyphTable.getClientRects()[0].top + glyphTable.getClientRects()[0].height;
 
-                    if (that.x < trainingTableRight && that.x > (trainingTableRight - 20) &&
-                          that.y < trainingTableBottom && that.y > (trainingTableBottom - 20))
-                    {
-                        resizeTraining = true;
-                    }
-                    else if (that.x < glyphTableRight && that.x > (glyphTableRight - 20) &&
-                          that.y < glyphTableBottom && that.y > (glyphTableBottom - 20))
-                    {
-                        resizeGlyph = true;
-                    }
-                    else if (that.x < classEditRight && that.x > (classEditRight - 20) &&
+                    if (that.x < classEditRight && that.x > (classEditRight - 20) &&
                           that.y < classEditBottom && that.y > (classEditBottom - 20))
                     {
                         resizeClass = true;
                     }
 
-                    if (resizeTraining)
-                    {
-                        imgPrev.style.height = window.innerHeight - glyphTable.getClientRects()[0].bottom + "px";
-                    }
-                    else if (resizeGlyph)
-                    {
-                        imgPrev.style.height = window.innerHeight - glyphTable.getClientRects()[0].bottom + "px";
-                    }
-                    else if (resizeClass)
+                    if (resizeClass)
                     {
                         classEdit.style.width = event.clientX + "px";
                         glyphEdit.style.width = classEdit.getClientRects()[0].width + "px";
@@ -628,6 +592,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
 
                     glyphTable.style.top = trainingTable.getClientRects()[0].bottom + "px";
                     imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
+                    imgPrev.style.height = window.innerHeight - glyphTable.getClientRects()[0].bottom + "px";
                 }
             });
 
