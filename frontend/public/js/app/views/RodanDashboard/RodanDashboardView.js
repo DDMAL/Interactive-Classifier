@@ -533,11 +533,9 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             imgPrev.style.height = window.innerHeight - glyphTable.getClientRects()[0].bottom + "px";
 
             var resizeClass = false;
-            $(document).mousedown(function (event)
+            $(document).mousedown(function ()
             {
                 that.isMouseDown = true;
-                that.x = event.clientX;
-                that.y = event.clientY;
             });
             $(document).mousemove(function (event)
             {
@@ -563,8 +561,8 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     var classEditRight = classEdit.getClientRects()[0].left + classEdit.getClientRects()[0].width;
                     var classEditBottom = classEdit.getClientRects()[0].top + classEdit.getClientRects()[0].height;
 
-                    if (that.x < classEditRight && that.x > (classEditRight - 20) &&
-                          that.y < classEditBottom && that.y > (classEditBottom - 20))
+                    if (event.clientX < classEditRight && event.clientX > (classEditRight - 20) &&
+                          event.clientY < classEditBottom && event.clientY > (classEditBottom - 20))
                     {
                         resizeClass = true;
                     }
