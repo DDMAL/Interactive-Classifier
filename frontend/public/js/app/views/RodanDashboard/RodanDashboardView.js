@@ -532,19 +532,18 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
             imgPrev.style.height = window.innerHeight - glyphTable.getClientRects()[0].bottom + "px";
 
-            var resizeClass = false;
             $(document).mousedown(function ()
             {
                 that.isMouseDown = true;
             });
             $(document).mousemove(function (event)
             {
+                var resizeClass = false;
                 if (that.isMouseDown)
                 {
                     if (event.buttons === 0)
                     {
                         that.isMouseDown = false;
-                        resizeClass = false;
                     }
 
                     var collapseButton = document.getElementById("collapse-button");
