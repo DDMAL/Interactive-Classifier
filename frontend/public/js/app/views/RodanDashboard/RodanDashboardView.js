@@ -571,7 +571,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                         classEdit.style.width = event.clientX + "px";
                         glyphEdit.style.width = classEdit.getClientRects()[0].width + "px";
                         classEdit.style.height = event.clientY + "px";
-                        glyphEdit.style.height = window.innerHeight - classEdit.getClientRects()[0].bottom + "px";
 
                         var rightWidth = window.innerWidth - classEdit.getClientRects()[0].right + "px";
                         countPanel.style.width = rightWidth;
@@ -586,7 +585,8 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                         trainingTable.style.left = left + "px";
                         collapseButton.style.left = left + "px";
                     }
-
+                    glyphEdit.style.top = classEdit.getClientRects()[0].bottom + "px";
+                    glyphEdit.style.height = window.innerHeight - classEdit.getClientRects()[0].bottom + "px";
                     glyphTable.style.top = trainingTable.getClientRects()[0].bottom + "px";
                     imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
                     imgPrev.style.height = window.innerHeight - glyphTable.getClientRects()[0].bottom + "px";
@@ -607,8 +607,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
 
                 if (that.winHeight !== currentWinHeight)
                 {
-                    glyphEdit.style.top = classEdit.getClientRects()[0].bottom + "px";
-                    glyphEdit.style.height = window.innerHeight - classEdit.getClientRects()[0].bottom + "px";
                     glyphTable.style.top = trainingTable.getClientRects()[0].bottom + "px";
                     imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
                     imgPrev.style.height = window.innerHeight - glyphTable.getClientRects()[0].bottom + "px";
@@ -624,6 +622,8 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     imgPrev.style.width = width + "px";
                     that.winWidth = currentWinWidth;
                 }
+                glyphEdit.style.top = classEdit.getClientRects()[0].bottom + "px";
+                glyphEdit.style.height = window.innerHeight - classEdit.getClientRects()[0].bottom + "px";
             });
 
             timer.tick("final");
