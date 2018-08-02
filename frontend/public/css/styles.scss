@@ -200,6 +200,10 @@ pre.preformatted-text {
     }
 }
 
+body {
+    overflow: hidden;
+}
+
 body.propagate-height {
     height: 100vh;
 }
