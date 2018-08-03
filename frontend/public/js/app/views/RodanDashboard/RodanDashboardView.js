@@ -517,6 +517,12 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             this.winWidth = window.innerWidth;
             this.winHeight = window.innerHeight;
 
+            this.imageZoomOut = document.getElementById("image-out");
+            this.imageZoomIn = document.getElementById("image-in");
+            this.glyphsZoomOut = document.getElementById("zoom-out");
+            this.glyphsZoomIn = document.getElementById("zoom-in");
+            this.zoomBtnWidth = this.glyphsZoomIn.getClientRects()[0].width * 2;
+
             var elms = document.getElementsByClassName("glyph-image-container");
             for (i = 0; i < elms.length; i++)
             {
@@ -595,6 +601,21 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     glyphTable.style.top = trainingTable.getClientRects()[0].bottom + "px";
                     imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
                     imgPrev.style.height = window.innerHeight - glyphTable.getClientRects()[0].bottom + "px";
+
+                    if (imgPrev.getClientRects()[0].width < that.zoomBtnWidth)
+                    {
+                        that.imageZoomOut.style.visibility = "hidden";
+                        that.imageZoomIn.style.visibility = "hidden";
+                        that.glyphsZoomOut.style.visibility = "hidden";
+                        that.glyphsZoomIn.style.visibility = "hidden";
+                    }
+                    else
+                    {
+                        that.imageZoomOut.style.visibility = "visible";
+                        that.imageZoomIn.style.visibility = "visible";
+                        that.glyphsZoomOut.style.visibility = "visible";
+                        that.glyphsZoomIn.style.visibility = "visible";
+                    }
                 }
             });
 
@@ -631,6 +652,21 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                 }
                 glyphEdit.style.top = classEdit.getClientRects()[0].bottom + "px";
                 glyphEdit.style.height = window.innerHeight - classEdit.getClientRects()[0].bottom + "px";
+
+                if (imgPrev.getClientRects()[0].width < that.zoomBtnWidth)
+                {
+                    that.imageZoomOut.style.visibility = "hidden";
+                    that.imageZoomIn.style.visibility = "hidden";
+                    that.glyphsZoomOut.style.visibility = "hidden";
+                    that.glyphsZoomIn.style.visibility = "hidden";
+                }
+                else
+                {
+                    that.imageZoomOut.style.visibility = "visible";
+                    that.imageZoomIn.style.visibility = "visible";
+                    that.glyphsZoomOut.style.visibility = "visible";
+                    that.glyphsZoomIn.style.visibility = "visible";
+                }
             });
 
             timer.tick("final");
