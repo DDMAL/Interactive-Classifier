@@ -688,9 +688,13 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             var collapseButton = document.getElementById("collapse-button");
             if (trainingGlyphs.getClientRects()[0])
             {
-                glyphTable.style.top = collapseButton.getClientRects()[0].bottom + "px";
-                imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
-                imgPrev.style.height = innerHeight - glyphTable.getClientRects()[0].bottom + "px";
+                var renderTime = 300;
+                setTimeout(function ()
+                {
+                    glyphTable.style.top = collapseButton.getClientRects()[0].bottom + "px";
+                    imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
+                    imgPrev.style.height = innerHeight - glyphTable.getClientRects()[0].bottom + "px";
+                }, renderTime);
             }
             else
             {
