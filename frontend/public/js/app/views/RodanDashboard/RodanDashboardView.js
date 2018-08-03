@@ -523,6 +523,9 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             this.glyphsZoomIn = document.getElementById("zoom-in");
             this.zoomBtnWidth = this.glyphsZoomIn.getClientRects()[0].width * 2;
 
+            this.trainingRatio = document.getElementById("right0").getClientRects()[0].height / window.innerHeight;
+            this.glyphRatio = document.getElementById("right1").getClientRects()[0].height / window.innerHeight;
+
             var elms = document.getElementsByClassName("glyph-image-container");
             for (i = 0; i < elms.length; i++)
             {
@@ -602,6 +605,9 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
                     imgPrev.style.height = window.innerHeight - glyphTable.getClientRects()[0].bottom + "px";
 
+                    that.trainingRatio = trainingTable.getClientRects()[0].height / window.innerHeight;
+                    that.glyphRatio = glyphTable.getClientRects()[0].height / window.innerHeight;
+
                     if (imgPrev.getClientRects()[0].width < that.zoomBtnWidth)
                     {
                         that.imageZoomOut.style.visibility = "hidden";
@@ -634,6 +640,8 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                 // If the height of the browser changed, update the heights of the panes
                 if (that.winHeight !== currentWinHeight)
                 {
+                    trainingTable.style.height = that.trainingRatio * currentWinHeight + "px";
+                    glyphTable.style.height = that.glyphRatio * currentWinHeight + "px";
                     glyphTable.style.top = trainingTable.getClientRects()[0].bottom + "px";
                     imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
                     imgPrev.style.height = window.innerHeight - glyphTable.getClientRects()[0].bottom + "px";
