@@ -10,6 +10,8 @@ import ModalViewModel from "views/widgets/Modal/ModalViewModel";
 import ModalCollectionView from "views/widgets/Modal/ModalCollectionView";
 import LoadingScreenView from "views/widgets/LoadingScreen/LoadingScreenView";
 import LoadingScreenViewModel from "views/widgets/LoadingScreen/LoadingScreenViewModel";
+import ErrorStatusView from "views/widgets/ErrorStatus/ErrorStatusView";
+import ErrorStatusViewModel from "views/widgets/ErrorStatus/ErrorStatusViewModel";
 import ClassEvents from "events/ClassEvents";
 import GlyphEvents from "events/GlyphEvents";
 import ModalEvents from "events/ModalEvents";
@@ -91,6 +93,21 @@ var App = Marionette.Application.extend(
             this.listenTo(RadioChannels.menu, MainMenuEvents.clickTest, function ()
             {
                 that.modals.opening.open();
+            });
+            this.listenTo(RadioChannels.edit, ClassEvents.invalidClass, function (message)
+            {
+                that.modals.invalidClass = new ModalViewModel({
+                    title: Strings.classNameError,
+                    isCloseable: true,
+                    isHiddenObject: false,
+                    innerView: new ErrorStatusView({
+                        model: new ErrorStatusViewModel({
+                            text: message
+                        })
+                    })
+                });
+                this.modalCollection.add(this.modals.invalidClass);
+                that.modals.invalidClass.open();
             });
             this.listenTo(RadioChannels.edit, GlyphEvents.changeGlyph, function (glyphModel)
             {
