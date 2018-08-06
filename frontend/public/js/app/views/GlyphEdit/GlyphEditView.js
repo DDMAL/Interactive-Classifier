@@ -1,6 +1,7 @@
 import Marionette from "marionette";
 import RadioChannels from "radio/RadioChannels";
 import GlyphEvents from "events/GlyphEvents";
+import ClassEvents from "events/ClassEvents";
 import Strings from "localization/Strings";
 import template from "./glyph-edit.template.html";
 import ClassNameUtils from "utils/ClassNameUtils";
@@ -79,12 +80,12 @@ export default Marionette.ItemView.extend(
             var className = this.ui.classInput.val();
             if (ClassNameUtils.sanitizeClassName(className) === "unclassified")
             {
-                alert(Strings.unclassifiedClass);
+                RadioChannels.edit.trigger(ClassEvents.invalidClass, Strings.unclassifiedClass);
             }
             else if (ClassNameUtils.sanitizeClassName(className) === "")
             {
                 var message = className + Strings.invalidClass;
-                alert(message);
+                RadioChannels.edit.trigger(ClassEvents.invalidClass, message);
             }
             else
             {
