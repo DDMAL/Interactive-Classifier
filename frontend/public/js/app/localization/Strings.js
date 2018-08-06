@@ -44,6 +44,7 @@ export default {
     classifierGlyphs: " glyphs in classifier",
     pageGlyphs: " glyphs in page",
     selectedGlyphs: " selected glyphs",
+    classNameError: "Invalid Class Name",
     // Strings for GlyphEditview
     editGlyph: {
         update: "Update",
