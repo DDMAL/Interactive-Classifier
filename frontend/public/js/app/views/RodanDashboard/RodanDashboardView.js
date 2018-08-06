@@ -498,20 +498,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
 
             $('#right0').collapse('toggle');
 
-            /* TODO: the decimals here are harcoded (they are the original percentages for height/width)
-             * These values should be found through the document somehow.
-             * These values are all the original values for the heights/widths of certain elements
-             *
-             * The values of the client rectangles have already been reduced by the percentages shown
-             * To get the original heights of the rectangles, I have to divide by the percentage
-             * All of these values were taken from styles.scss (again, these should be accessed in this file)
-             */
-
-            this.classHeight = document.getElementById("left1").getClientRects()[0].height / 0.5;
-            this.classWidth = document.getElementById("left1").getClientRects()[0].width / 0.25;
-            this.trainingHeight = document.getElementById("right0").getClientRects()[0].height / 0.28;
-            this.glyphHeight = document.getElementById("right1").getClientRects()[0].height / 0.31;
-            this.imgHeight = document.getElementById("right2").getClientRects()[0].height / 0.31;
             this.collapseHeight = document.getElementById("collapse-button").getClientRects()[0].height;
             this.collapseWidth  = document.getElementById("collapse-button").getClientRects()[0].width;
             this.winWidth = window.innerWidth;
