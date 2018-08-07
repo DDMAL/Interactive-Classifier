@@ -44,6 +44,8 @@ export default {
     classifierGlyphs: " glyphs in classifier",
     pageGlyphs: " glyphs in page",
     selectedGlyphs: " selected glyphs",
+    classNameError: "Invalid Class Name",
+    deleteTitle: "Delete Multiple Glyphs",
     // Strings for GlyphEditview
     editGlyph: {
         update: "Update",

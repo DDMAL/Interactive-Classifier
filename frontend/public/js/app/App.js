@@ -10,6 +10,8 @@ import ModalViewModel from "views/widgets/Modal/ModalViewModel";
 import ModalCollectionView from "views/widgets/Modal/ModalCollectionView";
 import LoadingScreenView from "views/widgets/LoadingScreen/LoadingScreenView";
 import LoadingScreenViewModel from "views/widgets/LoadingScreen/LoadingScreenViewModel";
+import ErrorStatusView from "views/widgets/ErrorStatus/ErrorStatusView";
+import ErrorStatusViewModel from "views/widgets/ErrorStatus/ErrorStatusViewModel";
 import ClassEvents from "events/ClassEvents";
 import GlyphEvents from "events/GlyphEvents";
 import ModalEvents from "events/ModalEvents";
@@ -92,6 +94,40 @@ var App = Marionette.Application.extend(
             {
                 that.modals.opening.open();
             });
+            this.listenTo(RadioChannels.edit, ClassEvents.invalidClass, function (message)
+            {
+                that.modals.invalidClass = new ModalViewModel({
+                    title: Strings.classNameError,
+                    isCloseable: true,
+                    isHiddenObject: false,
+                    innerView: new ErrorStatusView({
+                        model: new ErrorStatusViewModel({
+                            text: message
+                        })
+                    })
+                });
+                this.modalCollection.add(this.modals.invalidClass);
+                that.modals.invalidClass.open();
+            });
+            this.listenTo(RadioChannels.edit, GlyphEvents.deleteConfirm, function (glyphs)
+            {
+                that.modals.deleteWarning = new ModalViewModel({
+                    title: Strings.deleteTitle,
+                    isCloseable: true,
+                    isHiddenObject: false,
+                    innerView: new ConfirmView({
+                        model: new ConfirmViewModel({
+                            text: Strings.deleteWarning,
+                            callback: function ()
+                            {
+                                RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyphs);
+                            }
+                        })
+                    })
+                });
+                this.modalCollection.add(this.modals.deleteWarning);
+                that.modals.deleteWarning.open();
+            });
             this.listenTo(RadioChannels.edit, GlyphEvents.changeGlyph, function (glyphModel)
             {
                 if (glyphModel.attributes.is_training)
@@ -117,6 +153,10 @@ var App = Marionette.Application.extend(
                     deletedGlyphCollection.add(glyphs[i]);
                 }
                 that.deleteGlyphs(deletedGlyphCollection);
+                if (that.modals.deleteWarning)
+                {
+                    that.modals.deleteWarning.close();
+                }
             });
             this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs, function (glyphList, glyphName)
             {

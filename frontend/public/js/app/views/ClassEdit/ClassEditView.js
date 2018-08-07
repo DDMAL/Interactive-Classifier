@@ -48,12 +48,12 @@ export default Marionette.ItemView.extend({
         var className = this.ui.classInput.val();
         if (ClassNameUtils.sanitizeClassName(className) === "unclassified")
         {
-            alert(Strings.unclassifiedClass);
+            RadioChannels.edit.trigger(ClassEvents.invalidClass, Strings.unclassifiedClass);
         }
         else if (ClassNameUtils.sanitizeClassName(className) === "")
         {
             var message = className + Strings.invalidClass;
-            alert(message);
+            RadioChannels.edit.trigger(ClassEvents.invalidClass, message);
         }
         //trigger renameClass event with parameters (old name, new name)
         else

@@ -5,6 +5,7 @@ import GlyphEvents from "events/GlyphEvents";
 import Strings from "localization/Strings";
 import template from "views/TrainingEdit/training-edit.template.html";
 import ClassNameUtils from "utils/ClassNameUtils";
+import ClassEvents from "events/ClassEvents";
 
 export default Marionette.LayoutView.extend(
     /**
@@ -92,12 +93,12 @@ export default Marionette.LayoutView.extend(
             var className = this.ui.classInput.val();
             if (ClassNameUtils.sanitizeClassName(className) === "unclassified")
             {
-                alert(Strings.unclassifiedClass);
+                RadioChannels.edit.trigger(ClassEvents.invalidClass, Strings.unclassifiedClass);
             }
             else if (ClassNameUtils.sanitizeClassName(className) === "")
             {
                 var message = className + Strings.invalidClass;
-                alert(message);
+                RadioChannels.edit.trigger(ClassEvents.invalidClass, message);
             }
             else
             {
@@ -127,10 +128,7 @@ export default Marionette.LayoutView.extend(
             });
             if (glyphs.length > 1)
             {
-                if (confirm(Strings.deleteWarning))
-                {
-                    RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyphs);
-                }
+                RadioChannels.edit.trigger(GlyphEvents.deleteConfirm, glyphs);
             }
             else
             {

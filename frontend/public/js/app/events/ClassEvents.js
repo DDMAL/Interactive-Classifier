@@ -6,5 +6,6 @@ export default {
     selectClass: "select:class",
     changeClass: "change:class",
     deleteClass: "delete:class",
-    renameClass: "rename:class"
+    renameClass: "rename:class",
+    invalidClass: "invalid:class"
 }
