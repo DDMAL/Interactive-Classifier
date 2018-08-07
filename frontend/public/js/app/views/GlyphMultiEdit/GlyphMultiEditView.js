@@ -160,15 +160,12 @@ export default Marionette.LayoutView.extend(
             {
                 event.preventDefault();
             }
-            if (confirm(Strings.deleteWarning))
+            var glyphs = []
+            this.collection.each(function (model)
             {
-                var glyphs = []
-                this.collection.each(function (model)
-                {
-                    glyphs.push(model);
-                });
-                RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyphs);
-            }
+                glyphs.push(model);
+            });
+            RadioChannels.edit.trigger(GlyphEvents.deleteConfirm, glyphs);
         },
 
         /**

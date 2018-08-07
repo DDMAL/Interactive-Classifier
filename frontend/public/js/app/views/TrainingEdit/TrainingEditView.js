@@ -128,10 +128,7 @@ export default Marionette.LayoutView.extend(
             });
             if (glyphs.length > 1)
             {
-                if (confirm(Strings.deleteWarning))
-                {
-                    RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyphs);
-                }
+                RadioChannels.edit.trigger(GlyphEvents.deleteConfirm, glyphs);
             }
             else
             {
