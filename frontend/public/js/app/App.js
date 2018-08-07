@@ -155,7 +155,7 @@ var App = Marionette.Application.extend(
                 that.deleteGlyphs(deletedGlyphCollection);
                 if (that.modals.deleteWarning)
                 {
-                  that.modals.deleteWarning.close();
+                    that.modals.deleteWarning.close();
                 }
             });
             this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs, function (glyphList, glyphName)
