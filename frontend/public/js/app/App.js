@@ -109,6 +109,25 @@ var App = Marionette.Application.extend(
                 this.modalCollection.add(this.modals.invalidClass);
                 that.modals.invalidClass.open();
             });
+            this.listenTo(RadioChannels.edit, GlyphEvents.deleteConfirm, function (glyphs)
+            {
+                that.modals.deleteWarning = new ModalViewModel({
+                    title: Strings.deleteTitle,
+                    isCloseable: true,
+                    isHiddenObject: false,
+                    innerView: new ConfirmView({
+                        model: new ConfirmViewModel({
+                            text: Strings.deleteWarning,
+                            callback: function ()
+                            {
+                                RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyphs);
+                            }
+                        })
+                    })
+                });
+                this.modalCollection.add(this.modals.deleteWarning);
+                that.modals.deleteWarning.open();
+            });
             this.listenTo(RadioChannels.edit, GlyphEvents.changeGlyph, function (glyphModel)
             {
                 if (glyphModel.attributes.is_training)
@@ -134,6 +153,10 @@ var App = Marionette.Application.extend(
                     deletedGlyphCollection.add(glyphs[i]);
                 }
                 that.deleteGlyphs(deletedGlyphCollection);
+                if (that.modals.deleteWarning)
+                {
+                  that.modals.deleteWarning.close();
+                }
             });
             this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs, function (glyphList, glyphName)
             {
