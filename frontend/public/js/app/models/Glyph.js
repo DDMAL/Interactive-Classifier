@@ -26,9 +26,18 @@ export default Backbone.Model.extend(
             image_b64: "",
             parts: [],
             split: {},
-            is_training: false
+            is_training: false,
+            width: 0,
+            height: 0
         },
 
+        initialize: function ()
+        {
+            this.set({
+                width: this.get("ncols"),
+                height: this.get("nrows")
+            });
+        },
         /**
          * Creates a new glyph.
          *
