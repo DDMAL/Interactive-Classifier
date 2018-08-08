@@ -192,8 +192,11 @@ export default Marionette.ItemView.extend(
                 }
                 else
                 {
-                    newWidth = oldWidth / zoomLevel;
-                    newHeight = oldHeight / zoomLevel;
+                    if (oldWidth / zoomLevel > 1 && oldHeight / zoomLevel > 1)
+                    {
+                        newWidth = oldWidth / zoomLevel;
+                        newHeight = oldHeight / zoomLevel;
+                    }
                 }
                 this.model.set({
                     width: newWidth,
