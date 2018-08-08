@@ -14,7 +14,6 @@ export default Marionette.ItemView.extend(
         template,
         viewModel: undefined,
         tableViewModel: undefined,
-        zoom: undefined,
 
         tagName: 'div',
         className: "glyph-image-container",
@@ -181,11 +180,25 @@ export default Marionette.ItemView.extend(
             });
 
             this.listenTo(RadioChannels.edit, GlyphEvents.zoomGlyphs,
-            function (zoomLevel, zoomCount)
+            function (zoomLevel, isZoomIn)
             {
-                this.zoom = Math.pow(zoomLevel, zoomCount);
-                this.viewModel.set("zoomed", true);
-                this.render();
+                var oldWidth = this.model.get("width");
+                var oldHeight = this.model.get("height");
+                var newWidth, newHeight;
+                if (isZoomIn)
+                {
+                    newWidth = oldWidth * zoomLevel;
+                    newHeight = oldHeight * zoomLevel;
+                }
+                else
+                {
+                    newWidth = oldWidth / zoomLevel;
+                    newHeight = oldHeight / zoomLevel;
+                }
+                this.model.set({
+                    width: newWidth,
+                    height: newHeight
+                });
             });
         },
 
@@ -252,18 +265,6 @@ export default Marionette.ItemView.extend(
             {
                 data.outerTag = "bg-primary";
             }
-
-            if (this.viewModel.isZoomed())
-            {
-                var newNCols = this.zoom * this.model.get("ncols");
-                var newNRows = this.zoom * this.model.get("nrows");
-                if (newNCols > 1 && newNRows > 1)
-                {
-                    data.ncols = newNCols;
-                    data.nrows = newNRows;
-                }
-            }
-
             // Figure out which background color will be used
             data.cssTag = "";
             if (this.model.get("id_state_manual") === true)
