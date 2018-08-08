@@ -9,8 +9,7 @@ export default Backbone.Model.extend(
      */
     {
         defaults: {
-            active: false,
-            zoomed: false
+            active: false
         },
 
         isActive: function ()
@@ -26,11 +25,6 @@ export default Backbone.Model.extend(
         deactivate: function ()
         {
             this.set("active", false);
-        },
-
-        isZoomed: function ()
-        {
-            return this.get("zoomed") === true;
         }
     }
 );

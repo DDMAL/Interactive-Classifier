@@ -56,6 +56,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
         zoomCount: 0,
         zoomLevel: 1.15,
         maxZoomCount: 10,
+        isZoomIn: undefined,
 
         /**
          * @class RodanDashboardView
@@ -744,10 +745,11 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             {
                 event.preventDefault();
             }
+            this.isZoomIn = true;
             this.zoomCount++;
             if (this.zoomCount < this.maxZoomCount)
             {
-                RadioChannels.edit.trigger(GlyphEvents.zoomGlyphs, this.zoomLevel, this.zoomCount);
+                RadioChannels.edit.trigger(GlyphEvents.zoomGlyphs, this.zoomLevel, this.isZoomIn);
             }
             else
             {
@@ -761,10 +763,11 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             {
                 event.preventDefault();
             }
+            this.isZoomIn = false;
             this.zoomCount--;
             if (this.zoomCount > -this.maxZoomCount)
             {
-                RadioChannels.edit.trigger(GlyphEvents.zoomGlyphs, this.zoomLevel, this.zoomCount);
+                RadioChannels.edit.trigger(GlyphEvents.zoomGlyphs, this.zoomLevel, this.isZoomIn);
             }
             else
             {

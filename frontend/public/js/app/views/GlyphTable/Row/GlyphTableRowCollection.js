@@ -48,10 +48,6 @@ export default Backbone.Collection.extend(
                 // Remove the old row if it's empty
                 if (oldRow.get("glyphs").length < 1)
                 {
-                    if (!this.is_classifier)
-                    {
-                        //RadioChannels.edit.trigger(ClassEvents.deleteClass, oldClassName);
-                    }
                     this.remove(oldRow);
                 }
             }

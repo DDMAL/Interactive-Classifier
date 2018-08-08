@@ -14,7 +14,6 @@ export default Marionette.ItemView.extend(
         template,
         viewModel: undefined,
         tableViewModel: undefined,
-        zoom: undefined,
 
         tagName: 'div',
         className: "glyph-image-container",
@@ -179,14 +178,6 @@ export default Marionette.ItemView.extend(
                     }
                 }
             });
-
-            this.listenTo(RadioChannels.edit, GlyphEvents.zoomGlyphs,
-            function (zoomLevel, zoomCount)
-            {
-                this.zoom = Math.pow(zoomLevel, zoomCount);
-                this.viewModel.set("zoomed", true);
-                this.render();
-            });
         },
 
         onShow: function()
@@ -252,18 +243,6 @@ export default Marionette.ItemView.extend(
             {
                 data.outerTag = "bg-primary";
             }
-
-            if (this.viewModel.isZoomed())
-            {
-                var newNCols = this.zoom * this.model.get("ncols");
-                var newNRows = this.zoom * this.model.get("nrows");
-                if (newNCols > 1 && newNRows > 1)
-                {
-                    data.ncols = newNCols;
-                    data.nrows = newNRows;
-                }
-            }
-
             // Figure out which background color will be used
             data.cssTag = "";
             if (this.model.get("id_state_manual") === true)
