@@ -41,6 +41,7 @@ var App = Marionette.Application.extend(
         groupedGlyphs: [],
         deletedClasses: [],
         renamedClasses: {},
+        zoom: 1,
 
         /**
          * @class App
@@ -173,6 +174,17 @@ var App = Marionette.Application.extend(
             {
                 this.modals.split.open();
                 that.splitGlyph(glyph, split_type);
+            });
+            this.listenTo(RadioChannels.edit, GlyphEvents.zoomGlyphs, function (zoomLevel, isZoomIn)
+            {
+                if (isZoomIn)
+                {
+                    this.zoom *= zoomLevel;
+                }
+                else
+                {
+                    this.zoom /= zoomLevel;
+                }
             });
 
             this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, function (className)
@@ -491,6 +503,12 @@ var App = Marionette.Application.extend(
                             {
                                 g.unclassify();
                             }
+                            var width = that.zoom * g.get("width");
+                            var height = that.zoom * g.get("height");
+                            g.set({
+                                width: width,
+                                height: height
+                            });
                             // Changed this one
                             that.groupedGlyphs.push(responseData.glyph);
 
