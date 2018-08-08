@@ -178,31 +178,6 @@ export default Marionette.ItemView.extend(
                     }
                 }
             });
-
-            this.listenTo(RadioChannels.edit, GlyphEvents.zoomGlyphs,
-            function (zoomLevel, isZoomIn)
-            {
-                var oldWidth = this.model.get("width");
-                var oldHeight = this.model.get("height");
-                var newWidth, newHeight;
-                if (isZoomIn)
-                {
-                    newWidth = oldWidth * zoomLevel;
-                    newHeight = oldHeight * zoomLevel;
-                }
-                else
-                {
-                    if (oldWidth / zoomLevel > 1 && oldHeight / zoomLevel > 1)
-                    {
-                        newWidth = oldWidth / zoomLevel;
-                        newHeight = oldHeight / zoomLevel;
-                    }
-                }
-                this.model.set({
-                    width: newWidth,
-                    height: newHeight
-                });
-            });
         },
 
         onShow: function()

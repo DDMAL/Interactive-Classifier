@@ -37,6 +37,31 @@ export default Backbone.Model.extend(
                 width: this.get("ncols"),
                 height: this.get("nrows")
             });
+
+            this.listenTo(RadioChannels.edit, GlyphEvents.zoomGlyphs,
+            function (zoomLevel, isZoomIn)
+            {
+                var oldWidth = this.get("width");
+                var oldHeight = this.get("height");
+                var newWidth, newHeight;
+                if (isZoomIn)
+                {
+                    newWidth = oldWidth * zoomLevel;
+                    newHeight = oldHeight * zoomLevel;
+                }
+                else
+                {
+                    if (oldWidth / zoomLevel > 1 && oldHeight / zoomLevel > 1)
+                    {
+                        newWidth = oldWidth / zoomLevel;
+                        newHeight = oldHeight / zoomLevel;
+                    }
+                }
+                this.set({
+                    width: newWidth,
+                    height: newHeight
+                });
+            });
         },
         /**
          * Creates a new glyph.
