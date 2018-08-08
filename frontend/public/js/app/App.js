@@ -503,12 +503,15 @@ var App = Marionette.Application.extend(
                             {
                                 g.unclassify();
                             }
-                            var width = that.zoom * g.get("width");
-                            var height = that.zoom * g.get("height");
-                            g.set({
-                                width: width,
-                                height: height
-                            });
+                            if (that.zoom * g.get("width") > 1 && that.zoom * g.get("height") > 1)
+                            {
+                                var width = that.zoom * g.get("width");
+                                var height = that.zoom * g.get("height");
+                                g.set({
+                                    width: width,
+                                    height: height
+                                });
+                            }
                             // Changed this one
                             that.groupedGlyphs.push(responseData.glyph);
 
@@ -604,12 +607,15 @@ var App = Marionette.Application.extend(
                                 RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, g);
                                 g.onCreate();
                                 g.attributes.split = glyph;
-                                var width = that.zoom * g.get("width");
-                                var height = that.zoom * g.get("height");
-                                g.set({
-                                    width: width,
-                                    height: height
-                                });
+                                if (that.zoom * g.get("width") > 1 && that.zoom * g.get("height") > 1)
+                                {
+                                    var width = that.zoom * g.get("width");
+                                    var height = that.zoom * g.get("height");
+                                    g.set({
+                                        width: width,
+                                        height: height
+                                    });
+                                }
                                 that.changedGlyphs.push(glyph);
                                 that.groupedGlyphs.push(g);
                             }
