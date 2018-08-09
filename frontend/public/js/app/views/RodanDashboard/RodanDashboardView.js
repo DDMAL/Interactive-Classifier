@@ -81,8 +81,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             this.trainingRowCollection.setClassifier(true);
             this.tableRowCollection = new GlyphTableRowCollection();
             this.tableRowCollection.setClassifier(false);
-            this.isCollapsed = false;
-            this.classifierRowCollection = new GlyphTableRowCollection();
 
             this.listenTo(RadioChannels.edit, PageEvents.changeBackground,
                 function()
