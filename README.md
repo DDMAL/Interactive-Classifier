@@ -33,7 +33,7 @@ The Gamera Interactive Classifier is deployed as a Rodan [Job Package](https://g
 
 ## Running Rodan
 
-Once the IC installation steps above are complete, run Rodan with the following command:
+Once the installation steps above are complete, run Rodan with the following command:
   ```
   docker-compose -f docker-compose.yml -f docker-compose.job-dev.yml up
   ```
