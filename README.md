@@ -38,7 +38,7 @@ Once the installation steps above are complete, run Rodan with the following com
   docker-compose -f docker-compose.yml -f docker-compose.job-dev.yml up
   ```
   
-To view the Rodan web interface, point your browser to [localhost:9002](localhost:9002), or [localhost:8000](localhost:8000) for the Rest API.
+To view the Rodan web interface, point your browser to http://localhost:9002, or http://localhost:8000 for the Rest API.
 
 For instructions on how to use the Interactive Classifier in the Rodan workflow, please see the [wiki](https://github.com/DDMAL/Interactive-Classifier/wiki/Creating-an-Interactive-Classifier-Rodan-Workflow).
 
