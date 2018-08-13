@@ -9,15 +9,15 @@ The Gamera Interactive Classifier is deployed as a Rodan [Job Package](https://g
   ``` 
   git clone --recurse-submodules https://github.com/DDMAL/Interactive-Classifier.git
   ```
-- If using an older version of `git` (pre-2.13) and the above command fails, instead run 
-    ```
-    git clone https://github.com/DDMAL/Interactive-Classifier.git
-    git submodule update --init --recursive
-    ```
-- If you already have an outdated version of this repository cloned, then pull all the changes and run
-    ```
-    git submodule update --init --recursive
-    ```
+  - If using an older version of `git` (pre-2.13) and the above command fails, instead run 
+      ```
+     git clone https://github.com/DDMAL/Interactive-Classifier.git
+     git submodule update --init --recursive
+     ```
+  - If you already have an outdated version of this repository cloned, then pull all the changes and run
+     ```
+     git submodule update --init --recursive
+     ```
 - Open up `jobs/settings.py` in a text editor. Replace `demojob` with `interactive_classifier` to include the path to the Interactive Classifier folder in the Rodan Job Package registration. This should look something like the following
     ``` python
     RODAN_JOB_PACKAGES = (
