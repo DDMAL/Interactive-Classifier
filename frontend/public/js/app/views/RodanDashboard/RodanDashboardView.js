@@ -497,14 +497,17 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             $("#collapse-button").click(function()
             {
                 $("#right0").toggle();
+                that.collapsePanes();
             });
             $("#collapse-page").click(function()
             {
                 $("#right1").toggle();
+                that.collapsePanes();
             });
             $("#collapse-image").click(function()
             {
                 $("#right2").toggle();
+                that.collapsePanes();
             });
 
             this.collapseHeight = document.getElementById("collapse-button").getClientRects()[0].height;
@@ -699,30 +702,80 @@ var RodanDashboardView = Marionette.LayoutView.extend(
         collapsePanes: function ()
         {
             this.isMouseDown = false;
-            var glyphTable = document.getElementById("right1");
-            var imgPrev = document.getElementById("right2");
-            var trainingGlyphs = document.getElementById("right0");
-            var collapseButton = document.getElementById("collapse-button");
-            if (trainingGlyphs.getClientRects()[0])
+            var classifier = document.getElementById("right0");
+            var page = document.getElementById("right1");
+            var image = document.getElementById("right2");
+
+            var collapsePane = document.getElementById("collapse-pane").getClientRects()[0];
+            var classifierRect = classifier.getClientRects()[0];
+            var pageRect = page.getClientRects()[0];
+            var imageRect = image.getClientRects()[0];
+
+            var height = window.innerHeight - 125;
+
+            if (classifierRect)
             {
-                var renderTime = 300;
-                setTimeout(function ()
+                if (pageRect)
                 {
-                    glyphTable.style.top = collapseButton.getClientRects()[0].bottom + "px";
-                    imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
-                    imgPrev.style.height = innerHeight - glyphTable.getClientRects()[0].bottom + "px";
-                }, renderTime);
+                    if (imageRect)
+                    {
+                        classifier.style.height = height / 3 + "px";
+                        page.style.height = height / 3 + "px";
+                        image.style.height = height / 3 + "px";
+                        classifier.style.top = collapsePane.bottom + "px";
+                        page.style.top = classifier.getClientRects()[0].bottom + "px";
+                        image.style.top = page.getClientRects()[0].bottom + "px";
+                    }
+                    else
+                    {
+                        classifier.style.height = height / 2 + "px";
+                        page.style.height = height / 2 + "px";
+                        classifier.style.top = collapsePane.bottom + "px";
+                        page.style.top = classifier.getClientRects()[0].bottom + "px";
+                    }
+                }
+                else
+                {
+                    if (imageRect)
+                    {
+                        classifier.style.height = height / 2 + "px";
+                        image.style.height = height / 2 + "px";
+                        classifier.style.top = collapsePane.bottom + "px";
+                        image.style.top = classifier.getClientRects()[0].bottom + "px";
+
+                    }
+                    else
+                    {
+                        classifier.style.height = height + "px";
+                        classifier.style.top = collapsePane.bottom + "px";
+                    }
+                }
             }
             else
             {
-                // This is a variable for the time it takes for the classifier region to uncollapse (open)
-                renderTime = 500;
-                setTimeout(function ()
+                if (pageRect)
                 {
-                    imgPrev.style.height = innerHeight - glyphTable.getClientRects()[0].bottom + "px";
-                    glyphTable.style.top = trainingGlyphs.getClientRects()[0].bottom + "px";
-                    imgPrev.style.top = glyphTable.getClientRects()[0].bottom + "px";
-                }, renderTime);
+                    if (imageRect)
+                    {
+                        page.style.height = height / 2 + "px";
+                        image.style.height = height / 2 + "px";
+                        page.style.top = collapsePane.bottom + "px";
+                        image.style.top = page.getClientRects()[0].bottom + "px";
+                    }
+                    else
+                    {
+                        page.style.height = height + "px";
+                        page.style.top = collapsePane.bottom + "px";
+                    }
+                }
+                else
+                {
+                    if (imageRect)
+                    {
+                        image.style.height = height + "px";
+                        image.style.top = collapsePane.bottom + "px";
+                    }
+                }
             }
         },
 

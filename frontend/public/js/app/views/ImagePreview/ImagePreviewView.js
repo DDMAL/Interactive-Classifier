@@ -273,7 +273,10 @@ export default Marionette.ItemView.extend(
                     if (pic.style.height === "" || pic.style.height === "0px")
                     {
                         pic = document.getElementsByClassName("preview-background")[0];
-                        var h = pic.getClientRects()[0].height;
+                        if (pic.getClientRects()[0])
+                        {
+                            var h = pic.getClientRects()[0].height;
+                        }
                         // Don't assign the height if h==0
                         if (h !== 0)
                         {
