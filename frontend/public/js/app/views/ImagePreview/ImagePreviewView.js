@@ -26,8 +26,8 @@ export default Marionette.ItemView.extend(
         mouseDownX: 0,
         mouseDownY: 0,
         zoomCount: 0,
-        zoomLevel: 1.4,
-        maxZoomCount: 10,
+        zoomLevel: 1.25,
+        maxZoomCount: 11,
         isZoomIn: false,
 
         /**
