@@ -768,14 +768,22 @@ html.js {
     border-left: 1px solid #444444;
 }
 
-#collapse-button {
-    float: left;
+#collapse-pane {
+    display: inline-block;
     height: 4%;
-    width: 12%;
+    width: 75%;
     position: absolute;
-    top: 82px;
-    bottom: 50px;
-    right: 0;
+    top: 81px;
+    left: 25%;
+}
+
+.coll-btn {
+    float: left;
+    height: 95%;
+    width: 15%;
+    //top: 82px;
+    //bottom: 50px;
+    //right: 0;
     border-top: 1px solid #444444;
     border-left: 1px solid #444444;
     &:hover{
