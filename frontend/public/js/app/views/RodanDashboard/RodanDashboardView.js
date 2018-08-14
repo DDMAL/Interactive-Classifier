@@ -47,7 +47,9 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             "click #revert": "revertChanges",
             "click #zoom-out": "zoomOut",
             "click #zoom-in": "zoomIn",
-            "click #collapse-button": "collapseClassifier"
+            "click #collapse-button": "collapsePanes",
+            "click #collapse-page": "collapsePanes",
+            "click #collapse-image": "collapsePanes"
         },
 
         classifierCount: 0,
@@ -496,6 +498,8 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             // This section deals with resizing.
 
             $('#right0').collapse('toggle');
+            $('#right1').collapse('toggle');
+            $('#right2').collapse('toggle');
 
             this.collapseHeight = document.getElementById("collapse-button").getClientRects()[0].height;
             this.collapseWidth  = document.getElementById("collapse-button").getClientRects()[0].width;
@@ -541,7 +545,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                         that.isMouseDown = false;
                     }
 
-                    var collapseButton = document.getElementById("collapse-button");
+                    var collapsePane = document.getElementById("collapse-pane");
                     var countPanel = document.getElementById("upper");
                     var trainingTable = document.getElementById("right0");
                     var glyphTable = document.getElementById("right1");
@@ -549,9 +553,10 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     var classEdit = document.getElementById("left1");
                     var glyphEdit = document.getElementById("left2");
 
-                    // Maintain height and width of the collapse button
-                    collapseButton.style.height = that.collapseHeight + "px";
-                    collapseButton.style.width = that.collapseWidth + "px";
+                    // Maintain height of the collapse buttons
+                    document.getElementById("collapse-button").style.height = that.collapseHeight + "px";
+                    document.getElementById("collapse-page").style.height = that.collapseHeight + "px";
+                    document.getElementById("collapse-image").style.height = that.collapseHeight + "px";
 
                     var classEditRight = classEdit.getClientRects()[0].left + classEdit.getClientRects()[0].width;
                     var classEditBottom = classEdit.getClientRects()[0].top + classEdit.getClientRects()[0].height;
@@ -582,7 +587,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                         imgPrev.style.left = left + "px";
                         glyphTable.style.left = left + "px";
                         trainingTable.style.left = left + "px";
-                        collapseButton.style.left = left + "px";
+                        collapsePane.style.left = left + "px";
 
                         that.widthRatio = classEdit.getClientRects()[0].width / window.innerWidth;
                     }
@@ -685,8 +690,9 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             timer.tick("final");
         },
 
-        collapseClassifier: function ()
+        collapsePanes: function ()
         {
+            this.isMouseDown = false;
             var glyphTable = document.getElementById("right1");
             var imgPrev = document.getElementById("right2");
             var trainingGlyphs = document.getElementById("right0");
