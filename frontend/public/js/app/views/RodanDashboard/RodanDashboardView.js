@@ -46,10 +46,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             "click #save": "saveChanges",
             "click #revert": "revertChanges",
             "click #zoom-out": "zoomOut",
-            "click #zoom-in": "zoomIn",
-            "click #collapse-button": "collapsePanes",
-            "click #collapse-page": "collapsePanes",
-            "click #collapse-image": "collapsePanes"
+            "click #zoom-in": "zoomIn"
         },
 
         classifierCount: 0,
@@ -497,9 +494,18 @@ var RodanDashboardView = Marionette.LayoutView.extend(
 
             // This section deals with resizing.
 
-            $('#right0').collapse('toggle');
-            $('#right1').collapse('toggle');
-            $('#right2').collapse('toggle');
+            $("#collapse-button").click(function()
+            {
+                $("#right0").toggle();
+            });
+            $("#collapse-page").click(function()
+            {
+                $("#right1").toggle();
+            });
+            $("#collapse-image").click(function()
+            {
+                $("#right2").toggle();
+            });
 
             this.collapseHeight = document.getElementById("collapse-button").getClientRects()[0].height;
             this.collapseWidth  = document.getElementById("collapse-button").getClientRects()[0].width;
@@ -619,6 +625,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                         that.glyphsZoomIn.style.visibility = "visible";
                     }
                 }
+
             });
 
             $(window).resize(function ()
@@ -686,7 +693,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     that.glyphsZoomIn.style.visibility = "visible";
                 }
             });
-
             timer.tick("final");
         },
 
