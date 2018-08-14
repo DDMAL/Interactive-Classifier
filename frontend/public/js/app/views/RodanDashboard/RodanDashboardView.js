@@ -702,77 +702,116 @@ var RodanDashboardView = Marionette.LayoutView.extend(
         collapsePanes: function ()
         {
             this.isMouseDown = false;
+            this.imageRatio, this.classifierRatio, this.pageRatio;
             var classifier = document.getElementById("right0");
             var page = document.getElementById("right1");
             var image = document.getElementById("right2");
-
-            var collapsePane = document.getElementById("collapse-pane").getClientRects()[0];
-            var classifierRect = classifier.getClientRects()[0];
-            var pageRect = page.getClientRects()[0];
-            var imageRect = image.getClientRects()[0];
-
             var height = window.innerHeight - 125;
 
-            if (classifierRect)
+            if (classifier.getClientRects()[0])
             {
-                if (pageRect)
+                if (page.getClientRects()[0])
                 {
-                    if (imageRect)
+                    if (image.getClientRects()[0])
                     {
-                        classifier.style.height = height / 3 + "px";
-                        page.style.height = height / 3 + "px";
-                        image.style.height = height / 3 + "px";
-                        classifier.style.top = collapsePane.bottom + "px";
-                        page.style.top = classifier.getClientRects()[0].bottom + "px";
-                        image.style.top = page.getClientRects()[0].bottom + "px";
+                        this.classifierRatio = this.pageRatio = this.imageRatio = 1 / 3;
                     }
                     else
                     {
-                        classifier.style.height = height / 2 + "px";
-                        page.style.height = height / 2 + "px";
-                        classifier.style.top = collapsePane.bottom + "px";
-                        page.style.top = classifier.getClientRects()[0].bottom + "px";
+                        this.classifierRatio = this.pageRatio = 1 / 2;
+                        this.imageRatio = 0;
                     }
                 }
                 else
                 {
-                    if (imageRect)
+                    if (image.getClientRects()[0])
                     {
-                        classifier.style.height = height / 2 + "px";
-                        image.style.height = height / 2 + "px";
-                        classifier.style.top = collapsePane.bottom + "px";
-                        image.style.top = classifier.getClientRects()[0].bottom + "px";
+                        this.classifierRatio = this.imageRatio = 1 / 2;
+                        this.pageRatio = 0;
 
                     }
                     else
                     {
-                        classifier.style.height = height + "px";
-                        classifier.style.top = collapsePane.bottom + "px";
+                        this.classifierRatio = 1;
+                        this.pageRatio = this.imageRatio = 0;
                     }
                 }
             }
             else
             {
-                if (pageRect)
+                if (page.getClientRects()[0])
                 {
-                    if (imageRect)
+                    if (image.getClientRects()[0])
                     {
-                        page.style.height = height / 2 + "px";
-                        image.style.height = height / 2 + "px";
-                        page.style.top = collapsePane.bottom + "px";
-                        image.style.top = page.getClientRects()[0].bottom + "px";
+                        this.pageRatio = this.imageRatio = 1 / 2;
+                        this.classifierRatio = 0;
                     }
                     else
                     {
-                        page.style.height = height + "px";
-                        page.style.top = collapsePane.bottom + "px";
+                        this.pageRatio = 1;
+                        this.classifierRatio = this.imageRatio = 0;
                     }
                 }
                 else
                 {
-                    if (imageRect)
+                    if (image.getClientRects()[0])
                     {
-                        image.style.height = height + "px";
+                        this.imageRatio = 1;
+                        this.classifierRatio = this.pageRatio = 0;
+                    }
+                    else
+                    {
+                        this.classifierRatio = this.pageRatio = this.imageRatio = 0;
+                    }
+                }
+            }
+            classifier.style.height = this.classifierRatio * height + "px";
+            page.style.height = this.pageRatio * height + "px";
+            image.style.height = this.imageRatio * height + "px";
+
+            this.rePosition();
+        },
+
+        rePosition: function ()
+        {
+            var classifier = document.getElementById("right0");
+            var page = document.getElementById("right1");
+            var image = document.getElementById("right2");
+            var collapsePane = document.getElementById("collapse-pane").getClientRects()[0];
+
+            if (classifier.getClientRects()[0])
+            {
+                classifier.style.top = collapsePane.bottom + "px";
+                if (page.getClientRects()[0])
+                {
+                    page.style.top = classifier.getClientRects()[0].bottom + "px";
+                    if (image.getClientRects()[0])
+                    {
+                        image.style.top = page.getClientRects()[0].bottom + "px";
+                    }
+                }
+                else
+                {
+                    if (image.getClientRects()[0])
+                    {
+                        image.style.top = classifier.getClientRects()[0].bottom + "px";
+                    }
+                }
+            }
+            else
+            {
+                if (page.getClientRects()[0])
+                {
+                    page.style.top = collapsePane.bottom + "px";
+                    if (image.getClientRects()[0])
+                    {
+                        image.style.top = page.getClientRects()[0].bottom + "px";
+                    }
+                }
+                else
+                {
+                    if (image.getClientRects()[0])
+                    {
                         image.style.top = collapsePane.bottom + "px";
                     }
                 }
