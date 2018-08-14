@@ -517,6 +517,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
 
             this.classifierRatio = document.getElementById("right0").getClientRects()[0].height / window.innerHeight;
             this.pageRatio = document.getElementById("right1").getClientRects()[0].height / window.innerHeight;
+            this.imageRatio = document.getElementById("right2").getClientRects()[0].height / window.innerHeight;
             that.widthRatio = document.getElementById("left1").getClientRects()[0].width / window.innerWidth;
 
             var elms = document.getElementsByClassName("glyph-image-container");
@@ -664,7 +665,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
         collapsePanes: function ()
         {
             this.isMouseDown = false;
-            this.imageRatio, this.classifierRatio, this.pageRatio;
             var classifier = document.getElementById("right0");
             var page = document.getElementById("right1");
             var image = document.getElementById("right2");
