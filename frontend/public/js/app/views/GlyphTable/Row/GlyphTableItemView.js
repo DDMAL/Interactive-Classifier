@@ -14,6 +14,7 @@ export default Marionette.ItemView.extend(
         template,
         viewModel: undefined,
         tableViewModel: undefined,
+        ids: [], // array of ids of selected page glyphs
 
         tagName: 'div',
         className: "glyph-image-container",
@@ -55,12 +56,15 @@ export default Marionette.ItemView.extend(
             this.listenTo(RadioChannels.edit, GlyphEvents.dragSelect,
                 function (boundingBox, additional, isClassifier)
                 {
+                    var isInClassifierPane = this._parent._parent._parent._parent._parent.collection.is_classifier;
                     var id = this.model.attributes.id;
-                    // If drag select is triggered in the classifier glyphs region, highlight classifier glyphs only and unhighlight page glyphs
-                    // If drag select in triggered in the page glyphs region, highlight page glyphs only and unhighlight classifier glyphs
+                    // If drag select is triggered in the classifier glyphs region,
+                    // highlight only the classifier glyphs that overlap the bounding box and unhighlight page glyphs.
+                    // If drag select instriggered in the page glyphs region,
+                    // highlight only the page glyphs that overlap the bounding box and unhighlight classifier glyphs.
                     if (isClassifier)
                     {
-                        if (that.is_classifier)
+                        if (isInClassifierPane)
                         {
                             if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
                             {
@@ -79,12 +83,17 @@ export default Marionette.ItemView.extend(
                     }
                     else
                     {
-                        if (!that.is_classifier)
+                        if (!isInClassifierPane)
                         {
                             if (Geometry.rectangleOverlap(that.getPosition(), boundingBox))
                             {
                                 RadioChannels.edit.trigger(GlyphEvents.selectGlyph, that.model);
                                 RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, id, true);
+                                if (that.model.get("id_state_manual") && !that.ids.includes(id))
+                                {
+                                    that.ids.push(id);
+                                }
+
                             }
                             else if (!additional)
                             {
@@ -93,7 +102,10 @@ export default Marionette.ItemView.extend(
                         }
                         else
                         {
-                            RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, id, false);
+                            if (!that.ids.includes(id))
+                            {
+                                RadioChannels.edit.trigger(GlyphEvents.switchGlyphActivation, id, false);
+                            }
                         }
                     }
                 }
