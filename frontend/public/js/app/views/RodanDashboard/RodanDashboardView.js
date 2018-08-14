@@ -602,10 +602,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     }
                     if (page.getClientRects()[0])
                     {
-                        if (classifier.getClientRects()[0])
-                        {
-                            that.classifierRatio = classifier.getClientRects()[0].height / window.innerHeight;
-                        }
                         that.pageRatio = page.getClientRects()[0].height / window.innerHeight;
                         image.style.height = window.innerHeight - page.getClientRects()[0].bottom + "px";
                     }
@@ -613,7 +609,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     {
                         if (classifier.getClientRects()[0])
                         {
-                            that.classifierRatio = classifier.getClientRects()[0].height / window.innerHeight;
                             image.style.height = window.innerHeight - classifier.getClientRects()[0].bottom + "px";
                         }
                     }
