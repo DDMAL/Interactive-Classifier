@@ -537,6 +537,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
 
             $(document).mousedown(function ()
             {
+                console.log(classifier, page, image);
                 that.isMouseDown = true;
             });
             $(document).mousemove(function (event)
@@ -632,8 +633,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                             }
                         }
                     }
-                    glyphEdit.style.height = window.innerHeight - classEdit.getClientRects()[0].bottom + "px";
-
                     that.rePosition();
                 }
 
@@ -683,8 +682,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
 
                     that.winWidth = currentWinWidth;
                 }
-                glyphEdit.style.top = classEdit.getClientRects()[0].bottom + "px";
-                glyphEdit.style.height = window.innerHeight - classEdit.getClientRects()[0].bottom + "px";
             });
             timer.tick("final");
         },
@@ -767,6 +764,8 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             var page = document.getElementById("right1");
             var image = document.getElementById("right2");
             var collapsePane = document.getElementById("collapse-pane").getClientRects()[0];
+            var classEdit = document.getElementById("left1");
+            var glyphEdit = document.getElementById("left2");
 
             var imageZoomOut = document.getElementById("image-out");
             var imageZoomIn = document.getElementById("image-in");
@@ -809,7 +808,13 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     }
                 }
             }
-            imageZoomOut.style.top = imageZoomIn.style.top = image.getClientRects()[0].top + space + "px";
+
+            if (image.getClientRects()[0])
+            {
+                imageZoomOut.style.top = imageZoomIn.style.top = image.getClientRects()[0].top + space + "px";
+            }
+            glyphEdit.style.height = window.innerHeight - classEdit.getClientRects()[0].bottom + "px";
+            glyphEdit.style.top = classEdit.getClientRects()[0].bottom + "px";
         },
 
         onMouseDown: function ()
