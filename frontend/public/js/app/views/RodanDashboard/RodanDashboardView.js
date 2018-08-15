@@ -527,9 +527,14 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                 child.dataset.originalWidth = child.getAttribute("width");
                 child.dataset.originalHeight = child.getAttribute("height");
             }
+
+            var collapsePane = document.getElementById("collapse-pane");
+            var countPanel = document.getElementById("upper");
             var classifier = document.getElementById("right0");
             var page = document.getElementById("right1");
             var image = document.getElementById("right2");
+            var classEdit = document.getElementById("left1");
+            var glyphEdit = document.getElementById("left2");
 
             page.style.top = classifier.getClientRects()[0].bottom + "px";
             image.style.top = page.getClientRects()[0].bottom + "px";
@@ -537,7 +542,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
 
             $(document).mousedown(function ()
             {
-                console.log(classifier, page, image);
                 that.isMouseDown = true;
             });
             $(document).mousemove(function (event)
@@ -549,14 +553,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     {
                         that.isMouseDown = false;
                     }
-
-                    var collapsePane = document.getElementById("collapse-pane");
-                    var countPanel = document.getElementById("upper");
-                    var classifier = document.getElementById("right0");
-                    var page = document.getElementById("right1");
-                    var image = document.getElementById("right2");
-                    var classEdit = document.getElementById("left1");
-                    var glyphEdit = document.getElementById("left2");
 
                     // Maintain height of the collapse buttons
                     collapsePane.style.height = that.collapseHeight + "px";
@@ -642,13 +638,6 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             {
                 var currentWinHeight = window.innerHeight;
                 var currentWinWidth = window.innerWidth;
-                var classEdit = document.getElementById("left1");
-                var glyphEdit = document.getElementById("left2");
-                var collapsePane = document.getElementById("collapse-pane");
-                var countPanel = document.getElementById("upper");
-                var classifier = document.getElementById("right0");
-                var page = document.getElementById("right1");
-                var image = document.getElementById("right2");
 
                 document.getElementById("collapse-pane").style.height = that.collapseHeight + "px";
 
