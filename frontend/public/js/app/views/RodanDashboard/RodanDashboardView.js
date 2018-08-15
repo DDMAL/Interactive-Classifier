@@ -768,6 +768,10 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             var image = document.getElementById("right2");
             var collapsePane = document.getElementById("collapse-pane").getClientRects()[0];
 
+            var imageZoomOut = document.getElementById("image-out");
+            var imageZoomIn = document.getElementById("image-in");
+            var space = 1; // this keeps the zoom buttons slightly below the image's top border
+
             if (classifier.getClientRects()[0])
             {
                 classifier.style.top = collapsePane.bottom + "px";
@@ -805,6 +809,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     }
                 }
             }
+            imageZoomOut.style.top = imageZoomIn.style.top = image.getClientRects()[0].top + space + "px";
         },
 
         onMouseDown: function ()
