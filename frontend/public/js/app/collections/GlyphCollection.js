@@ -22,6 +22,6 @@ export default Backbone.Collection.extend(
          */
         comparator: function (glyph)
         {
-            return -glyph.get("confidence");
+            return -glyph.get("id_state_manual");
         }
     });
