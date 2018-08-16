@@ -34,6 +34,13 @@ export default Marionette.ItemView.extend(
                     this.onDelete(deleteClass);
                 }
             );
+            var that = this;
+            this.listenTo(RadioChannels.edit, ClassEvents.renameClass,
+                function(oldName, newName)
+                {
+                    that.scrollToClass(newName);
+                }
+            );
         },
 
         /**
@@ -93,9 +100,10 @@ export default Marionette.ItemView.extend(
             var rows = document.getElementsByClassName("active");
             for (var i = 0; i < rows.length; i++)
             {
-                if (rows[i].textContent === className)
+                if (rows[i].textContent.startsWith(className))
                 {
                     rows[i].scrollIntoView({block: "start"});
+                    break;
                 }
             }
         },
