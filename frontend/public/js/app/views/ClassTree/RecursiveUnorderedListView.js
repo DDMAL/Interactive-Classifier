@@ -97,13 +97,25 @@ export default Marionette.ItemView.extend(
 
         scrollToClass: function(className)
         {
+            var match = false;
             var rows = document.getElementsByClassName("active");
             for (var i = 0; i < rows.length; i++)
             {
-                if (rows[i].textContent.startsWith(className))
+                if (rows[i].textContent === className)
                 {
                     rows[i].scrollIntoView({block: "start"});
-                    break;
+                    match = true;
+                }
+            }
+            if (!match)
+            {
+                for (i = 0; i < rows.length; i++)
+                {
+                    if (rows[i].textContent.startsWith(className))
+                    {
+                        rows[i].scrollIntoView({block: "start"});
+                        match = true;
+                    }
                 }
             }
         },
