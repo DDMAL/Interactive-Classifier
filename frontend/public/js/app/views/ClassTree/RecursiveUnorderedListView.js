@@ -49,6 +49,7 @@ export default Marionette.ItemView.extend(
             // Extract the name from the HTML5 data attribute.
             var className = event.target.dataset.name;
             RadioChannels.edit.trigger(GlyphEvents.clickGlyphName, className);
+            this.scrollToClass(className);
         },
 
         /**
@@ -84,7 +85,19 @@ export default Marionette.ItemView.extend(
             {
                 RadioChannels.edit.trigger(ClassEvents.openClassEdit, className);
             }
+            this.scrollToClass(className);
+        },
 
+        scrollToClass: function(className)
+        {
+            var rows = document.getElementsByClassName("active");
+            for (var i = 0; i < rows.length; i++)
+            {
+                if (rows[i].textContent === className)
+                {
+                    rows[i].scrollIntoView({block: "start"});
+                }
+            }
         },
 
         onDelete: function(className)
