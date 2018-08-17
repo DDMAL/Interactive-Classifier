@@ -514,10 +514,12 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             this.collapseWidth  = document.getElementById("collapse-button").getClientRects()[0].width;
             this.winWidth = window.innerWidth;
             this.winHeight = window.innerHeight;
+            this.navHeight = 125;
+            var panesHeight = window.innerHeight - this.navHeight;
 
-            this.classifierRatio = document.getElementById("right0").getClientRects()[0].height / window.innerHeight;
-            this.pageRatio = document.getElementById("right1").getClientRects()[0].height / window.innerHeight;
-            this.imageRatio = document.getElementById("right2").getClientRects()[0].height / window.innerHeight;
+            this.classifierRatio = document.getElementById("right0").getClientRects()[0].height / panesHeight;
+            this.pageRatio = document.getElementById("right1").getClientRects()[0].height / panesHeight;
+            this.imageRatio = document.getElementById("right2").getClientRects()[0].height / panesHeight;
             that.widthRatio = document.getElementById("left1").getClientRects()[0].width / window.innerWidth;
 
             var elms = document.getElementsByClassName("glyph-image-container");
@@ -593,14 +595,14 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     // Make sure the panels fill the browser window
                     if (image.getClientRects()[0])
                     {
-                        that.imageRatio = image.getClientRects()[0].height / window.innerHeight;
+                        that.imageRatio = image.getClientRects()[0].height / panesHeight;
                     }
                     if (classifier.getClientRects()[0])
                     {
-                        that.classifierRatio = classifier.getClientRects()[0].height / window.innerHeight;
+                        that.classifierRatio = classifier.getClientRects()[0].height / panesHeight;
                         if (page.getClientRects()[0])
                         {
-                            that.pageRatio = page.getClientRects()[0].height / window.innerHeight;
+                            that.pageRatio = page.getClientRects()[0].height / panesHeight;
                             if (image.getClientRects()[0])
                             {
                                 image.style.height = window.innerHeight - page.getClientRects()[0].bottom + "px";
@@ -622,7 +624,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     {
                         if (page.getClientRects()[0])
                         {
-                            that.pageRatio = page.getClientRects()[0].height / window.innerHeight;
+                            that.pageRatio = page.getClientRects()[0].height / panesHeight;
                             if (image.getClientRects()[0])
                             {
                                 image.style.height = window.innerHeight - page.getClientRects()[0].bottom + "px";
@@ -638,15 +640,16 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             {
                 var currentWinHeight = window.innerHeight;
                 var currentWinWidth = window.innerWidth;
+                var panesHeight = window.innerHeight - that.navHeight;
 
                 document.getElementById("collapse-pane").style.height = that.collapseHeight + "px";
 
                 // If the height of the browser changed, update the heights of the panes
                 if (that.winHeight !== currentWinHeight)
                 {
-                    classifier.style.height = that.classifierRatio * currentWinHeight + "px";
-                    page.style.height = that.pageRatio * currentWinHeight + "px";
-                    image.style.height = that.imageRatio * currentWinHeight + "px";
+                    classifier.style.height = that.classifierRatio * panesHeight + "px";
+                    page.style.height = that.pageRatio * panesHeight + "px";
+                    image.style.height = that.imageRatio * panesHeight + "px";
                     that.winHeight = currentWinHeight;
                 }
                 that.rePosition();
@@ -682,7 +685,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             var page = document.getElementById("right1");
             var image = document.getElementById("right2");
             var height = window.innerHeight;
-            var panesHeight = height - 125;
+            var panesHeight = height - this.navHeight;
 
             var collClassifier = document.getElementById("collapse-button");
             var collPage = document.getElementById("collapse-page");
@@ -742,7 +745,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             if (classifier.getClientRects()[0])
             {
                 collClassifier.style.background = "white";
-                this.classifierRatio = classifier.getClientRects()[0].height / height;
+                this.classifierRatio = classifier.getClientRects()[0].height / panesHeight;
             }
             else
             {
@@ -753,7 +756,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             if (page.getClientRects()[0])
             {
                 collPage.style.background = "white";
-                this.pageRatio = page.getClientRects()[0].height / height;
+                this.pageRatio = page.getClientRects()[0].height / panesHeight;
             }
             else
             {
@@ -764,7 +767,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             if (image.getClientRects()[0])
             {
                 collImage.style.background = "white";
-                this.imageRatio = image.getClientRects()[0].height / height;
+                this.imageRatio = image.getClientRects()[0].height / panesHeight;
             }
             else
             {
