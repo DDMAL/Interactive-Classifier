@@ -95,27 +95,25 @@ export default Marionette.ItemView.extend(
             this.scrollToClass(className);
         },
 
+        // Scroll to the class name that was clicked on
+        // If it doesn't exist, scroll to its parent class
         scrollToClass: function(className)
         {
-            var match = false;
+            var match;
             var rows = document.getElementsByClassName("active");
             for (var i = 0; i < rows.length; i++)
             {
-                if (rows[i].textContent === className)
+                if (rows[i].textContent.startsWith(className))
                 {
-                    rows[i].scrollIntoView({block: "start"});
-                    match = true;
+                    match = rows[i].textContent;
+                    break;
                 }
             }
-            if (!match)
+            for (i = 0; i < rows.length; i++)
             {
-                for (i = 0; i < rows.length; i++)
+                if (rows[i].textContent === match)
                 {
-                    if (rows[i].textContent.startsWith(className))
-                    {
-                        rows[i].scrollIntoView({block: "start"});
-                        match = true;
-                    }
+                    rows[i].scrollIntoView({block: "start"});
                 }
             }
         },
