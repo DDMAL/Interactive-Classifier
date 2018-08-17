@@ -683,10 +683,25 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             var image = document.getElementById("right2");
             var height = window.innerHeight - 125;
 
+            var collClassifier = document.getElementById("collapse-button");
+            var collPage = document.getElementById("collapse-page");
+            var collImage = document.getElementById("collapse-image");
+
+            if (image.getClientRects()[0])
+            {
+                collImage.style.background = "white";
+            }
+            else
+            {
+                collImage.style.background = "#8c8c8c";
+            }
+
             if (classifier.getClientRects()[0])
             {
+                collClassifier.style.background = "white";
                 if (page.getClientRects()[0])
                 {
+                    collPage.style.background = "white";
                     if (image.getClientRects()[0])
                     {
                         this.classifierRatio = this.pageRatio = this.imageRatio = 1 / 3;
@@ -699,6 +714,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                 }
                 else
                 {
+                    collPage.style.background = "#8c8c8c";
                     if (image.getClientRects()[0])
                     {
                         this.classifierRatio = this.imageRatio = 1 / 2;
@@ -714,8 +730,10 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             }
             else
             {
+                collClassifier.style.background = "#8c8c8c";
                 if (page.getClientRects()[0])
                 {
+                    collPage.style.background = "white";
                     if (image.getClientRects()[0])
                     {
                         this.pageRatio = this.imageRatio = 1 / 2;
@@ -729,6 +747,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                 }
                 else
                 {
+                    collPage.style.background = "#8c8c8c";
                     if (image.getClientRects()[0])
                     {
                         this.imageRatio = 1;
