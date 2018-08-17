@@ -95,8 +95,8 @@ export default Marionette.ItemView.extend(
             this.scrollToClass(className);
         },
 
-        // Scroll to the class name that was clicked on
-        // If it doesn't exist, scroll to its parent class
+        // Scroll to the class name that was clicked or right-clicked
+        // If it doesn't exist, scroll to its first subclass
         scrollToClass: function(className)
         {
             var match;
