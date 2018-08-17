@@ -647,9 +647,40 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                 // If the height of the browser changed, update the heights of the panes
                 if (that.winHeight !== currentWinHeight)
                 {
-                    classifier.style.height = that.classifierRatio * panesHeight + "px";
-                    page.style.height = that.pageRatio * panesHeight + "px";
-                    image.style.height = that.imageRatio * panesHeight + "px";
+                    if (classifier.getClientRects()[0])
+                    {
+                        classifier.style.height = that.classifierRatio * panesHeight + "px";
+                        if (page.getClientRects()[0])
+                        {
+                            if (image.getClientRects()[0])
+                            {
+                                page.style.height = that.pageRatio * panesHeight + "px";
+                                image.style.height = currentWinHeight - page.getClientRects()[0].bottom + "px";
+                            }
+                            else
+                            {
+                                page.style.height = currentWinHeight - classifier.getClientRects()[0].bottom + "px";
+                            }
+                        }
+                        else
+                        {
+                            if (image.getClientRects)
+                            {
+                                image.style.height = currentWinHeight - classifier.getClientRects()[0].bottom + "px";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (page.getClientRects()[0])
+                        {
+                            page.style.height = that.pageRatio * panesHeight + "px";
+                            if (image.getClientRects()[0])
+                            {
+                                image.style.height = currentWinHeight - page.getClientRects()[0].bottom + "px";
+                            }
+                        }
+                    }
                     that.winHeight = currentWinHeight;
                 }
                 that.rePosition();
@@ -693,17 +724,18 @@ var RodanDashboardView = Marionette.LayoutView.extend(
 
             if (classifier.getClientRects()[0])
             {
+                classifier.style.height = panesHeight / 3 + "px";
                 if (page.getClientRects()[0])
                 {
+                    page.style.top = classifier.getClientRects()[0].bottom + "px";
                     if (image.getClientRects()[0])
                     {
                         page.style.height = panesHeight / 3 + "px";
-                        image.style.height = panesHeight - page.getClientRects()[0].height + "px";
+                        image.style.height = height - page.getClientRects()[0].bottom + "px";
                     }
                     else
                     {
-                        classifier.style.height = panesHeight / 3 + "px";
-                        page.style.height = panesHeight - classifier.getClientRects()[0].height + "px";
+                        page.style.height = height - classifier.getClientRects()[0].bottom + "px";
                     }
                 }
                 else
@@ -711,7 +743,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     if (image.getClientRects()[0])
                     {
                         classifier.style.height = panesHeight / 3 + "px";
-                        image.style.height = panesHeight - classifier.getClientRects()[0].height + "px";
+                        image.style.height = height - classifier.getClientRects()[0].bottom + "px";
                     }
                     else
                     {
@@ -723,10 +755,11 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             {
                 if (page.getClientRects()[0])
                 {
+                    page.style.top = collClassifier.getClientRects()[0].bottom + "px";
                     if (image.getClientRects()[0])
                     {
                         page.style.height = panesHeight / 3 + "px";
-                        image.style.height = panesHeight - page.getClientRects()[0].height + "px";
+                        image.style.height = height - page.getClientRects()[0].bottom + "px";
                     }
                     else
                     {
