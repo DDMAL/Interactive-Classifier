@@ -680,6 +680,13 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                                 image.style.height = currentWinHeight - page.getClientRects()[0].bottom + "px";
                             }
                         }
+                        else
+                        {
+                            if (image.getClientRects()[0])
+                            {
+                                image.style.height = that.imageRatio * panesHeight + "px";
+                            }
+                        }
                     }
                     that.winHeight = currentWinHeight;
                 }
