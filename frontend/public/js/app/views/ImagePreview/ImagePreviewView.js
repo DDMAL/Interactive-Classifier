@@ -99,7 +99,7 @@ export default Marionette.ItemView.extend(
                 // If the user is zooming, then it will stay scroll to the highlighted glyph
                 if (!this.isHover)
                 {
-                    elems[0].scrollIntoView({inline: "center"});
+                    elems[0].scrollIntoView({block: "center", inline: "center"});
                 }
             }
         },
