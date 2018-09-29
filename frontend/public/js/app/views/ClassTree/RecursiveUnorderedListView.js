@@ -34,6 +34,13 @@ export default Marionette.ItemView.extend(
                     this.onDelete(deleteClass);
                 }
             );
+            var that = this;
+            this.listenTo(RadioChannels.edit, ClassEvents.renameClass,
+                function(oldName, newName)
+                {
+                    that.scrollToClass(newName);
+                }
+            );
         },
 
         /**
