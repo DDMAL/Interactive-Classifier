@@ -1,45 +1,51 @@
 # Interactive Classifier
 
+## Deployment Instructions
+
+### Installing the Latest Version
+
 The Gamera Interactive Classifier is deployed as a Rodan [Job Package](https://github.com/DDMAL/Rodan/wiki/Write-a-Rodan-job-package).
 
-## Installation
+First, clone the Interactive Classifier repository inside `/path/to/rodan-docker/jobs/Interactive-Classifier`.
 
-- Follow the [rodan-docker guide](https://github.com/DDMAL/rodan-docker/blob/master/README.md) to set up Docker.
-- Clone this Interactive Classifier repo inside `rodan-docker/jobs` using
-  ``` 
-  git clone --recurse-submodules https://github.com/DDMAL/Interactive-Classifier.git
-  ```
-  - If using an older version of `git` (pre-2.13) and the above command fails, instead run 
-      ```
-     git clone https://github.com/DDMAL/Interactive-Classifier.git
-     git submodule update --init --recursive
-     ```
-  - If you already have an outdated version of this repository cloned, then pull all the changes and run
-     ```
-     git submodule update --init --recursive
-     ```
-- Open up `jobs/settings.py` in a text editor. Replace `demojob` with `interactive_classifier` to include the path to the Interactive Classifier folder in the Rodan Job Package registration. This should look something like the following
-    ``` python
-    RODAN_JOB_PACKAGES = (
-      "rodan.jobs.interactive_classifier",
-      # Paths to other jobs
-    )
-    ```
-- Open `docker-compose.job-dev.yml` and replace the occurrence of `demojob` with 
-  ```
-  - ./jobs/Interactive-Classifier/rodan_job:/code/rodan/rodan/jobs/interactive_classifier
-  ```
-- The Interactive Classifier should now be available in any Rodan workflow.
+Open `/path/to/rodan-docker/docker-compose.job-dev.yml`. Under `volumes`, add the following link to the Interactive Classifier:  
+`- ./jobs/Interactive-Classifier/rodan_job:/code/rodan/rodan/jobs/interactive_classifier`
 
-## Running Rodan
+Open `/path/to/rodan-docker/jobs/settings.py`. Remove `"rodan.jobs.interactive_classifier"` from the `RODAN_JOB_PACKAGES` tuple, if it exists.  Save `settings.py`. This will remove the built-in Interactive Classifier.
 
-Once the installation steps above are complete, run Rodan with the following command:
-  ```
-  docker-compose -f docker-compose.yml -f docker-compose.job-dev.yml up
-  ```
-  
-To view the Rodan web interface, point your browser to http://localhost:9002, or http://localhost:8000 for the Rest API.
+In the command line, go to `path/to/rodan-docker` and run 
+````
+docker-compose -f docker-compose.yml -f docker-compose.job-dev.yml up
+````
 
-For instructions on how to use the Interactive Classifier in the Rodan workflow, please see the [wiki](https://github.com/DDMAL/Interactive-Classifier/wiki/Creating-an-Interactive-Classifier-Rodan-Workflow).
+Once Rodan finishes setting up, stop it by pressing `Ctrl + C`.
 
+Open `/path/to/Rodan/rodan/settings.py`. Add `"rodan.jobs.interactive_classifier"` to the `RODAN_JOB_PACKAGES` tuple.
+Save `settings.py` and run Rodan again. 
 
+The Interactive Classifier in Rodan will be the latest version.
+
+### Resetting to the Built-in Version
+
+To remove the latest Interactive Classifier and use the built-in version, open `/path/to/rodan-docker/jobs/settings.py` and remove `"rodan.jobs.interactive_classifier"` from the `RODAN_JOB_PACKAGES`. 
+
+Open `/path/to/rodan-docker/docker-compose.job-dev.yml`. Under `volumes`, remove  
+`- ./jobs/Interactive-Classifier/rodan_job:/code/rodan/rodan/jobs/interactive_classifier`
+
+In the command line, go to `path/to/rodan-docker` and run 
+````
+docker-compose -f docker-compose.yml -f docker-compose.job-dev.yml up
+````
+Open `/path/to/Rodan/rodan/settings.py`. Add `"rodan.jobs.interactive_classifier"` to the `RODAN_JOB_PACKAGES` tuple.
+Save `settings.py` and run Rodan again. 
+
+The Interactive Classifier in Rodan will be the built-in version.
+
+### Running webpack:
+Go in Interactive-Classifier/frontend
+run:
+````
+npm install
+npm install --save bootstrap jquery backbone backbone.radio backbone.marionette@2.4.7 minimatch tough-cookie
+./node_modules/.bin/gulp
+````

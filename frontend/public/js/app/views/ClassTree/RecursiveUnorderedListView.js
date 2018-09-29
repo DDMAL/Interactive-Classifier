@@ -34,6 +34,13 @@ export default Marionette.ItemView.extend(
                     this.onDelete(deleteClass);
                 }
             );
+            var that = this;
+            this.listenTo(RadioChannels.edit, ClassEvents.renameClass,
+                function(oldName, newName)
+                {
+                    that.scrollToClass(newName);
+                }
+            );
         },
 
         /**
@@ -49,6 +56,7 @@ export default Marionette.ItemView.extend(
             // Extract the name from the HTML5 data attribute.
             var className = event.target.dataset.name;
             RadioChannels.edit.trigger(GlyphEvents.clickGlyphName, className);
+            this.scrollToClass(className);
         },
 
         /**
@@ -84,7 +92,30 @@ export default Marionette.ItemView.extend(
             {
                 RadioChannels.edit.trigger(ClassEvents.openClassEdit, className);
             }
+            this.scrollToClass(className);
+        },
 
+        // Scroll to the class name that was clicked or right-clicked
+        // If it doesn't exist, scroll to its first subclass
+        scrollToClass: function(className)
+        {
+            var match;
+            var rows = document.getElementsByClassName("active");
+            for (var i = 0; i < rows.length; i++)
+            {
+                if (rows[i].textContent.startsWith(className))
+                {
+                    match = rows[i].textContent;
+                    break;
+                }
+            }
+            for (i = 0; i < rows.length; i++)
+            {
+                if (rows[i].textContent === match)
+                {
+                    rows[i].scrollIntoView({block: "start"});
+                }
+            }
         },
 
         onDelete: function(className)

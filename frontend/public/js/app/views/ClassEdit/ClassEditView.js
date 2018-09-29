@@ -17,8 +17,8 @@ export default Marionette.ItemView.extend({
     },
 
     events: {
-        "click #delete": "delete",
-        "click #update": "update"
+        "submit": "onSubmitForm",
+        "click #delete": "delete"
     },
 
     modelEvents: {
@@ -39,7 +39,7 @@ export default Marionette.ItemView.extend({
         return output;
     },
 
-    update: function(event)
+    onSubmitForm: function(event)
     {
         if (event)
         {

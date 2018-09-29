@@ -222,6 +222,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     });
                     this.model.set('classNames', newClasses);
                     this.clearEditRegion();
+                    RadioChannels.edit.trigger(PageEvents.changeBackground);
                 });
 
             this.listenTo(RadioChannels.edit, ClassEvents.renameClass,
@@ -251,6 +252,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     });
                     this.model.set('classNames', renamedClasses);
                     this.openClassEdit(newName);
+                    RadioChannels.edit.trigger(PageEvents.changeBackground);
                 });
 
             // Glyph Editing Events
@@ -514,12 +516,10 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             this.collapseWidth  = document.getElementById("collapse-button").getClientRects()[0].width;
             this.winWidth = window.innerWidth;
             this.winHeight = window.innerHeight;
-            this.navHeight = 125;
-            var panesHeight = window.innerHeight - this.navHeight;
 
-            this.classifierRatio = document.getElementById("right0").getClientRects()[0].height / panesHeight;
-            this.pageRatio = document.getElementById("right1").getClientRects()[0].height / panesHeight;
-            this.imageRatio = document.getElementById("right2").getClientRects()[0].height / panesHeight;
+            this.classifierRatio = document.getElementById("right0").getClientRects()[0].height / window.innerHeight;
+            this.pageRatio = document.getElementById("right1").getClientRects()[0].height / window.innerHeight;
+            this.imageRatio = document.getElementById("right2").getClientRects()[0].height / window.innerHeight;
             that.widthRatio = document.getElementById("left1").getClientRects()[0].width / window.innerWidth;
 
             var elms = document.getElementsByClassName("glyph-image-container");
@@ -595,14 +595,14 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     // Make sure the panels fill the browser window
                     if (image.getClientRects()[0])
                     {
-                        that.imageRatio = image.getClientRects()[0].height / panesHeight;
+                        that.imageRatio = image.getClientRects()[0].height / window.innerHeight;
                     }
                     if (classifier.getClientRects()[0])
                     {
-                        that.classifierRatio = classifier.getClientRects()[0].height / panesHeight;
+                        that.classifierRatio = classifier.getClientRects()[0].height / window.innerHeight;
                         if (page.getClientRects()[0])
                         {
-                            that.pageRatio = page.getClientRects()[0].height / panesHeight;
+                            that.pageRatio = page.getClientRects()[0].height / window.innerHeight;
                             if (image.getClientRects()[0])
                             {
                                 image.style.height = window.innerHeight - page.getClientRects()[0].bottom + "px";
@@ -624,7 +624,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     {
                         if (page.getClientRects()[0])
                         {
-                            that.pageRatio = page.getClientRects()[0].height / panesHeight;
+                            that.pageRatio = page.getClientRects()[0].height / window.innerHeight;
                             if (image.getClientRects()[0])
                             {
                                 image.style.height = window.innerHeight - page.getClientRects()[0].bottom + "px";
@@ -640,54 +640,15 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             {
                 var currentWinHeight = window.innerHeight;
                 var currentWinWidth = window.innerWidth;
-                var panesHeight = window.innerHeight - that.navHeight;
 
                 document.getElementById("collapse-pane").style.height = that.collapseHeight + "px";
 
                 // If the height of the browser changed, update the heights of the panes
                 if (that.winHeight !== currentWinHeight)
                 {
-                    if (classifier.getClientRects()[0])
-                    {
-                        classifier.style.height = that.classifierRatio * panesHeight + "px";
-                        if (page.getClientRects()[0])
-                        {
-                            if (image.getClientRects()[0])
-                            {
-                                page.style.height = that.pageRatio * panesHeight + "px";
-                                image.style.height = currentWinHeight - page.getClientRects()[0].bottom + "px";
-                            }
-                            else
-                            {
-                                page.style.height = currentWinHeight - classifier.getClientRects()[0].bottom + "px";
-                            }
-                        }
-                        else
-                        {
-                            if (image.getClientRects)
-                            {
-                                image.style.height = currentWinHeight - classifier.getClientRects()[0].bottom + "px";
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (page.getClientRects()[0])
-                        {
-                            page.style.height = that.pageRatio * panesHeight + "px";
-                            if (image.getClientRects()[0])
-                            {
-                                image.style.height = currentWinHeight - page.getClientRects()[0].bottom + "px";
-                            }
-                        }
-                        else
-                        {
-                            if (image.getClientRects()[0])
-                            {
-                                image.style.height = that.imageRatio * panesHeight + "px";
-                            }
-                        }
-                    }
+                    classifier.style.height = that.classifierRatio * currentWinHeight + "px";
+                    page.style.height = that.pageRatio * currentWinHeight + "px";
+                    image.style.height = that.imageRatio * currentWinHeight + "px";
                     that.winHeight = currentWinHeight;
                 }
                 that.rePosition();
@@ -722,39 +683,34 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             var classifier = document.getElementById("right0");
             var page = document.getElementById("right1");
             var image = document.getElementById("right2");
-            var height = window.innerHeight;
-            var panesHeight = height - this.navHeight;
-
-            var collClassifier = document.getElementById("collapse-button");
-            var collPage = document.getElementById("collapse-page");
-            var collImage = document.getElementById("collapse-image");
+            var height = window.innerHeight - 125;
 
             if (classifier.getClientRects()[0])
             {
-                classifier.style.height = panesHeight / 3 + "px";
                 if (page.getClientRects()[0])
                 {
-                    page.style.top = classifier.getClientRects()[0].bottom + "px";
                     if (image.getClientRects()[0])
                     {
-                        page.style.height = panesHeight / 3 + "px";
-                        image.style.height = height - page.getClientRects()[0].bottom + "px";
+                        this.classifierRatio = this.pageRatio = this.imageRatio = 1 / 3;
                     }
                     else
                     {
-                        page.style.height = height - classifier.getClientRects()[0].bottom + "px";
+                        this.classifierRatio = this.pageRatio = 1 / 2;
+                        this.imageRatio = 0;
                     }
                 }
                 else
                 {
                     if (image.getClientRects()[0])
                     {
-                        classifier.style.height = panesHeight / 3 + "px";
-                        image.style.height = height - classifier.getClientRects()[0].bottom + "px";
+                        this.classifierRatio = this.imageRatio = 1 / 2;
+                        this.pageRatio = 0;
+
                     }
                     else
                     {
-                        classifier.style.height = panesHeight + "px";
+                        this.classifierRatio = 1;
+                        this.pageRatio = this.imageRatio = 0;
                     }
                 }
             }
@@ -762,58 +718,33 @@ var RodanDashboardView = Marionette.LayoutView.extend(
             {
                 if (page.getClientRects()[0])
                 {
-                    page.style.top = collClassifier.getClientRects()[0].bottom + "px";
                     if (image.getClientRects()[0])
                     {
-                        page.style.height = panesHeight / 3 + "px";
-                        image.style.height = height - page.getClientRects()[0].bottom + "px";
+                        this.pageRatio = this.imageRatio = 1 / 2;
+                        this.classifierRatio = 0;
                     }
                     else
                     {
-                        page.style.height = panesHeight + "px";
+                        this.pageRatio = 1;
+                        this.classifierRatio = this.imageRatio = 0;
                     }
                 }
                 else
                 {
                     if (image.getClientRects()[0])
                     {
-                        image.style.height = panesHeight + "px";
+                        this.imageRatio = 1;
+                        this.classifierRatio = this.pageRatio = 0;
+                    }
+                    else
+                    {
+                        this.classifierRatio = this.pageRatio = this.imageRatio = 0;
                     }
                 }
             }
-
-            if (classifier.getClientRects()[0])
-            {
-                collClassifier.style.background = "white";
-                this.classifierRatio = classifier.getClientRects()[0].height / panesHeight;
-            }
-            else
-            {
-                collClassifier.style.background = "#8c8c8c";
-                this.classifierRatio = 0;
-            }
-
-            if (page.getClientRects()[0])
-            {
-                collPage.style.background = "white";
-                this.pageRatio = page.getClientRects()[0].height / panesHeight;
-            }
-            else
-            {
-                collPage.style.background = "#8c8c8c";
-                this.pageRatio = 0;
-            }
-
-            if (image.getClientRects()[0])
-            {
-                collImage.style.background = "white";
-                this.imageRatio = image.getClientRects()[0].height / panesHeight;
-            }
-            else
-            {
-                collImage.style.background = "#8c8c8c";
-                this.imageRatio = 0;
-            }
+            classifier.style.height = this.classifierRatio * height + "px";
+            page.style.height = this.pageRatio * height + "px";
+            image.style.height = this.imageRatio * height + "px";
 
             this.rePosition();
         },
