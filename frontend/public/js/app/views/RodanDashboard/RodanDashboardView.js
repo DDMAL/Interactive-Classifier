@@ -222,6 +222,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     });
                     this.model.set('classNames', newClasses);
                     this.clearEditRegion();
+                    RadioChannels.edit.trigger(PageEvents.changeBackground);
                 });
 
             this.listenTo(RadioChannels.edit, ClassEvents.renameClass,
@@ -251,6 +252,7 @@ var RodanDashboardView = Marionette.LayoutView.extend(
                     });
                     this.model.set('classNames', renamedClasses);
                     this.openClassEdit(newName);
+                    RadioChannels.edit.trigger(PageEvents.changeBackground);
                 });
 
             // Glyph Editing Events
