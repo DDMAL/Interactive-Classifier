@@ -13,7 +13,12 @@
             <span class="counter"><%- selectedGlyphs %></span>
         </div>
     </div>
-    <button id="collapse-button" class="col-md-2 col-md-push-3" data-toggle="collapse" data-target="#right0">Classifier Glyphs</button>
+    <div class="col-md-2 col-md-push-3" id="collapse-pane">
+        <button class="coll-btn" id="collapse-button">Classifier Glyphs</button>
+        <button class="coll-btn" id="collapse-page">Page Glyphs</button>
+        <button class="coll-btn" id="collapse-image">Preview Image</button>
+    </div>
+
     <button id="zoom-in" class="glyph-zoom">
         <span class="glyphicon glyphicon-plus"></span>
     </button>

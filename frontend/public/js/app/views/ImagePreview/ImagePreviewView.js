@@ -26,8 +26,8 @@ export default Marionette.ItemView.extend(
         mouseDownX: 0,
         mouseDownY: 0,
         zoomCount: 0,
-        zoomLevel: 1.4,
-        maxZoomCount: 10,
+        zoomLevel: 1.25,
+        maxZoomCount: 11,
         isZoomIn: false,
 
         /**
@@ -273,7 +273,10 @@ export default Marionette.ItemView.extend(
                     if (pic.style.height === "" || pic.style.height === "0px")
                     {
                         pic = document.getElementsByClassName("preview-background")[0];
-                        var h = pic.getClientRects()[0].height;
+                        if (pic.getClientRects()[0])
+                        {
+                            var h = pic.getClientRects()[0].height;
+                        }
                         // Don't assign the height if h==0
                         if (h !== 0)
                         {
