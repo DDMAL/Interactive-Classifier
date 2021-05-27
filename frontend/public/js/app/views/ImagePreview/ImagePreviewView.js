@@ -272,14 +272,6 @@ export default Marionette.ItemView.extend(
 
                 }
             });
-            this.isZoomIn = false;
-            this.zoomCount--;
-            if (this.zoomCount > -this.maxZoomCount) {
-                RadioChannels.edit.trigger(PageEvents.zoom, this.zoomLevel, this.isZoomIn);
-            }
-            else {
-                this.zoomCount++;
-            }
         },
 
         imageZoomIn: function (event) {
