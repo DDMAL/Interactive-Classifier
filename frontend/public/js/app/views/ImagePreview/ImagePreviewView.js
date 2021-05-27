@@ -11,7 +11,7 @@ import RadioChannels from "radio/RadioChannels";
  *
  * This view displays the preview of the entire document page at the bottom right of the window.
  *
- * Calling highlightGlyph() draws a red highlight box over a particular glyph on the page.
+ * Calling highlightGlyph() draws a purple highlight box over a particular glyph on the page.
  *
  * @constructs ImagePreviewView
  */
@@ -54,21 +54,18 @@ export default Marionette.ItemView.extend(
          *
          * @param {Glyph} glyphs - A collection of Glyph models.
          */
-        highlightGlyph: function (glyphs)
-        {
+        highlightGlyph: function (glyphs) {
             // Change the dimensions of our highlight box to match those of the
             // glyph.
 
             // Getting rid of all the previously selected glyphs
             var elems = document.getElementsByClassName("preview-highlight");
-            while (elems.length > 0)
-            {
+            while (elems.length > 0) {
                 var elem = elems[0];
                 elem.parentNode.removeChild(elem);
             }
 
-            for (var i = 0; i < glyphs.length; i++)
-            {
+            for (var i = 0; i < glyphs.length; i++) {
                 var glyph = glyphs[i];
                 var pic = document.getElementsByClassName("preview-background")[0];
                 var zoomLevel = pic.getBoundingClientRect().height / pic.dataset.originalHeight;
@@ -90,26 +87,22 @@ export default Marionette.ItemView.extend(
                 this.el.appendChild(el);
             }
 
-            if (glyphs.length > 0)
-            {
+            if (glyphs.length > 0) {
                 // Scroll to the highlight of the first selected glyph
                 elems = document.getElementsByClassName("preview-highlight");
 
                 // If the user selected the glyph from the preview image, the page won't shift
                 // If the user is zooming, then it will stay scroll to the highlighted glyph
-                if (!this.isHover)
-                {
-                    elems[0].scrollIntoView({block: "center", inline: "center"});
+                if (!this.isHover) {
+                    elems[0].scrollIntoView({ block: "center", inline: "center" });
                 }
             }
         },
 
         // Remove the highlight of previously selected glyphs
-        unhighlightGlyphs: function ()
-        {
+        unhighlightGlyphs: function () {
             var elems = document.getElementsByClassName("preview-highlight");
-            while (elems.length > 0)
-            {
+            while (elems.length > 0) {
                 var elem = elems[0];
                 elem.parentNode.removeChild(elem);
             }
@@ -122,8 +115,7 @@ export default Marionette.ItemView.extend(
          *
          * @param event jQuery event object.
          */
-        onMouseDown: function (event)
-        {
+        onMouseDown: function (event) {
 
             this.ui.highlight.css({
                 top: 0,
@@ -153,10 +145,8 @@ export default Marionette.ItemView.extend(
          *
          * @param event jQuery event object.
          */
-        onMouseUp: function (event)
-        {
-            if (this.isMouseDown === true)
-            {
+        onMouseUp: function (event) {
+            if (this.isMouseDown === true) {
                 this.isMouseDown = false;
                 var x = event.clientX,
                     y = event.clientY;
@@ -166,8 +156,7 @@ export default Marionette.ItemView.extend(
 
                 var that = this;
 
-                if (width !== 0 && height !== 0 && (width * height) > 10)
-                {
+                if (width !== 0 && height !== 0 && (width * height) > 10) {
                     // boundingBox is the dimensions of the drag selection.  We will
                     // use these dimensions to test whether or not individual glyphs
                     // have been selected.
@@ -183,8 +172,7 @@ export default Marionette.ItemView.extend(
                     // If the user holds shift, then this selection is an additional selection
                     var isAdditional = event.shiftKey === true;
 
-                    if (!isAdditional)
-                    {
+                    if (!isAdditional) {
                         RadioChannels.edit.trigger(GlyphEvents.deselectAllGlyphs);
                     }
 
@@ -212,8 +200,7 @@ export default Marionette.ItemView.extend(
          * This function also sets up an event listener which resizes the
          * selectionBox when the user moves their mouse.
          */
-        onShow: function ()
-        {
+        onShow: function () {
             this.selectionBox = document.body.appendChild(document.createElement("div"));
             this.selectionBox.style.background = "#337ab7";
             this.selectionBox.style.position = "absolute";
@@ -231,55 +218,43 @@ export default Marionette.ItemView.extend(
             var pic = document.getElementsByClassName("preview-background")[0];
             var imageBox = document.getElementById("right2").getClientRects()[0];
             var that = this;
-            $(document).keypress(function (event)
-            {
-                if (that.isHover)
-                {
-                    if (event.key === "=")
-                    {
+            $(document).keypress(function (event) {
+                if (that.isHover) {
+                    if (event.key === "=") {
                         that.imageZoomIn();
                     }
-                    else if (event.key === "-")
-                    {
+                    else if (event.key === "-") {
                         that.imageZoomOut();
                     }
                 }
             });
 
             var mouseClick = false;
-            $(document).mousedown(function ()
-            {
+            $(document).mousedown(function () {
                 mouseClick = true;
             });
-            $(document).mouseup(function (event)
-            {
+            $(document).mouseup(function (event) {
                 mouseClick = false;
                 that.onMouseUp(event);
             });
-            $(document).mousemove(function (event)
-            {
-                if (mouseClick === false)
-                {
+            $(document).mousemove(function (event) {
+                if (mouseClick === false) {
                     that.isHover = (event.clientX > imageBox.left && event.clientY > imageBox.top);
                     return;
                 }
-                else
-                {
+                else {
                     this.mouseDownX = event.clientX;
                     this.mouseDownY = event.clientY;
 
                     // This makes sure that the height isn't stored before the image exists
                     // So it's not set to 0
-                    if (pic.style.height === "" || pic.style.height === "0px")
-                    {
+                    if (pic.style.height === "" || pic.style.height === "0px") {
                         pic = document.getElementsByClassName("preview-background")[0];
-                        if (pic.getClientRects()[0])
-                        {
+                        if (pic.getClientRects()[0]) {
                             var h = pic.getClientRects()[0].height;
                         }
                         // Don't assign the height if h==0
-                        if (h !== 0)
-                        {
+                        if (h !== 0) {
                             pic.style.height = h + "px";
                             pic.dataset.originalHeight = h;
                         }
@@ -298,38 +273,30 @@ export default Marionette.ItemView.extend(
             });
         },
 
-        imageZoomIn: function (event)
-        {
-            if (event)
-            {
+        imageZoomIn: function (event) {
+            if (event) {
                 event.preventDefault();
             }
             this.isZoomIn = true;
             this.zoomCount++;
-            if (this.zoomCount < this.maxZoomCount)
-            {
+            if (this.zoomCount < this.maxZoomCount) {
                 RadioChannels.edit.trigger(PageEvents.zoom, this.zoomLevel, this.isZoomIn);
             }
-            else
-            {
+            else {
                 this.zoomCount--;
             }
         },
 
-        imageZoomOut: function (event)
-        {
-            if (event)
-            {
+        imageZoomOut: function (event) {
+            if (event) {
                 event.preventDefault();
             }
             this.isZoomIn = false;
             this.zoomCount--;
-            if (this.zoomCount > -this.maxZoomCount)
-            {
+            if (this.zoomCount > -this.maxZoomCount) {
                 RadioChannels.edit.trigger(PageEvents.zoom, this.zoomLevel, this.isZoomIn);
             }
-            else
-            {
+            else {
                 this.zoomCount++;
             }
         }
