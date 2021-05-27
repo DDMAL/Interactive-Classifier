@@ -257,9 +257,14 @@ var App = Marionette.Application.extend(
                 data: data,
                 contentType: 'application/json',
                 complete: function (response) {
-                    if (response.status === 200) {
-                        that.modals.saveChanges.close();
-
+                    var attempts = 0
+                    while (attempts < 10) { // Try to save 10 times. Could change this to time based 
+                        if (response.status === 200) { // later.
+                            that.modals.saveChanges.close();
+                            break;
+                        } else{
+                            attempts++
+                        }
                     }
                 }
             });
