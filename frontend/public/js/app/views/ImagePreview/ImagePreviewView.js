@@ -81,7 +81,7 @@ export default Marionette.ItemView.extend(
                 // Creating a box for each glyph
                 var el = document.body.appendChild(document.createElement("div"));
                 el.style = "top: " + top + "px; left: " + left + "px; width: " + width + "px; height: " + height + "px";
-                el.style.background = "#d30505";
+                el.style.background = "#9b05d1";
                 el.style.position = "absolute";
                 el.style.opacity = 0.4;
                 el.style.filter = "alpha(opacity=40)"; // IE8
@@ -99,7 +99,7 @@ export default Marionette.ItemView.extend(
                 // If the user is zooming, then it will stay scroll to the highlighted glyph
                 if (!this.isHover)
                 {
-                    elems[0].scrollIntoView({inline: "center"});
+                    elems[0].scrollIntoView({block: "center", inline: "center"});
                 }
             }
         },
