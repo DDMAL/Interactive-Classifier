@@ -41,7 +41,7 @@ var App = Marionette.Application.extend(
         groupedGlyphs: [],
         deletedClasses: [],
         renamedClasses: {},
-        zoom: 1,
+        zoom: 0,
 
         /**
          * @class App
