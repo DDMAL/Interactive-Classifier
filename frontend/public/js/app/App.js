@@ -179,7 +179,7 @@ var App = Marionette.Application.extend(
          * The function extracts glyph data, class names, and preview image path data from the HTML page.  The function
          * then deletes those elements.
          *
-         * Next, we initialize the RodanDashboardView.  We wait four seconds (so that the loading screen modal can
+         * Next, we initialize the RodanDashboardView.  We wait three seconds (so that the loading screen modal can
          * successfully open) and then render the view.
          */
         onStart: function () {
