@@ -215,6 +215,7 @@ export default Marionette.ItemView.extend(
             imageZoomIn.style.right = right + "px";
             imageZoomOut.style.right = right + imageZoomIn.getClientRects()[0].width + "px";
 
+
             var pic = document.getElementsByClassName("preview-background")[0];
             var imageBox = document.getElementById("right2").getClientRects()[0];
             var that = this;
@@ -271,6 +272,14 @@ export default Marionette.ItemView.extend(
 
                 }
             });
+            this.isZoomIn = false;
+            this.zoomCount--;
+            if (this.zoomCount > -this.maxZoomCount) {
+                RadioChannels.edit.trigger(PageEvents.zoom, this.zoomLevel, this.isZoomIn);
+            }
+            else {
+                this.zoomCount++;
+            }
         },
 
         imageZoomIn: function (event) {
