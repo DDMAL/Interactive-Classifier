@@ -31,6 +31,13 @@ The Gamera Interactive Classifier is deployed as a Rodan [Job Package](https://g
   ```
 - The Interactive Classifier should now be available in any Rodan workflow.
 
+## Developing/Testing the 2021 Branch
+
+- After you have rodan-docker setup locally with the Interactive Classifier, go to ```./Makefile``` in the root directory and replace ```git clone -b develop https://github.com/DDMAL/Interactive-Classifier.git``` with ```git clone -b dev2021 https://github.com/DDMAL/Interactive-Classifier.git```.
+- Then go to ```rodan/jobs``` and delete or rename the ```interactive-classifier``` folder. 
+
+Now, when you run ```make all_local_jobs``` from the rodan-docker root directory, the 2021 active development branch will be put into your local Rodan instance.
+
 ## Running Rodan
 
 Once the installation steps above are complete, run Rodan with the following command:
