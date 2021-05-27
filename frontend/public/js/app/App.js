@@ -50,8 +50,7 @@ var App = Marionette.Application.extend(
          *
          * @constructs App
          */
-        initialize: function ()
-        {
+        initialize: function () {
             // Authenticator object is used to maintain token authentication with the Rodan web server.
             this.authenticator = new Authenticator();
             this.authenticator.startTimedAuthentication();
@@ -60,8 +59,7 @@ var App = Marionette.Application.extend(
         /**
          * This function runs before the application starts.  It instantiates the RootView and sets up radio listeners.
          */
-        onBeforeStart: function ()
-        {
+        onBeforeStart: function () {
             //Instantiate the root view
             this.rootView = new RootView();
             this.rootView.navigation.show(new MenuView());
@@ -71,32 +69,25 @@ var App = Marionette.Application.extend(
 
             /* Menuchannel*/
             var that = this;
-            this.listenTo(RadioChannels.menu, MainMenuEvents.clickSubmitCorrections, function ()
-            {
+            this.listenTo(RadioChannels.menu, MainMenuEvents.clickSubmitCorrections, function () {
                 that.modals.submitCorrections.open();
             });
-            this.listenTo(RadioChannels.menu, MainMenuEvents.clickGroupClassify, function ()
-            {
+            this.listenTo(RadioChannels.menu, MainMenuEvents.clickGroupClassify, function () {
                 that.modals.groupReclassify.open();
             });
-            this.listenTo(RadioChannels.menu, MainMenuEvents.clickFinalizeCorrections, function ()
-            {
+            this.listenTo(RadioChannels.menu, MainMenuEvents.clickFinalizeCorrections, function () {
                 that.modals.finalizeCorrections.open();
             });
-            this.listenTo(RadioChannels.menu, MainMenuEvents.clickSaveChanges, function ()
-            {
+            this.listenTo(RadioChannels.menu, MainMenuEvents.clickSaveChanges, function () {
                 that.modals.saveChanges.open();
             });
-            this.listenTo(RadioChannels.menu, MainMenuEvents.clickUndoAll, function()
-            {
+            this.listenTo(RadioChannels.menu, MainMenuEvents.clickUndoAll, function () {
                 that.modals.undoAll.open();
             });
-            this.listenTo(RadioChannels.menu, MainMenuEvents.clickTest, function ()
-            {
+            this.listenTo(RadioChannels.menu, MainMenuEvents.clickTest, function () {
                 that.modals.opening.open();
             });
-            this.listenTo(RadioChannels.edit, ClassEvents.invalidClass, function (message)
-            {
+            this.listenTo(RadioChannels.edit, ClassEvents.invalidClass, function (message) {
                 that.modals.invalidClass = new ModalViewModel({
                     title: Strings.classNameError,
                     isCloseable: true,
@@ -110,8 +101,7 @@ var App = Marionette.Application.extend(
                 this.modalCollection.add(this.modals.invalidClass);
                 that.modals.invalidClass.open();
             });
-            this.listenTo(RadioChannels.edit, GlyphEvents.deleteConfirm, function (glyphs)
-            {
+            this.listenTo(RadioChannels.edit, GlyphEvents.deleteConfirm, function (glyphs) {
                 that.modals.deleteWarning = new ModalViewModel({
                     title: Strings.deleteTitle,
                     isCloseable: true,
@@ -119,8 +109,7 @@ var App = Marionette.Application.extend(
                     innerView: new ConfirmView({
                         model: new ConfirmViewModel({
                             text: Strings.deleteWarning,
-                            callback: function ()
-                            {
+                            callback: function () {
                                 RadioChannels.edit.trigger(GlyphEvents.deleteGlyphs, glyphs);
                             }
                         })
@@ -129,70 +118,55 @@ var App = Marionette.Application.extend(
                 this.modalCollection.add(this.modals.deleteWarning);
                 that.modals.deleteWarning.open();
             });
-            this.listenTo(RadioChannels.edit, GlyphEvents.changeGlyph, function (glyphModel)
-            {
-                if (glyphModel.attributes.is_training)
-                {
+            this.listenTo(RadioChannels.edit, GlyphEvents.changeGlyph, function (glyphModel) {
+                if (glyphModel.attributes.is_training) {
                     that.changedTrainingGlyphs.add(glyphModel);
                 }
-                else
-                {
+                else {
                     that.changedGlyphs.add(glyphModel);
                 }
             });
             // A loading screen pops up.
             //this.listenTo(RadioChannels.edit, GlyphEvents.addGlyph, function (glyphModel)
-            this.listenTo(RadioChannels.edit, GlyphEvents.addGlyph, function ()
-            {
+            this.listenTo(RadioChannels.edit, GlyphEvents.addGlyph, function () {
                 this.modals.group.close();
             });
-            this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyphs, function (glyphs)
-            {
+            this.listenTo(RadioChannels.edit, GlyphEvents.deleteGlyphs, function (glyphs) {
                 var deletedGlyphCollection = new GlyphCollection();
-                for (var i = 0; i < glyphs.length; i++)
-                {
+                for (var i = 0; i < glyphs.length; i++) {
                     deletedGlyphCollection.add(glyphs[i]);
                 }
                 that.deleteGlyphs(deletedGlyphCollection);
-                if (that.modals.deleteWarning)
-                {
+                if (that.modals.deleteWarning) {
                     that.modals.deleteWarning.close();
                 }
             });
-            this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs, function (glyphList, glyphName)
-            {
+            this.listenTo(RadioChannels.edit, GlyphEvents.groupGlyphs, function (glyphList, glyphName) {
                 var groupedGlyphs = new GlyphCollection();
-                for (var i = 0; i < glyphList.length; i++)
-                {
+                for (var i = 0; i < glyphList.length; i++) {
                     groupedGlyphs.add(glyphList[i]);
                     that.changedGlyphs.add(glyphList[i]);
                 }
                 this.modals.group.open();
                 that.groupGlyphs(groupedGlyphs, glyphName);
             });
-            this.listenTo(RadioChannels.edit, GlyphEvents.splitGlyph, function (glyph, split_type)
-            {
+            this.listenTo(RadioChannels.edit, GlyphEvents.splitGlyph, function (glyph, split_type) {
                 this.modals.split.open();
                 that.splitGlyph(glyph, split_type);
             });
-            this.listenTo(RadioChannels.edit, GlyphEvents.zoomGlyphs, function (zoomLevel, isZoomIn)
-            {
-                if (isZoomIn)
-                {
+            this.listenTo(RadioChannels.edit, GlyphEvents.zoomGlyphs, function (zoomLevel, isZoomIn) {
+                if (isZoomIn) {
                     this.zoom *= zoomLevel;
                 }
-                else
-                {
+                else {
                     this.zoom /= zoomLevel;
                 }
             });
 
-            this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, function (className)
-            {
+            this.listenTo(RadioChannels.edit, ClassEvents.deleteClass, function (className) {
                 that.deletedClasses.push(className);
             });
-            this.listenTo(RadioChannels.edit, ClassEvents.renameClass, function (oldName, newName)
-            {
+            this.listenTo(RadioChannels.edit, ClassEvents.renameClass, function (oldName, newName) {
                 that.renamedClasses[oldName] = newName;
             });
 
@@ -208,8 +182,7 @@ var App = Marionette.Application.extend(
          * Next, we initialize the RodanDashboardView.  We wait four seconds (so that the loading screen modal can
          * successfully open) and then render the view.
          */
-        onStart: function ()
-        {
+        onStart: function () {
             // Timer that we will use for profiling
             var timer = new Timer("App.js onStart");
 
@@ -224,16 +197,13 @@ var App = Marionette.Application.extend(
             var pageImage = pageElement.attr("data-page");
             var glyphDictionary = JSON.parse(glyphsElement.attr("data-glyphs"));
             // This was causing some errors so I added a check
-            if (classNamesElement.attr("data-class-names"))
-            {
+            if (classNamesElement.attr("data-class-names")) {
                 var classNames = JSON.parse(classNamesElement.attr("data-class-names"));
             }
-            else
-            {
+            else {
                 classNames = ["UNCLASSIFIED"];
             }
-            if (trainingGlyphsElement.attr("data-training-glyphs"))
-            {
+            if (trainingGlyphsElement.attr("data-training-glyphs")) {
                 var trainingGlyphs = JSON.parse(trainingGlyphsElement.attr("data-training-glyphs"));
             }
 
@@ -260,18 +230,16 @@ var App = Marionette.Application.extend(
             timer.tick();
 
             var that = this;
-            setTimeout(function ()
-            {
+            setTimeout(function () {
                 that.rootView.container.show(view);
                 that.modals.loading.close();
-            }, 4000);
+            }, 3000);
         },
 
         /**
          *  Save the current state
          */
-        saveCurrentState: function()
-        {
+        saveCurrentState: function () {
             var that = this;
             var data = JSON.stringify({
                 "save": true,
@@ -288,10 +256,8 @@ var App = Marionette.Application.extend(
                 type: 'POST',
                 data: data,
                 contentType: 'application/json',
-                complete: function (response)
-                {
-                    if (response.status === 200)
-                    {
+                complete: function (response) {
+                    if (response.status === 200) {
                         that.modals.saveChanges.close();
 
                     }
@@ -302,8 +268,7 @@ var App = Marionette.Application.extend(
         /**
          *  Undo all changes
          */
-        undoAllChanges: function ()
-        {
+        undoAllChanges: function () {
             var data = JSON.stringify({
                 "undo": true
             });
@@ -312,10 +277,8 @@ var App = Marionette.Application.extend(
                 type: 'POST',
                 data: data,
                 contentType: 'application/json',
-                complete: function (response)
-                {
-                    if (response.status === 200)
-                    {
+                complete: function (response) {
+                    if (response.status === 200) {
                         window.close();
                     }
                 }
@@ -325,8 +288,7 @@ var App = Marionette.Application.extend(
         /**
          *  Submit corrections back to Rodan and run another round of gamera classification.
          */
-        submitCorrections: function ()
-        {
+        submitCorrections: function () {
             var data = JSON.stringify({
                 "glyphs": this.changedGlyphs.toJSON(),
                 "grouped_glyphs": this.groupedGlyphs,
@@ -342,11 +304,9 @@ var App = Marionette.Application.extend(
                 type: 'POST',
                 data: data,
                 contentType: 'application/json',
-                complete: function (response)
-                {
+                complete: function (response) {
                     /* Close the window if successful POST*/
-                    if (response.status === 200)
-                    {
+                    if (response.status === 200) {
                         window.close();
                     }
                 }
@@ -356,8 +316,7 @@ var App = Marionette.Application.extend(
         /**
          *  Group and reclassify.
          */
-        groupReclassify: function (userSelections)
-        {
+        groupReclassify: function (userSelections) {
             var data = JSON.stringify({
                 "glyphs": this.changedGlyphs.toJSON(),
                 "grouped_glyphs": this.groupedGlyphs,
@@ -375,11 +334,9 @@ var App = Marionette.Application.extend(
                 type: 'POST',
                 data: data,
                 contentType: 'application/json',
-                complete: function (response)
-                {
+                complete: function (response) {
                     /* Close the window if successful POST*/
-                    if (response.status === 200)
-                    {
+                    if (response.status === 200) {
                         window.close();
                     }
                 }
@@ -390,8 +347,7 @@ var App = Marionette.Application.extend(
          * Submit corrections back to Rodan.  If there are any corrections, run Gamera and quit.  Otherwise, just quit.
          *
          */
-        finalizeAndQuit: function ()
-        {
+        finalizeAndQuit: function () {
             var data = JSON.stringify({
                 "complete": true,
                 "glyphs": this.changedGlyphs.toJSON(),
@@ -408,11 +364,9 @@ var App = Marionette.Application.extend(
                 type: 'POST',
                 data: data,
                 contentType: 'application/json',
-                complete: function (response)
-                {
+                complete: function (response) {
                     /* Close the window if successful POST*/
-                    if (response.status === 200)
-                    {
+                    if (response.status === 200) {
                         window.close();
                     }
                 }
@@ -426,18 +380,14 @@ var App = Marionette.Application.extend(
         * This function is necessary when the user tries to group the same glyph twice without sending corretions
         */
 
-        findGroups: function (glyphs, list)
-        {
+        findGroups: function (glyphs, list) {
             var that = this;
-            for (var i = 0; i < glyphs.length; i++)
-            {
-                var glyph =  glyphs.at(i)
-                if ('parts' in glyph && glyph.parts.length > 0)
-                {
+            for (var i = 0; i < glyphs.length; i++) {
+                var glyph = glyphs.at(i)
+                if ('parts' in glyph && glyph.parts.length > 0) {
                     that.findGroups(glyph.parts, list);
                 }
-                else
-                {
+                else {
                     list.add(glyph);
                 }
             }
@@ -450,13 +400,11 @@ var App = Marionette.Application.extend(
          *  Group glyphs
          *
          */
-        groupGlyphs: function (grouped_glyphs, className)
-        {
+        groupGlyphs: function (grouped_glyphs, className) {
             var that = this;
             var glyphs = that.findGroups(grouped_glyphs, new GlyphCollection());
 
-            if (glyphs.length > 0)
-            {
+            if (glyphs.length > 0) {
                 var data = JSON.stringify({
                     "group": true,
                     "glyphs": glyphs.toJSON(),
@@ -472,26 +420,24 @@ var App = Marionette.Application.extend(
                         Accept: "application/json; charset=utf-8",
                         "Content-Type": "application/json; charset=utf-8"
                     },
-                    complete: function (response)
-                    {
+                    complete: function (response) {
                         // Create the new glyph
-                        if (response.status === 200)
-                        { // jscs:disable
+                        if (response.status === 200) { // jscs:disable
                             var responseData = JSON.parse(response.responseText);
                             var new_glyph = responseData['glyph']
-                             var g = new Glyph(
-                             {
-                                "id": new_glyph["id"],
-                                "class_name": className,
-                                "id_state_manual": true,
-                                "confidence": 1,
-                                "ulx": new_glyph["ulx"],
-                                "uly": new_glyph["uly"],
-                                "nrows": new_glyph["nrows"],
-                                "ncols": new_glyph["ncols"],
-                                "image_b64": (new_glyph["image"]),
-                                "rle_image": (new_glyph["rle_image"])
-                            });
+                            var g = new Glyph(
+                                {
+                                    "id": new_glyph["id"],
+                                    "class_name": className,
+                                    "id_state_manual": true,
+                                    "confidence": 1,
+                                    "ulx": new_glyph["ulx"],
+                                    "uly": new_glyph["uly"],
+                                    "nrows": new_glyph["nrows"],
+                                    "ncols": new_glyph["ncols"],
+                                    "image_b64": (new_glyph["image"]),
+                                    "rle_image": (new_glyph["rle_image"])
+                                });
                             // If the user wants to group this glyph again, they'll need to access the group parts
                             g['parts'] = glyphs;
 
@@ -499,12 +445,10 @@ var App = Marionette.Application.extend(
 
                             g.onCreate();
                             // The data gets saved to send to celery later
-                            if (className.toLowerCase() === "unclassified")
-                            {
+                            if (className.toLowerCase() === "unclassified") {
                                 g.unclassify();
                             }
-                            if (that.zoom * g.get("width") > 1 && that.zoom * g.get("height") > 1)
-                            {
+                            if (that.zoom * g.get("width") > 1 && that.zoom * g.get("height") > 1) {
                                 var width = that.zoom * g.get("width");
                                 var height = that.zoom * g.get("height");
                                 g.set({
@@ -519,8 +463,7 @@ var App = Marionette.Application.extend(
                     }
                 });
             }
-            else
-            {
+            else {
                 console.log("You cannot group 0 glyphs");
                 this.modals.group.close();
             }
@@ -530,18 +473,15 @@ var App = Marionette.Application.extend(
          *  Split glyph
          *
          */
-        splitGlyph: function (glyph, split_type)
-        {
+        splitGlyph: function (glyph, split_type) {
             var that = this;
             // If this glyph is a grouped glyph, then using split will simply undo the group
             // Provided that this is before the grouped glyphs have been submitted and reclassified
-            if ('parts' in glyph.attributes  && glyph.attributes.parts.length > 0)
-            {
+            if ('parts' in glyph.attributes && glyph.attributes.parts.length > 0) {
                 var temp = new GlyphCollection();
                 temp.add(glyph);
                 var glyphs = that.findGroups(temp, new GlyphCollection()).models;
-                for (var i = 0; i < glyphs.length; i++)
-                {
+                for (var i = 0; i < glyphs.length; i++) {
                     var g = glyphs[i];
                     g.onCreate();
                     g.unclassify();
@@ -549,14 +489,12 @@ var App = Marionette.Application.extend(
                     that.modals.split.close();
                 }
             }
-            else
-            {
+            else {
                 // TODO: This if statement doesn't seem to do anything. Try deleting it
                 // If the glyph is the result of a recent split,
                 // then the original data of this glyph must be sent back in order
                 // to recreate it in the backend side
-                if ("class_name" in glyph.attributes.split)
-                { // jscs:disable
+                if ("class_name" in glyph.attributes.split) { // jscs:disable
                     glyph = glyph.attributes.split;
                 } //jscs:enable
 
@@ -568,61 +506,57 @@ var App = Marionette.Application.extend(
                     });
 
                 $.ajax(
-                {
-                    url: this.authenticator.getWorkingUrl(),
-                    type: 'POST',
-                    data: data,
-                    headers:
                     {
-                        Accept: "application/json; charset=utf-8",
-                        "Content-Type": "application/json; charset=utf-8"
-                    },
-                    complete: function (response)
-                    {// jscs:disable
-                        if (response.status === 200)
+                        url: this.authenticator.getWorkingUrl(),
+                        type: 'POST',
+                        data: data,
+                        headers:
                         {
-                            var responseData = JSON.parse(response.responseText);
-                            var glyphs = responseData['glyphs'];
-                            var oldPageCount = parseInt($("#count-page").text());
-                            var newPageCount = oldPageCount + glyphs.length;
-                            document.getElementById("count-page").innerHTML = newPageCount;
-                            for (var i = 0; i < glyphs.length; i++)
-                            {
-                                var new_glyph = glyphs[i];
-                                var g = new Glyph
+                            Accept: "application/json; charset=utf-8",
+                            "Content-Type": "application/json; charset=utf-8"
+                        },
+                        complete: function (response) {// jscs:disable
+                            if (response.status === 200) {
+                                var responseData = JSON.parse(response.responseText);
+                                var glyphs = responseData['glyphs'];
+                                var oldPageCount = parseInt($("#count-page").text());
+                                var newPageCount = oldPageCount + glyphs.length;
+                                document.getElementById("count-page").innerHTML = newPageCount;
+                                for (var i = 0; i < glyphs.length; i++) {
+                                    var new_glyph = glyphs[i];
+                                    var g = new Glyph
 
-                                ({
-                                    "id": new_glyph.id,
-                                    "class_name": "UNCLASSIFIED",
-                                    "id_state_manual": false,
-                                    "confidence": 0,
-                                    "ulx": new_glyph["ulx"],
-                                    "uly": new_glyph["uly"],
-                                    "nrows": new_glyph["nrows"],
-                                    "ncols": new_glyph["ncols"],
-                                    "image_b64": (new_glyph["image"]),
-                                    "rle_image": (new_glyph["rle_image"])
-                                });
+                                        ({
+                                            "id": new_glyph.id,
+                                            "class_name": "UNCLASSIFIED",
+                                            "id_state_manual": false,
+                                            "confidence": 0,
+                                            "ulx": new_glyph["ulx"],
+                                            "uly": new_glyph["uly"],
+                                            "nrows": new_glyph["nrows"],
+                                            "ncols": new_glyph["ncols"],
+                                            "image_b64": (new_glyph["image"]),
+                                            "rle_image": (new_glyph["rle_image"])
+                                        });
 
-                                RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, g);
-                                g.onCreate();
-                                g.attributes.split = glyph;
-                                if (that.zoom * g.get("width") > 1 && that.zoom * g.get("height") > 1)
-                                {
-                                    var width = that.zoom * g.get("width");
-                                    var height = that.zoom * g.get("height");
-                                    g.set({
-                                        width: width,
-                                        height: height
-                                    });
+                                    RadioChannels.edit.trigger(GlyphEvents.openGlyphEdit, g);
+                                    g.onCreate();
+                                    g.attributes.split = glyph;
+                                    if (that.zoom * g.get("width") > 1 && that.zoom * g.get("height") > 1) {
+                                        var width = that.zoom * g.get("width");
+                                        var height = that.zoom * g.get("height");
+                                        g.set({
+                                            width: width,
+                                            height: height
+                                        });
+                                    }
+                                    that.changedGlyphs.push(glyph);
+                                    that.groupedGlyphs.push(g);
                                 }
-                                that.changedGlyphs.push(glyph);
-                                that.groupedGlyphs.push(g);
+                                that.modals.split.close();
                             }
-                            that.modals.split.close();
-                        }
-                    }// jscs:enable
-                });
+                        }// jscs:enable
+                    });
             }
         },
 
@@ -630,8 +564,7 @@ var App = Marionette.Application.extend(
          *  Delete selected glyph or glyphs
          *
          */
-        deleteGlyphs: function (glyphs)
-        {
+        deleteGlyphs: function (glyphs) {
             var that = this;
             var data = JSON.stringify({
                 "delete": true,
@@ -647,40 +580,35 @@ var App = Marionette.Application.extend(
                     Accept: "application/json; charset=utf-8",
                     "Content-Type": "application/json; charset=utf-8"
                 },
-                complete: function (response)
-                {// jscs:disable
-                    if (response.status === 200)
-                    {
+                complete: function (response) {// jscs:disable
+                    if (response.status === 200) {
                         var responseData = JSON.parse(response.responseText);
                         var glyphs = responseData['glyphs'];
-                        for (var i = 0; i < glyphs.length; i++)
-                        {
+                        for (var i = 0; i < glyphs.length; i++) {
                             var deletedGlyph = glyphs[i];
                             var g = new Glyph
-                            ({
-                                "id": deletedGlyph.id,
-                                "class_name": deletedGlyph["class_name"],
-                                "id_state_manual": deletedGlyph["id_state_manual"],
-                                "is_training": deletedGlyph["is_training"],
-                                "confidence": deletedGlyph["confidence"],
-                                "ulx": deletedGlyph["ulx"],
-                                "uly": deletedGlyph["uly"],
-                                "nrows": deletedGlyph["nrows"],
-                                "ncols": deletedGlyph["ncols"],
-                                "image_b64": (deletedGlyph["image_b64"]),
-                                "image": (deletedGlyph["image"])
-                            });
-                            if (g.get("is_training"))
-                            {
+                                ({
+                                    "id": deletedGlyph.id,
+                                    "class_name": deletedGlyph["class_name"],
+                                    "id_state_manual": deletedGlyph["id_state_manual"],
+                                    "is_training": deletedGlyph["is_training"],
+                                    "confidence": deletedGlyph["confidence"],
+                                    "ulx": deletedGlyph["ulx"],
+                                    "uly": deletedGlyph["uly"],
+                                    "nrows": deletedGlyph["nrows"],
+                                    "ncols": deletedGlyph["ncols"],
+                                    "image_b64": (deletedGlyph["image_b64"]),
+                                    "image": (deletedGlyph["image"])
+                                });
+                            if (g.get("is_training")) {
                                 that.deletedTrainingGlyphs.push(g);
-                                that.deletedTrainingGlyphs.each(function (g){
+                                that.deletedTrainingGlyphs.each(function (g) {
                                     g.set("class_name", "_delete");
                                 });
                             }
-                            else
-                            {
+                            else {
                                 that.deletedGlyphs.push(g);
-                                that.deletedGlyphs.each(function (g){
+                                that.deletedGlyphs.each(function (g) {
                                     g.set("class_name", "_delete");
                                 });
                             }
@@ -693,12 +621,11 @@ var App = Marionette.Application.extend(
         /**
          * Initialize all of the modals used in the application.
          */
-        initializeModals: function ()
-        {
+        initializeModals: function () {
             this.modalCollection = new Backbone.Collection();
 
             // Prepare the modal collection
-            this.rootView.modal.show(new ModalCollectionView({collection: this.modalCollection}));
+            this.rootView.modal.show(new ModalCollectionView({ collection: this.modalCollection }));
 
             // Loading modal
             this.modals.loading = new ModalViewModel({
@@ -722,8 +649,7 @@ var App = Marionette.Application.extend(
                 innerView: new ConfirmView({
                     model: new ConfirmViewModel({
                         text: Strings.submissionWarning,
-                        callback: function ()
-                        {
+                        callback: function () {
                             // Once the user confirms, submit the corrections.
                             that.submitCorrections();
                         }
@@ -740,8 +666,7 @@ var App = Marionette.Application.extend(
                 innerView: new ConfirmView({
                     model: new ConfirmViewModel({
                         text: Strings.saveWarning,
-                        callback: function ()
-                        {
+                        callback: function () {
                             //Once confirmed, save the current state
                             that.saveCurrentState();
                         }
@@ -758,8 +683,7 @@ var App = Marionette.Application.extend(
                 innerView: new ConfirmView({
                     model: new ConfirmViewModel({
                         text: Strings.undoWarning,
-                        callback: function ()
-                        {
+                        callback: function () {
                             that.undoAllChanges();
                         }
                     })
@@ -778,14 +702,13 @@ var App = Marionette.Application.extend(
                         // A list of dictionaries that maps to functions or something
                         // The types are checkbox, user fill in (input) and dropdown
                         userOptions: [
-                        {"text": "Grouping Function", "type": "dropdown", "options": ["Bounding Box", "Shaped"]},
-                        {"text": "Distance Threshold", "type": "input", "default": 4},
-                        {"text": "Maximum Number of Parts per Group", "type": "input", "default": 4},
-                        {"text": "Maximum Solvable Subgraph Size", "type": "input", "default": 16},
-                        {"text": "Grouping Criterion", "type": "dropdown", "options": ["min", "avg"]}
+                            { "text": "Grouping Function", "type": "dropdown", "options": ["Bounding Box", "Shaped"] },
+                            { "text": "Distance Threshold", "type": "input", "default": 4 },
+                            { "text": "Maximum Number of Parts per Group", "type": "input", "default": 4 },
+                            { "text": "Maximum Solvable Subgraph Size", "type": "input", "default": 16 },
+                            { "text": "Grouping Criterion", "type": "dropdown", "options": ["min", "avg"] }
                         ],
-                        callback: function (userArgs)
-                        {
+                        callback: function (userArgs) {
                             // Once the user confirms, submit the corrections with the user's options.
 
                             var userSelections = {}
@@ -814,8 +737,7 @@ var App = Marionette.Application.extend(
                     model: new ConfirmViewModel({
                         text: Strings.finalizeText,
                         warning: Strings.finalizeWarning,
-                        callback: function ()
-                        {
+                        callback: function () {
                             // Once the user confirms, submit the corrections.
                             that.finalizeAndQuit();
                         }
@@ -832,8 +754,7 @@ var App = Marionette.Application.extend(
                 innerView: new ConfirmView({
                     model: new ConfirmViewModel({
                         text: Strings.openWarning,
-                        callback: function ()
-                        {
+                        callback: function () {
                             // Once the user confirms, submit the corrections.
                             that.opening();
                         }
@@ -850,8 +771,7 @@ var App = Marionette.Application.extend(
                 innerView: new LoadingScreenView({
                     model: new LoadingScreenViewModel({
                         text: Strings.groupingGlyphs,
-                        callback: function ()
-                        {
+                        callback: function () {
 
                         }
                     })
@@ -867,8 +787,7 @@ var App = Marionette.Application.extend(
                 innerView: new LoadingScreenView({
                     model: new LoadingScreenViewModel({
                         text: Strings.splittingGlyph,
-                        callback: function ()
-                        {
+                        callback: function () {
 
                         }
                     })
@@ -878,8 +797,7 @@ var App = Marionette.Application.extend(
 
             // Listen to the "closeAll" channel
             RadioChannels.modal.on(ModalEvents.closeAll,
-                function ()
-                {
+                function () {
                     that.closeAllModals();
                 }
             );
@@ -888,12 +806,10 @@ var App = Marionette.Application.extend(
         /**
          * Close all open modal windows!
          */
-        closeAllModals: function ()
-        {
+        closeAllModals: function () {
             // Make sure all the modals are closed
             this.modalCollection.each(
-                function (modal)
-                {
+                function (modal) {
                     modal.close();
                 }
             )
