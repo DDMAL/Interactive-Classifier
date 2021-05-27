@@ -41,7 +41,7 @@ var App = Marionette.Application.extend(
         groupedGlyphs: [],
         deletedClasses: [],
         renamedClasses: {},
-        zoom: 0,
+        zoom: 1,
 
         /**
          * @class App
@@ -169,7 +169,8 @@ var App = Marionette.Application.extend(
             this.listenTo(RadioChannels.edit, ClassEvents.renameClass, function (oldName, newName) {
                 that.renamedClasses[oldName] = newName;
             });
-
+            this.zoom /= zoomLevel;
+            this.zoom /= zoomLevel;
             this.modals.loading.open();
         },
 
