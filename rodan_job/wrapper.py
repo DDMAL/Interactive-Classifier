@@ -1,8 +1,7 @@
 from rodan.jobs.base import RodanTask
 from interactive_classifier import *
-
 from celery import task
-@task(name="rodan.core.jsomr2mei")
+@task(name="rodan.jobs.ic")
 class InteractiveClassifier(RodanTask):
     #############
     # Description
