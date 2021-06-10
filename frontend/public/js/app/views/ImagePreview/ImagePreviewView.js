@@ -252,11 +252,14 @@ export default Marionette.ItemView.extend(
                         pic = document.getElementsByClassName("preview-background")[0];
                         if (pic.getClientRects()[0]) {
                             var h = pic.getClientRects()[0].height;
+                            var w = pic.getClientRects()[0].width;
                         }
                         // Don't assign the height if h==0
                         if (h !== 0) {
                             pic.style.height = h + "px";
+                            pic.style.width = w + "px";
                             pic.dataset.originalHeight = h;
+                            pic.dataset.originalWidth = w;
                         }
                     }
                     that.isHover = (event.clientX > imageBox.left && event.clientY > imageBox.top);
