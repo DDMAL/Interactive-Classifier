@@ -42,7 +42,7 @@ To view the Rodan web interface, point your browser to http://localhost:9002, or
 
 For instructions on how to use the Interactive Classifier in the Rodan workflow, please see the [wiki](https://github.com/DDMAL/Interactive-Classifier/wiki/Creating-an-Interactive-Classifier-Rodan-Workflow).
 
-##developing 2021 - building on IC
+## developing 2021 - building on IC
 
 To begin. you will need cd into the `forntend` folder in the IC and install nvm.
 
