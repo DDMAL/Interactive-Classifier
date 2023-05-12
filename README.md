@@ -1,6 +1,8 @@
 # Interactive Classifier
 
-The Gamera Interactive Classifier is deployed as a Rodan [Job Package](https://github.com/DDMAL/Rodan/wiki/Write-a-Rodan-job-package).
+Active development and maintenance of the Interactive Classifier occurs in the [Rodan respository](https://github.com/DDMAL/Rodan). This respository now exists only as an archive.
+
+The Gamera Interactive Classifier is deployed as a Rodan [Job Package](https://github.com/DDMAL/Rodan/wiki/Write-a-Rodan-job-package). 
 
 ## Installation
 
